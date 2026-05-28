@@ -7,7 +7,7 @@ import {
   MapPin, Phone, Shield, Sparkles, Star, TrendingUp, 
   Users, Utensils, Video, Volume2, Zap, AlertTriangle, Send, Mail, Lock,
   Bookmark, ShoppingBag, Eye, Trash, ShieldCheck, UserCheck, 
-  Briefcase, Search, UploadCloud, ChevronRight, BarChart2, Sun, Moon
+  Briefcase, Search, UploadCloud, ChevronRight, BarChart2, Sun, Moon, Bot
 } from 'lucide-react';
 import { io } from 'socket.io-client';
 import MarbleRocksCanvas from '../components/MarbleRocksCanvas';
