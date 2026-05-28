@@ -61,6 +61,7 @@ export default function Home() {
   const [cardExpiry, setCardExpiry] = useState('12/29');
   const [cardCvv, setCardCvv] = useState('182');
   const [payingState, setPayingState] = useState('idle'); // idle | paying | success
+  const [payTab, setPayTab] = useState('card'); // 'card' | 'scanner' | 'bank'
   const [payTransactionId, setPayTransactionId] = useState('');
 
   // NextRank Smart Modules & AI States
@@ -3008,68 +3009,170 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Physical Glass Credit Card Graphic */}
-                <div className="relative h-44 w-full bg-gradient-to-br from-indigo-600/30 to-purple-600/30 rounded-2xl border border-white/10 p-5 flex flex-col justify-between overflow-hidden shadow-inner text-left">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full blur-xl pointer-events-none" />
-                  <div className="flex justify-between items-start">
-                    <div className="w-10 h-7 bg-amber-500/80 rounded-md shadow-inner" /> {/* Chip */}
-                    <span className="text-white font-mono text-[9px] font-bold tracking-widest border border-white/20 px-2 py-0.5 rounded uppercase">JABALPUR BANK</span>
-                  </div>
-                  <p className="font-mono text-white text-md tracking-[0.18em] my-3 select-all">{cardNumber}</p>
-                  <div className="flex justify-between items-center text-slate-300 font-mono text-[9px]">
-                    <div>
-                      <span className="text-[6px] text-slate-500 block uppercase font-sans">Cardholder</span>
-                      <span className="font-bold">{currentUser ? currentUser.email.split('@')[0].toUpperCase() : 'VISITOR SANSKARDHANI'}</span>
-                    </div>
-                    <div>
-                      <span className="text-[6px] text-slate-500 block uppercase font-sans">Expiry</span>
-                      <span className="font-bold">{cardExpiry}</span>
-                    </div>
-                  </div>
+                {/* Tab Navigation */}
+                <div className="flex border-b border-white/10 text-[9px] font-bold uppercase tracking-wider pb-2 gap-2 text-left">
+                  {[
+                    { id: 'card', label: 'Credit Card' },
+                    { id: 'scanner', label: 'UPI / QR Scanner' },
+                    { id: 'bank', label: 'Bank Transfer' }
+                  ].map(tab => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => { playClickSound(); setPayTab(tab.id); }}
+                      className={`flex-1 py-2 rounded-lg transition-all text-center border font-black tracking-widest cursor-pointer ${
+                        payTab === tab.id 
+                          ? 'bg-blue-600/10 text-blue-400 border-blue-500/40 shadow-inner' 
+                          : 'text-slate-400 border-transparent hover:text-slate-200'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
                 </div>
 
-                {/* Form fields */}
-                <div className="space-y-4 text-left">
-                  <div className="space-y-1">
-                    <label className="text-[8px] text-slate-500 font-bold uppercase font-mono block">Card Number</label>
-                    <input 
-                      type="text" 
-                      value={cardNumber}
-                      onChange={(e) => setCardNumber(e.target.value)}
-                      placeholder="4582 9182 1202 8593"
-                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-700 font-mono focus:outline-none" 
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-[8px] text-slate-500 font-bold uppercase font-mono block">Expiry Date</label>
-                      <input 
-                        type="text" 
-                        value={cardExpiry}
-                        onChange={(e) => setCardExpiry(e.target.value)}
-                        placeholder="12/29"
-                        className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-700 font-mono focus:outline-none text-center" 
+                {payTab === 'card' && (
+                  <>
+                    {/* Physical Glass Credit Card Graphic */}
+                    <div className="relative h-44 w-full bg-gradient-to-br from-indigo-600/30 to-purple-600/30 rounded-2xl border border-white/10 p-5 flex flex-col justify-between overflow-hidden shadow-inner text-left">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full blur-xl pointer-events-none" />
+                      <div className="flex justify-between items-start">
+                        <div className="w-10 h-7 bg-amber-500/80 rounded-md shadow-inner" /> {/* Chip */}
+                        <span className="text-white font-mono text-[9px] font-bold tracking-widest border border-white/20 px-2 py-0.5 rounded uppercase">JABALPUR BANK</span>
+                      </div>
+                      <p className="font-mono text-white text-md tracking-[0.18em] my-3 select-all">{cardNumber}</p>
+                      <div className="flex justify-between items-center text-slate-300 font-mono text-[9px]">
+                        <div>
+                          <span className="text-[6px] text-slate-500 block uppercase font-sans">Cardholder</span>
+                          <span className="font-bold">{currentUser ? currentUser.email.split('@')[0].toUpperCase() : 'VISITOR SANSKARDHANI'}</span>
+                        </div>
+                        <div>
+                          <span className="text-[6px] text-slate-500 block uppercase font-sans">Expiry</span>
+                          <span className="font-bold">{cardExpiry}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Form fields */}
+                    <div className="space-y-4 text-left">
+                      <div className="space-y-1">
+                        <label className="text-[8px] text-slate-500 font-bold uppercase font-mono block">Card Number</label>
+                        <input 
+                          type="text" 
+                          value={cardNumber}
+                          onChange={(e) => setCardNumber(e.target.value)}
+                          placeholder="4582 9182 1202 8593"
+                          className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-700 font-mono focus:outline-none" 
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-[8px] text-slate-500 font-bold uppercase font-mono block">Expiry Date</label>
+                          <input 
+                            type="text" 
+                            value={cardExpiry}
+                            onChange={(e) => setCardExpiry(e.target.value)}
+                            placeholder="12/29"
+                            className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-700 font-mono focus:outline-none text-center" 
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[8px] text-slate-500 font-bold uppercase font-mono block">CVV Code</label>
+                          <input 
+                            type="password" 
+                            value={cardCvv}
+                            onChange={(e) => setCardCvv(e.target.value)}
+                            placeholder="•••"
+                            maxLength={3}
+                            className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-700 font-mono focus:outline-none text-center" 
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {payTab === 'scanner' && (
+                  <div className="space-y-4 text-center">
+                    <div className="mx-auto w-40 h-40 bg-white p-2 rounded-2xl border border-white/20 shadow-2xl flex items-center justify-center relative overflow-hidden group">
+                      <img 
+                        src={config.paymentDetails?.qrCodeUrl || `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=${config.paymentDetails?.upiId || 'megha213@okaxis'}&pn=JabalpurSmartEngine&am=${payPrice.replace(/[^0-9]/g, '')}`} 
+                        alt="Payment QR Code" 
+                        className="w-full h-full object-contain select-none pointer-events-none"
                       />
                     </div>
-                    <div className="space-y-1">
-                      <label className="text-[8px] text-slate-500 font-bold uppercase font-mono block">CVV Code</label>
-                      <input 
-                        type="password" 
-                        value={cardCvv}
-                        onChange={(e) => setCardCvv(e.target.value)}
-                        placeholder="•••"
-                        maxLength={3}
-                        className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-700 font-mono focus:outline-none text-center" 
-                      />
+                    <div className="space-y-2">
+                      <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block font-mono">Scan using any UPI App (GPay, PhonePe, Paytm)</span>
+                      <div className="bg-slate-950 border border-white/5 rounded-xl px-4 py-2.5 flex items-center justify-between text-xs text-left">
+                        <span className="text-slate-400 font-mono">UPI ID: <strong className="text-white">{config.paymentDetails?.upiId || 'megha213@okaxis'}</strong></span>
+                        <button 
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText(config.paymentDetails?.upiId || 'megha213@okaxis');
+                            if (window.showToast) window.showToast("UPI ID Copied to Clipboard!", "success");
+                          }}
+                          className="text-indigo-400 hover:text-indigo-300 font-black text-[10px] tracking-widest uppercase cursor-pointer"
+                        >
+                          COPY
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
+
+                {payTab === 'bank' && (
+                  <div className="space-y-3 text-left font-mono text-xs">
+                    <div className="bg-slate-950 border border-white/5 rounded-xl p-4 space-y-2">
+                      <div className="flex justify-between border-b border-white/5 pb-1.5">
+                        <span className="text-slate-500 text-[10px] uppercase">Account Holder:</span>
+                        <strong className="text-slate-200">{config.paymentDetails?.holderName || 'Megha Choudhary'}</strong>
+                      </div>
+                      <div className="flex justify-between border-b border-white/5 pb-1.5">
+                        <span className="text-slate-500 text-[10px] uppercase">Bank Name:</span>
+                        <strong className="text-slate-200">{config.paymentDetails?.bankName || 'State Bank of India'}</strong>
+                      </div>
+                      <div className="flex justify-between border-b border-white/5 pb-1.5">
+                        <span className="text-slate-500 text-[10px] uppercase">Account Number:</span>
+                        <div className="flex gap-2">
+                          <strong className="text-slate-200 select-all">{config.paymentDetails?.accountNumber || '382901928392'}</strong>
+                          <button 
+                            type="button"
+                            onClick={() => {
+                              navigator.clipboard.writeText(config.paymentDetails?.accountNumber || '382901928392');
+                              if (window.showToast) window.showToast("Account Number Copied!", "success");
+                            }}
+                            className="text-indigo-400 hover:text-indigo-300 text-[9px] font-bold cursor-pointer"
+                          >
+                            COPY
+                          </button>
+                        </div>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 text-[10px] uppercase">IFSC Code:</span>
+                        <div className="flex gap-2">
+                          <strong className="text-slate-200 select-all">{config.paymentDetails?.ifscCode || 'SBIN0001234'}</strong>
+                          <button 
+                            type="button"
+                            onClick={() => {
+                              navigator.clipboard.writeText(config.paymentDetails?.ifscCode || 'SBIN0001234');
+                              if (window.showToast) window.showToast("IFSC Code Copied!", "success");
+                            }}
+                            className="text-indigo-400 hover:text-indigo-300 text-[9px] font-bold cursor-pointer"
+                          >
+                            COPY
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-[9px] text-slate-500 text-center leading-normal font-sans">Transfer the payable total to the account above, and click "Securely Pay" to register the transaction.</p>
+                  </div>
+                )}
 
                 {/* Confirm secure pay */}
                 <button
                   onClick={executePaymentCall}
                   style={{ background: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}
-                  className="w-full py-3.5 rounded-xl font-bold text-white text-xs shadow-lg hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3.5 rounded-xl font-bold text-white text-xs shadow-lg hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   🔒 Securely Pay {payPrice}
                 </button>

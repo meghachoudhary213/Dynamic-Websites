@@ -43,6 +43,7 @@ const WebsiteConfigSchema = new mongoose.Schema({
   sections: mongoose.Schema.Types.Mixed,
   footer: mongoose.Schema.Types.Mixed,
   seo: mongoose.Schema.Types.Mixed,
+  paymentDetails: mongoose.Schema.Types.Mixed,
   dashboardModules: [String],
   fonts: { type: String, default: 'Space Grotesk' }
 }, { timestamps: true });

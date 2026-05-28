@@ -149,7 +149,7 @@ router.post('/switch', verifyAdmin, async (req, res) => {
 
 // 4. Update website configuration layout/colors/hero (Admin)
 router.put('/config', verifyAdmin, async (req, res) => {
-  const { businessType, theme, hero, navigation, sections, footer, seo } = req.body;
+  const { businessType, theme, hero, navigation, sections, footer, seo, paymentDetails } = req.body;
   if (!businessType) {
     return res.status(400).json({ success: false, message: 'Missing businessType identifier.' });
   }
@@ -157,8 +157,8 @@ router.put('/config', verifyAdmin, async (req, res) => {
   try {
     const updated = await WebsiteConfig.findOneAndUpdate(
       { businessType },
-      { theme, hero, navigation, sections, footer, seo },
-      { upsert: true }
+      { theme, hero, navigation, sections, footer, seo, paymentDetails },
+      { upsert: true, new: true }
     );
 
     const msg = `Custom parameters saved for ${businessType.toUpperCase()} landing page.`;

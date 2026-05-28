@@ -977,9 +977,108 @@ export default function AdminDashboard() {
                   ))}
                 </div>
 
+                {/* Custom Payment & Billing Settings Section */}
+                <div className="glass-card rounded-2xl p-4 space-y-3 bg-emerald-500/5 border-emerald-500/10 border text-left">
+                  <span className="text-[10px] font-bold text-emerald-400 font-mono uppercase block">
+                    CMS: PAYMENT & BILLING DETAILS
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div>
+                      <label className="text-[9px] font-bold text-slate-500">UPI ID</label>
+                      <input 
+                        type="text" 
+                        value={formConfig.paymentDetails?.upiId || ''} 
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          if (!updated.paymentDetails) updated.paymentDetails = {};
+                          updated.paymentDetails.upiId = e.target.value;
+                          setFormConfig(updated);
+                        }}
+                        placeholder="e.g. user@okaxis"
+                        className="w-full bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg mt-0.5" 
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[9px] font-bold text-slate-500">QR Code Image URL</label>
+                      <input 
+                        type="text" 
+                        value={formConfig.paymentDetails?.qrCodeUrl || ''} 
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          if (!updated.paymentDetails) updated.paymentDetails = {};
+                          updated.paymentDetails.qrCodeUrl = e.target.value;
+                          setFormConfig(updated);
+                        }}
+                        placeholder="e.g. https://example.com/qr.png (optional)"
+                        className="w-full bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg mt-0.5" 
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[9px] font-bold text-slate-500">Account Holder Name</label>
+                      <input 
+                        type="text" 
+                        value={formConfig.paymentDetails?.holderName || ''} 
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          if (!updated.paymentDetails) updated.paymentDetails = {};
+                          updated.paymentDetails.holderName = e.target.value;
+                          setFormConfig(updated);
+                        }}
+                        placeholder="e.g. Megha Choudhary"
+                        className="w-full bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg mt-0.5" 
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[9px] font-bold text-slate-500">Bank Name</label>
+                      <input 
+                        type="text" 
+                        value={formConfig.paymentDetails?.bankName || ''} 
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          if (!updated.paymentDetails) updated.paymentDetails = {};
+                          updated.paymentDetails.bankName = e.target.value;
+                          setFormConfig(updated);
+                        }}
+                        placeholder="e.g. State Bank of India"
+                        className="w-full bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg mt-0.5" 
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[9px] font-bold text-slate-500">Bank Account Number</label>
+                      <input 
+                        type="text" 
+                        value={formConfig.paymentDetails?.accountNumber || ''} 
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          if (!updated.paymentDetails) updated.paymentDetails = {};
+                          updated.paymentDetails.accountNumber = e.target.value;
+                          setFormConfig(updated);
+                        }}
+                        placeholder="e.g. 382901928392"
+                        className="w-full bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg mt-0.5" 
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[9px] font-bold text-slate-500">Bank IFSC Code</label>
+                      <input 
+                        type="text" 
+                        value={formConfig.paymentDetails?.ifscCode || ''} 
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          if (!updated.paymentDetails) updated.paymentDetails = {};
+                          updated.paymentDetails.ifscCode = e.target.value;
+                          setFormConfig(updated);
+                        }}
+                        placeholder="e.g. SBIN0001234"
+                        className="w-full bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg mt-0.5" 
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 <button
                   onClick={handleResetTemplate}
-                  className="w-full border border-rose-500/30 hover:bg-rose-500/10 text-rose-500 text-[10px] font-bold py-2.5 rounded-xl transition-all"
+                  className="w-full border border-rose-500/30 hover:bg-rose-500/10 text-rose-500 text-[10px] font-bold py-2.5 rounded-xl transition-all cursor-pointer"
                 >
                   Reset Current Template to Defaults
                 </button>
