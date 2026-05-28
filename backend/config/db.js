@@ -12,7 +12,10 @@ let useMongoDB = false;
 const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, default: 'admin' }
+  role: { type: String, default: 'student' },
+  name: { type: String, default: '' },
+  phone: { type: String, default: '' },
+  websiteId: { type: String, default: '' }
 }, { timestamps: true });
 
 const BlogSchema = new mongoose.Schema({
@@ -32,13 +35,16 @@ const NotificationSchema = new mongoose.Schema({
 
 const WebsiteConfigSchema = new mongoose.Schema({
   businessType: { type: String, required: true },
+  websiteName: { type: String, required: true },
   isActive: { type: Boolean, default: false },
   theme: mongoose.Schema.Types.Mixed,
   hero: mongoose.Schema.Types.Mixed,
   navigation: mongoose.Schema.Types.Mixed,
   sections: mongoose.Schema.Types.Mixed,
   footer: mongoose.Schema.Types.Mixed,
-  seo: mongoose.Schema.Types.Mixed
+  seo: mongoose.Schema.Types.Mixed,
+  dashboardModules: [String],
+  fonts: { type: String, default: 'Space Grotesk' }
 }, { timestamps: true });
 
 let MongooseUser, MongooseBlog, MongooseNotification, MongooseWebsiteConfig;
@@ -78,7 +84,10 @@ async function seedDefaultData() {
     await MongooseUser.create({
       email: 'admin@jabalpur.gov',
       password: hashedPassword,
-      role: 'admin'
+      role: 'admin',
+      name: 'Super Admin',
+      phone: '9827012345',
+      websiteId: ''
     });
     console.log('🌱 Seeded default admin user in MongoDB (admin@jabalpur.gov / jabalpur2026)');
   }
@@ -86,11 +95,26 @@ async function seedDefaultData() {
   const configCount = await MongooseWebsiteConfig.countDocuments();
   if (configCount === 0) {
     // Seed all 10 templates and activate coaching as default
+    const defaultModulesMap = {
+      coaching: ['students', 'attendance', 'tests', 'notes', 'fees', 'analytics'],
+      ecommerce: ['products', 'orders', 'payments'],
+      real_estate: ['properties', 'tours', 'consultations'],
+      hospital: ['appointments', 'doctors', 'reports'],
+      cafe: ['menu', 'tables', 'orders'],
+      startup: ['sandboxes', 'servers', 'teams'],
+      gym: ['bmi', 'workouts', 'trainers'],
+      tourism: ['itinerary', 'budget', 'bookings'],
+      cybersecurity: ['threats', 'quizzes', 'firewall'],
+      career: ['resume', 'interviews', 'placements']
+    };
     for (const key of Object.keys(defaultTemplates)) {
       const isCoaching = key === 'coaching';
       await MongooseWebsiteConfig.create({
         ...defaultTemplates[key],
-        isActive: isCoaching
+        websiteName: defaultTemplates[key].theme.name,
+        isActive: isCoaching,
+        dashboardModules: defaultModulesMap[key] || [],
+        fonts: defaultTemplates[key].theme.fontFamily || 'Space Grotesk'
       });
     }
     console.log('🌱 Seeded all 10 Jabalpur templates in MongoDB. Activated "coaching" site.');
@@ -122,6 +146,19 @@ function initializeJSONDB() {
   const salt = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync('jabalpur2026', salt);
 
+  const defaultModulesMap = {
+    coaching: ['students', 'attendance', 'tests', 'notes', 'fees', 'analytics'],
+    ecommerce: ['products', 'orders', 'payments'],
+    real_estate: ['properties', 'tours', 'consultations'],
+    hospital: ['appointments', 'doctors', 'reports'],
+    cafe: ['menu', 'tables', 'orders'],
+    startup: ['sandboxes', 'servers', 'teams'],
+    gym: ['bmi', 'workouts', 'trainers'],
+    tourism: ['itinerary', 'budget', 'bookings'],
+    cybersecurity: ['threats', 'quizzes', 'firewall'],
+    career: ['resume', 'interviews', 'placements']
+  };
+
   const initialDB = {
     users: [
       {
@@ -129,6 +166,9 @@ function initializeJSONDB() {
         email: 'admin@jabalpur.gov',
         password: hashedPassword,
         role: 'admin',
+        name: 'Super Admin',
+        phone: '9827012345',
+        websiteId: '',
         createdAt: new Date().toISOString()
       }
     ],
@@ -144,7 +184,10 @@ function initializeJSONDB() {
     websiteConfigs: Object.keys(defaultTemplates).map((key, index) => ({
       _id: `config_${key}`,
       ...defaultTemplates[key],
+      websiteName: defaultTemplates[key].theme.name,
       isActive: key === 'coaching',
+      dashboardModules: defaultModulesMap[key] || [],
+      fonts: defaultTemplates[key].theme.fontFamily || 'Space Grotesk',
       createdAt: new Date().toISOString()
     }))
   };
@@ -170,6 +213,9 @@ export const User = {
     const db = readJSONDB();
     const newUser = {
       _id: `usr_${uuidv4()}`,
+      name: userData.name || '',
+      phone: userData.phone || '',
+      websiteId: userData.websiteId || '',
       ...userData,
       createdAt: new Date().toISOString()
     };

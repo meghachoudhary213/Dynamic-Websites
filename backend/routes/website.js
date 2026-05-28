@@ -31,18 +31,106 @@ router.get('/configs', verifyAdmin, async (req, res) => {
   }
 });
 
-// 3. Switch active business website type (Admin)
-router.post('/switch', verifyAdmin, async (req, res) => {
-  const { businessType } = req.body;
-  if (!businessType || !defaultTemplates[businessType]) {
-    return res.status(400).json({ success: false, message: 'Invalid or unsupported business website type.' });
+// 2b. Provision/Create Dynamic Website (Admin)
+router.post('/create', verifyAdmin, async (req, res) => {
+  const { websiteName, category, primaryColor, accentColor, fonts, sectionsSelection, dashboardModulesSelection } = req.body;
+  if (!websiteName || !category) {
+    return res.status(400).json({ success: false, message: 'Website Name and Category are required.' });
+  }
+
+  const baseTemplate = defaultTemplates[category];
+  if (!baseTemplate) {
+    return res.status(400).json({ success: false, message: 'Invalid category selection.' });
   }
 
   try {
+    // Generate unique slug
+    const cleanName = websiteName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+    const newSlug = `${category}_${cleanName}_${Math.random().toString(36).substring(2, 6)}`;
+
+    // Clone and map dynamic sections
+    const updatedSections = (baseTemplate.sections || []).map(sec => ({
+      ...sec,
+      visible: sectionsSelection ? sectionsSelection.includes(sec.id || sec.type) : true
+    }));
+
+    const newConfig = {
+      businessType: newSlug,
+      websiteName,
+      isActive: true,
+      theme: {
+        ...baseTemplate.theme,
+        name: websiteName,
+        primary: primaryColor || baseTemplate.theme.primary,
+        accent: accentColor || baseTemplate.theme.accent,
+        fontFamily: fonts || baseTemplate.theme.fontFamily
+      },
+      hero: {
+        ...baseTemplate.hero,
+        title: websiteName
+      },
+      navigation: {
+        ...baseTemplate.navigation,
+        logoText: websiteName
+      },
+      sections: updatedSections,
+      footer: {
+        ...baseTemplate.footer,
+        text: `© 2026 ${websiteName}. Centralized Nexus Platform.`
+      },
+      seo: {
+        ...baseTemplate.seo,
+        metaTitle: `${websiteName} - Managed via Nexus Command Center`,
+        metaDescription: `Discover ${websiteName}, dynamically generated in Jabalpur SmartCity.`
+      },
+      dashboardModules: dashboardModulesSelection || baseTemplate.dashboardModules || [],
+      fonts: fonts || 'Space Grotesk'
+    };
+
+    // Save dynamic config
+    const created = await WebsiteConfig.findOneAndUpdate(
+      { businessType: newSlug },
+      newConfig,
+      { upsert: true, new: true }
+    );
+
+    // Swap active state
+    const updated = await WebsiteConfig.setActiveConfig(newSlug);
+
+    const msg = `🚀 New dynamic website "${websiteName}" (${category.toUpperCase()}) successfully deployed via Nexus SaaS!`;
+    await Notification.create({ message: msg });
+
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('config-updated', updated);
+      io.emit('new-notification', { message: msg, timestamp: new Date() });
+    }
+
+    return res.json({ success: true, config: updated, message: msg });
+  } catch (error) {
+    console.error('Error creating dynamic website:', error);
+    return res.status(500).json({ success: false, message: 'Failed to deploy SaaS website.' });
+  }
+});
+
+// 3. Switch active business website type (Admin)
+router.post('/switch', verifyAdmin, async (req, res) => {
+  const { businessType } = req.body;
+  if (!businessType) {
+    return res.status(400).json({ success: false, message: 'Missing businessType.' });
+  }
+
+  try {
+    const configExists = await WebsiteConfig.findOne({ businessType });
+    if (!configExists && !defaultTemplates[businessType]) {
+      return res.status(400).json({ success: false, message: 'Invalid or unsupported business website type.' });
+    }
+
     const updated = await WebsiteConfig.setActiveConfig(businessType);
     
     // Create a real-time notification
-    const msg = `Website switched to "${businessType.toUpperCase()}" template. Theme engine updated!`;
+    const siteName = configExists ? configExists.websiteName : businessType.toUpperCase();
+    const msg = `Website switched to "${siteName}" template. Theme engine updated!`;
     await Notification.create({ message: msg });
 
     // Emit live event via socket.io (server.js will inject the socket server into req.app)

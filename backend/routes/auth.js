@@ -47,9 +47,9 @@ export const verifyToken = async (req, res, next) => {
 // Simple in-memory cache for simulated OTPs
 const otpCache = new Map();
 
-// User Registration Route (Students)
+// User Registration Route (Students & Custom Roles)
 router.post('/register', async (req, res) => {
-  const { email, password, role, name, phone, otp } = req.body;
+  const { email, password, role, name, phone, otp, websiteId } = req.body;
   if (!email || !password) {
     return res.status(400).json({ success: false, message: 'Please provide email and password.' });
   }
@@ -75,12 +75,13 @@ router.post('/register', async (req, res) => {
       email: email.toLowerCase(),
       password: hashedPassword,
       role: userRole,
-      name,
-      phone
+      name: name || '',
+      phone: phone || '',
+      websiteId: websiteId || ''
     });
 
     const token = jwt.sign(
-      { id: newUser._id, email: newUser.email, role: newUser.role },
+      { id: newUser._id, email: newUser.email, role: newUser.role, websiteId: newUser.websiteId || '' },
       JWT_SECRET,
       { expiresIn: '24h' }
     );
@@ -99,7 +100,8 @@ router.post('/register', async (req, res) => {
         email: newUser.email,
         role: newUser.role,
         name: newUser.name,
-        phone: newUser.phone
+        phone: newUser.phone,
+        websiteId: newUser.websiteId || ''
       }
     });
   } catch (error) {
@@ -183,7 +185,7 @@ router.post('/reset-password', async (req, res) => {
   }
 });
 
-// Login Route (Admin & Students)
+// Login Route (Admin, Students & Custom SaaS Roles)
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -202,7 +204,7 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role },
+      { id: user._id, email: user.email, role: user.role, websiteId: user.websiteId || '' },
       JWT_SECRET,
       { expiresIn: '24h' }
     );
@@ -215,7 +217,8 @@ router.post('/login', async (req, res) => {
         email: user.email,
         role: user.role,
         name: user.name || '',
-        phone: user.phone || ''
+        phone: user.phone || '',
+        websiteId: user.websiteId || ''
       },
       admin: user.role === 'admin' ? {
         email: user.email,
@@ -245,9 +248,29 @@ router.get('/user/me', verifyToken, async (req, res) => {
     success: true,
     user: {
       email: req.user.email,
-      role: req.user.role
+      role: req.user.role,
+      websiteId: req.user.websiteId || ''
     }
   });
+});
+
+// Get all registered users (Admin only)
+router.get('/users', verifyAdmin, async (req, res) => {
+  try {
+    const users = await User.find({});
+    const safeUsers = users.map(u => ({
+      _id: u._id,
+      email: u.email,
+      role: u.role,
+      name: u.name || '',
+      phone: u.phone || '',
+      websiteId: u.websiteId || '',
+      createdAt: u.createdAt
+    }));
+    return res.json({ success: true, users: safeUsers });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: 'Failed to retrieve users.' });
+  }
 });
 
 export default router;

@@ -36,6 +36,22 @@ export default function Home() {
   const [authSuccess, setAuthSuccess] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
+  useEffect(() => {
+    if (authError) {
+      if (typeof window !== 'undefined' && window.showToast) {
+        window.showToast(authError, 'error');
+      }
+    }
+  }, [authError]);
+
+  useEffect(() => {
+    if (authSuccess) {
+      if (typeof window !== 'undefined' && window.showToast) {
+        window.showToast(authSuccess, 'success');
+      }
+    }
+  }, [authSuccess]);
+
   // Premium Payment Gateway Simulation states
   const [showPayModal, setShowPayModal] = useState(false);
   const [payPlanName, setPayPlanName] = useState('');
@@ -371,7 +387,8 @@ export default function Home() {
 
   // Live attack log updates for cybersecurity
   useEffect(() => {
-    if (config?.businessType !== 'cybersecurity') return;
+    const category = config?.category || (config?.businessType && config.businessType.includes('_') ? config.businessType.split('_')[0] : config?.businessType);
+    if (category !== 'cybersecurity') return;
     const interval = setInterval(() => {
       const mockIPs = ['103.11.23.4', '192.168.1.102', '45.82.91.82'];
       const mockPayloads = ['Mock Cross-site script tag parsed', 'Mock password brute-force attempt blocked', 'Mock memory overflow filter active'];
@@ -392,7 +409,8 @@ export default function Home() {
 
   // Live NexaTech statistics simulator
   useEffect(() => {
-    if (config?.businessType !== 'startup') return;
+    const category = config?.category || (config?.businessType && config.businessType.includes('_') ? config.businessType.split('_')[0] : config?.businessType);
+    if (category !== 'startup') return;
     const interval = setInterval(() => {
       setCpuUsage(prev => {
         const nextVal = prev + (Math.random() - 0.5) * 10;
@@ -493,7 +511,8 @@ export default function Home() {
 
   if (!config) return null;
 
-  const { theme, hero, navigation, sections, footer, businessType } = config;
+  const { theme, hero, navigation, sections, footer } = config;
+  const businessType = config.category || (config.businessType && config.businessType.includes('_') ? config.businessType.split('_')[0] : config.businessType) || 'coaching';
 
   return (
     <div className={`min-h-screen flex flex-col transition-all duration-1000 relative overflow-hidden ${businessType === 'coaching' ? 'matte-gold-theme' : ''} ${siteLightMode ? 'light-site' : ''}`} style={{ backgroundColor: businessType === 'coaching' ? undefined : (siteLightMode ? '#fdfbf7' : theme.background) }}>

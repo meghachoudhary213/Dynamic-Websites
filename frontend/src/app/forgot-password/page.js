@@ -23,6 +23,22 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  useEffect(() => {
+    if (error) {
+      if (typeof window !== 'undefined' && window.showToast) {
+        window.showToast(error, 'error');
+      }
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (success) {
+      if (typeof window !== 'undefined' && window.showToast) {
+        window.showToast(success, 'success');
+      }
+    }
+  }, [success]);
+
   // OTP states
   const [otpSent, setOtpSent] = useState(false);
   const [otpValue, setOtpValue] = useState('');

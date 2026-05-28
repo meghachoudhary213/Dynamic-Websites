@@ -13,6 +13,23 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  useEffect(() => {
+    if (error) {
+      if (typeof window !== 'undefined' && window.showToast) {
+        window.showToast(error, 'error');
+      }
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (success) {
+      if (typeof window !== 'undefined' && window.showToast) {
+        window.showToast(success, 'success');
+      }
+    }
+  }, [success]);
+
+
   const playClickSound = () => {
     try {
       const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav');

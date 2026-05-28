@@ -6,7 +6,7 @@ import {
   Tablet, LogOut, Lock, RefreshCw, Sliders, Eye, Palette, 
   Bot, TrendingUp, Sparkles, Plus, Trash, CreditCard, 
   Volume2, Check, AlertCircle, Play, ShieldAlert, FileText, 
-  ChevronRight, Sun, Moon
+  ChevronRight, Sun, Moon, Users
 } from 'lucide-react';
 import { io } from 'socket.io-client';
 
@@ -15,6 +15,14 @@ export default function AdminDashboard() {
   const [email, setEmail] = useState('admin@jabalpur.gov');
   const [password, setPassword] = useState('jabalpur2026');
   const [authError, setAuthError] = useState('');
+
+  useEffect(() => {
+    if (authError) {
+      if (typeof window !== 'undefined' && window.showToast) {
+        window.showToast(authError, 'error');
+      }
+    }
+  }, [authError]);
   
   // System State
   const [activeConfig, setActiveConfig] = useState(null);
@@ -22,6 +30,23 @@ export default function AdminDashboard() {
   const [notifications, setNotifications] = useState([]);
   const [serverStatus, setServerStatus] = useState({ status: 'OFFLINE', mode: 'Checking...' });
   const [loading, setLoading] = useState(true);
+
+  // SaaS Creator Stepper states
+  const [saasName, setSaasName] = useState('Nexus Academy');
+  const [saasCategory, setSaasCategory] = useState('coaching');
+  const [saasPrimary, setSaasPrimary] = useState('#D4AF37');
+  const [saasAccent, setSaasAccent] = useState('#fbbf24');
+  const [saasFont, setSaasFont] = useState('Space Grotesk');
+  const [saasSections, setSaasSections] = useState(['hero', 'features', 'stats', 'about']);
+  const [saasModules, setSaasModules] = useState(['students', 'attendance', 'tests', 'notes', 'fees', 'analytics']);
+
+  // User Desk States
+  const [usersList, setUsersList] = useState([]);
+  const [newUserEmail, setNewUserEmail] = useState('');
+  const [newUserPassword, setNewUserPassword] = useState('');
+  const [newUserRole, setNewUserRole] = useState('student');
+  const [newUserName, setNewUserName] = useState('');
+  const [newUserPhone, setNewUserPhone] = useState('');
 
   // Theme Toggler state
   const [lightMode, setLightMode] = useState(true);
@@ -76,6 +101,12 @@ export default function AdminDashboard() {
       socket.disconnect();
     };
   }, [token]);
+
+  useEffect(() => {
+    if (token && activeTab === 'user_desk') {
+      loadUsersList();
+    }
+  }, [token, activeTab]);
 
   const playSoundChime = () => {
     try {
@@ -178,6 +209,9 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       console.error(err);
+      if (typeof window !== 'undefined' && window.showToast) {
+        window.showToast('Failed to connect to backend configuration database.', 'error');
+      }
     }
   };
 
@@ -192,6 +226,9 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       console.error(err);
+      if (typeof window !== 'undefined' && window.showToast) {
+        window.showToast('Failed to sync system notifications.', 'error');
+      }
     }
   };
 
@@ -217,6 +254,88 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       alert('Error switching templates.');
+    }
+  };
+
+  const handleCreateSaaSWebsite = async (e) => {
+    e.preventDefault();
+    playClickSound();
+    try {
+      const res = await fetch('http://localhost:5000/api/website/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          websiteName: saasName,
+          category: saasCategory,
+          primaryColor: saasPrimary,
+          accentColor: saasAccent,
+          fonts: saasFont,
+          sectionsSelection: saasSections,
+          dashboardModulesSelection: saasModules
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(`🎉 Dynamic website "${saasName}" successfully deployed! Active engine has switched!`);
+        setActiveConfig(data.config);
+        setFormConfig(JSON.parse(JSON.stringify(data.config)));
+        loadAllConfigurations();
+        reloadPreviewIframe();
+      } else {
+        alert(data.message || 'Error deploying site.');
+      }
+    } catch (err) {
+      alert('Error deploying dynamic website.');
+    }
+  };
+
+  const handleCreateSaaSUser = async (e) => {
+    e.preventDefault();
+    playClickSound();
+    try {
+      const res = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: newUserEmail,
+          password: newUserPassword,
+          role: newUserRole,
+          name: newUserName,
+          phone: newUserPhone,
+          otp: '111111', // bypass verification for admin panel
+          websiteId: activeConfig.businessType
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(`👤 User ${newUserEmail} successfully created for ${activeConfig.websiteName}!`);
+        setNewUserEmail('');
+        setNewUserPassword('');
+        setNewUserName('');
+        setNewUserPhone('');
+        loadUsersList();
+      } else {
+        alert(data.message || 'Failed to create user.');
+      }
+    } catch (err) {
+      alert('Failed to register user.');
+    }
+  };
+
+  const loadUsersList = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/api/auth/users', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setUsersList(data.users);
+      }
+    } catch (err) {
+      console.error('Error fetching users:', err);
     }
   };
 
@@ -524,8 +643,10 @@ export default function AdminDashboard() {
           <div className="flex border-b border-slate-500/10 bg-slate-900/10 p-2 gap-1 overflow-x-auto whitespace-nowrap scrollbar-none shrink-0">
             {[
               { id: 'swapper', label: 'Engine Swapper', icon: RefreshCw },
-              { id: 'sections', label: 'Section Editor', icon: Layers },
+              { id: 'saas_creator', label: 'SaaS Builder', icon: Plus },
+              { id: 'sections', label: 'CMS Editor', icon: Layers },
               { id: 'theme', label: 'Theme Studio', icon: Palette },
+              { id: 'user_desk', label: 'User Desk', icon: Users },
               { id: 'ai_oracle', label: 'AI Oracle Console', icon: Bot },
               { id: 'payment', label: 'Razorpay Sim', icon: CreditCard }
             ].map((tab) => {
@@ -588,17 +709,212 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* TAB 2: VISUAL SECTION EDITOR */}
+            {/* TAB 1B: SAAS CREATOR WIZARD */}
+            {activeTab === 'saas_creator' && (
+              <div className="space-y-4 animate-in fade-in duration-300">
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sm flex items-center gap-1">
+                    <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
+                    Deploy New Dynamic Website
+                  </h3>
+                  <p className="text-[10px] opacity-80 font-medium">Configure dynamic properties for your SaaS instance. The system provisions layouts and colors instantly.</p>
+                </div>
+
+                <form onSubmit={handleCreateSaaSWebsite} className="space-y-4 pt-2">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Website Name</label>
+                    <input 
+                      type="text" 
+                      value={saasName} 
+                      onChange={(e) => setSaasName(e.target.value)} 
+                      placeholder="e.g. NextRank Academy" 
+                      className="w-full bg-slate-900/5 border border-slate-500/20 text-xs px-3 py-2 rounded-lg"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Industry Category</label>
+                    <select
+                      value={saasCategory}
+                      onChange={(e) => setSaasCategory(e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-500/20 text-xs px-3 py-2.5 rounded-lg"
+                    >
+                      <option value="coaching">Education / Coaching (NextRank)</option>
+                      <option value="ecommerce">E-Commerce (Libaas Couture)</option>
+                      <option value="real_estate">Real Estate (AashiyanaX)</option>
+                      <option value="hospital">Hospital (AarogyaCare)</option>
+                      <option value="cafe">Cafe / Restaurant (Cafe Aura)</option>
+                      <option value="startup">Future Tech Startup (NexaTech)</option>
+                      <option value="gym">Gym / Fitness (FlexArena)</option>
+                      <option value="tourism">Tourism Planners (ExploreAura)</option>
+                      <option value="cybersecurity">Cybersecurity (ThreatZero)</option>
+                      <option value="career">Career Job Portal (JobSphere)</option>
+                    </select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Primary Color</label>
+                      <div className="flex gap-2">
+                        <input 
+                          type="color" 
+                          value={saasPrimary} 
+                          onChange={(e) => setSaasPrimary(e.target.value)} 
+                          className="w-10 h-8 rounded border border-slate-500/20 bg-transparent cursor-pointer shrink-0" 
+                        />
+                        <input 
+                          type="text" 
+                          value={saasPrimary} 
+                          onChange={(e) => setSaasPrimary(e.target.value)} 
+                          className="w-full bg-slate-900/5 border border-slate-500/20 text-[10px] px-2 rounded-lg" 
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Accent Color</label>
+                      <div className="flex gap-2">
+                        <input 
+                          type="color" 
+                          value={saasAccent} 
+                          onChange={(e) => setSaasAccent(e.target.value)} 
+                          className="w-10 h-8 rounded border border-slate-500/20 bg-transparent cursor-pointer shrink-0" 
+                        />
+                        <input 
+                          type="text" 
+                          value={saasAccent} 
+                          onChange={(e) => setSaasAccent(e.target.value)} 
+                          className="w-full bg-slate-900/5 border border-slate-500/20 text-[10px] px-2 rounded-lg" 
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Font Family</label>
+                    <select
+                      value={saasFont}
+                      onChange={(e) => setSaasFont(e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-500/20 text-xs px-3 py-2.5 rounded-lg"
+                    >
+                      <option value="Space Grotesk">Space Grotesk (Futuristic)</option>
+                      <option value="Outfit">Outfit (Modern Tech)</option>
+                      <option value="Inter">Inter (Clean Clean)</option>
+                      <option value="Poppins">Poppins (Friendly)</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-2 border-t border-slate-500/10 pt-3">
+                    <label className="text-[9px] text-indigo-400 font-bold uppercase tracking-wider block">Dynamic Sections Selection</label>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      {[
+                        { id: 'hero', label: 'Hero Banner' },
+                        { id: 'features', label: 'Features Specs' },
+                        { id: 'stats', label: 'Stats Grid' },
+                        { id: 'about', label: 'Vision / Story' }
+                      ].map(sec => (
+                        <label key={sec.id} className="flex items-center gap-1.5 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={saasSections.includes(sec.id)}
+                            onChange={(e) => {
+                              if (e.target.checked) setSaasSections([...saasSections, sec.id]);
+                              else setSaasSections(saasSections.filter(s => s !== sec.id));
+                            }}
+                            className="accent-indigo-500"
+                          />
+                          {sec.label}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 border-t border-slate-500/10 pt-3">
+                    <label className="text-[9px] text-indigo-400 font-bold uppercase tracking-wider block">Dashboard Modules (Role Adaptive)</label>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      {[
+                        { id: 'students', label: 'Student Directory' },
+                        { id: 'attendance', label: 'RFID Gate Log' },
+                        { id: 'tests', label: 'MCQ Test Builder' },
+                        { id: 'notes', label: 'Notes Library' },
+                        { id: 'fees', label: 'Fees Manager' },
+                        { id: 'analytics', label: 'Rank Analytics' },
+                        { id: 'products', label: 'Product Catalog' },
+                        { id: 'orders', label: 'Orders List' },
+                        { id: 'appointments', label: 'Appointments Book' },
+                        { id: 'doctors', label: 'Doctor Roster' }
+                      ].map(mod => (
+                        <label key={mod.id} className="flex items-center gap-1.5 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={saasModules.includes(mod.id)}
+                            onChange={(e) => {
+                              if (e.target.checked) setSaasModules([...saasModules, mod.id]);
+                              else setSaasModules(saasModules.filter(m => m !== mod.id));
+                            }}
+                            className="accent-indigo-500"
+                          />
+                          {mod.label}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-3 rounded-xl shadow-lg active:scale-95 transition-transform uppercase tracking-wider"
+                  >
+                    🚀 Deploy Dynamic SaaS Site
+                  </button>
+                </form>
+              </div>
+            )}
+
+            {/* TAB 2: VISUAL SECTION EDITOR (CMS CONTENT MANAGER) */}
             {activeTab === 'sections' && (
               <div className="space-y-4 animate-in fade-in duration-300">
                 <div className="flex justify-between items-center border-b border-slate-500/10 pb-2">
-                  <h3 className="font-bold text-sm">Dynamic Page Sections</h3>
+                  <h3 className="font-bold text-sm">Dynamic Page & CMS Editor</h3>
                   <button 
                     onClick={handleSaveConfig}
                     className="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow transition-transform active:scale-95"
                   >
                     Save Changes
                   </button>
+                </div>
+
+                {/* Hero section CMS fields */}
+                <div className="glass-card rounded-2xl p-4 space-y-3 bg-indigo-500/5 border-indigo-500/10 border">
+                  <span className="text-[10px] font-bold text-indigo-400 font-mono uppercase">
+                    CMS: HERO BANNER DETAILS
+                  </span>
+                  <div className="space-y-2">
+                    <div>
+                      <label className="text-[9px] font-bold text-slate-500">Hero Main Title</label>
+                      <input 
+                        type="text" 
+                        value={formConfig.hero.title} 
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          updated.hero.title = e.target.value;
+                          setFormConfig(updated);
+                        }}
+                        className="w-full bg-slate-900/5 border border-slate-500/20 text-xs px-3 py-2 rounded-lg mt-0.5" 
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[9px] font-bold text-slate-500">Hero Description</label>
+                      <textarea 
+                        value={formConfig.hero.subtitle} 
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          updated.hero.subtitle = e.target.value;
+                          setFormConfig(updated);
+                        }}
+                        className="w-full bg-slate-900/5 border border-slate-500/20 text-xs px-3 py-2 rounded-lg h-16 mt-0.5" 
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="space-y-4">
@@ -620,20 +936,41 @@ export default function AdminDashboard() {
                       </div>
 
                       <div className="space-y-2">
-                        <input 
-                          type="text" 
-                          value={sec.title} 
-                          onChange={(e) => handleUpdateConfigField(idx, 'title', e.target.value)}
-                          placeholder="Section Title" 
-                          className="w-full bg-slate-900/5 border border-slate-500/20 text-xs px-3 py-2 rounded-lg" 
-                        />
-                        <input 
-                          type="text" 
-                          value={sec.subtitle} 
-                          onChange={(e) => handleUpdateConfigField(idx, 'subtitle', e.target.value)}
-                          placeholder="Section Subtitle" 
-                          className="w-full bg-slate-900/5 border border-slate-500/20 text-xs px-3 py-2 rounded-lg" 
-                        />
+                        <div>
+                          <label className="text-[9px] font-bold text-slate-500">Section Title</label>
+                          <input 
+                            type="text" 
+                            value={sec.title} 
+                            onChange={(e) => handleUpdateConfigField(idx, 'title', e.target.value)}
+                            placeholder="Section Title" 
+                            className="w-full bg-slate-900/5 border border-slate-500/20 text-xs px-3 py-2 rounded-lg" 
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[9px] font-bold text-slate-500">Section Subtitle</label>
+                          <input 
+                            type="text" 
+                            value={sec.subtitle} 
+                            onChange={(e) => handleUpdateConfigField(idx, 'subtitle', e.target.value)}
+                            placeholder="Section Subtitle" 
+                            className="w-full bg-slate-900/5 border border-slate-500/20 text-xs px-3 py-2 rounded-lg" 
+                          />
+                        </div>
+                        {sec.type === 'about' && sec.content && (
+                          <div>
+                            <label className="text-[9px] font-bold text-indigo-400">About Content Paragraph</label>
+                            <textarea 
+                              value={sec.content.text || ''} 
+                              onChange={(e) => {
+                                const updated = { ...formConfig };
+                                updated.sections[idx].content.text = e.target.value;
+                                setFormConfig(updated);
+                              }}
+                              placeholder="About Text Paragraph" 
+                              className="w-full bg-slate-900/5 border border-slate-500/20 text-xs px-3 py-2 rounded-lg h-20 mt-0.5" 
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -645,6 +982,93 @@ export default function AdminDashboard() {
                 >
                   Reset Current Template to Defaults
                 </button>
+              </div>
+            )}
+
+            {/* TAB 3B: USER DESK PANEL */}
+            {activeTab === 'user_desk' && (
+              <div className="space-y-4 animate-in fade-in duration-300">
+                <div className="space-y-1 pb-2 border-b border-slate-500/10">
+                  <h3 className="font-bold text-sm flex items-center gap-1.5">
+                    <Users className="w-5 h-5 text-indigo-500 animate-bounce" />
+                    Dynamic User Directories
+                  </h3>
+                  <p className="text-[10px] opacity-80">Administrate registered users across all dynamic websites, select roles, and link them to tenant websites.</p>
+                </div>
+
+                {/* Provision User Form */}
+                <form onSubmit={handleCreateSaaSUser} className="space-y-3 p-4 bg-slate-500/5 rounded-2xl border border-slate-500/10">
+                  <span className="text-[8px] text-indigo-400 font-bold tracking-widest block uppercase">Provision SaaS User</span>
+                  <div className="grid grid-cols-2 gap-2">
+                    <input 
+                      type="text" 
+                      placeholder="Name" 
+                      value={newUserName} 
+                      onChange={(e) => setNewUserName(e.target.value)} 
+                      className="bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg text-white placeholder-slate-700"
+                      required
+                    />
+                    <input 
+                      type="tel" 
+                      placeholder="Phone" 
+                      value={newUserPhone} 
+                      onChange={(e) => setNewUserPhone(e.target.value)} 
+                      className="bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg text-white placeholder-slate-700"
+                      required
+                    />
+                  </div>
+                  <input 
+                    type="email" 
+                    placeholder="Email Address" 
+                    value={newUserEmail} 
+                    onChange={(e) => setNewUserEmail(e.target.value)} 
+                    className="w-full bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg text-white placeholder-slate-700"
+                    required
+                  />
+                  <div className="grid grid-cols-2 gap-2 items-center">
+                    <input 
+                      type="password" 
+                      placeholder="Password" 
+                      value={newUserPassword} 
+                      onChange={(e) => setNewUserPassword(e.target.value)} 
+                      className="bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg text-white placeholder-slate-700"
+                      required
+                    />
+                    <select
+                      value={newUserRole}
+                      onChange={(e) => setNewUserRole(e.target.value)}
+                      className="bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg text-white font-semibold"
+                    >
+                      <option value="student">Student (Education)</option>
+                      <option value="customer">Customer (E-Commerce)</option>
+                      <option value="teacher">Teacher (Education)</option>
+                      <option value="admin">System Admin</option>
+                    </select>
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 rounded-xl active:scale-95 transition-transform"
+                  >
+                    + Provision User Node
+                  </button>
+                </form>
+
+                {/* User Directory list */}
+                <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
+                  <span className="text-[8px] text-slate-400 font-bold uppercase tracking-widest block font-mono">Active Directory</span>
+                  {usersList.map((user) => (
+                    <div key={user._id} className="p-3 bg-slate-950 border border-white/5 rounded-xl flex items-center justify-between text-[11px] hover:bg-slate-900/50 transition-colors">
+                      <div>
+                        <p className="font-bold text-white leading-normal">{user.name || 'Anonymous User'} <span className="bg-indigo-500/15 text-indigo-400 font-mono text-[9px] px-2 py-0.5 rounded-full uppercase ml-1.5 font-black">{user.role}</span></p>
+                        <p className="text-[10px] text-slate-400 mt-0.5">{user.email} • {user.phone || 'No Mobile'}</p>
+                        <p className="text-[9px] text-slate-500 font-mono mt-0.5">Linked Tenant: <span className="text-amber-500 font-bold">{user.websiteId ? user.websiteId.split('_')[0].toUpperCase() : 'CENTRAL SYSTEM'}</span></p>
+                      </div>
+                    </div>
+                  ))}
+                  {usersList.length === 0 && (
+                    <p className="italic text-slate-500 text-xs text-center py-4">No users logged in dynamic database.</p>
+                  )}
+                </div>
               </div>
             )}
 
