@@ -10,8 +10,8 @@ router.get('/active', async (req, res) => {
   try {
     const config = await WebsiteConfig.findOne({ isActive: true });
     if (!config) {
-      // Fallback: activate coaching if nothing active
-      const restored = await WebsiteConfig.setActiveConfig('coaching');
+      // Fallback: activate smartengine if nothing active
+      const restored = await WebsiteConfig.setActiveConfig('smartengine');
       return res.json({ success: true, config: restored });
     }
     return res.json({ success: true, config });

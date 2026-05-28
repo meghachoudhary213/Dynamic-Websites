@@ -35,8 +35,8 @@ export default function LoginPage() {
     try {
       const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav');
       audio.volume = 0.12;
-      audio.play().catch(() => {});
-    } catch (e) {}
+      audio.play().catch(() => { });
+    } catch (e) { }
   };
 
   const handleLoginSubmit = async (e) => {
@@ -64,7 +64,7 @@ export default function LoginPage() {
       if (data.success) {
         setSuccess('🎉 Welcome back to NextRank! Authorization granted.');
         localStorage.setItem('userToken', data.token);
-        
+
         // Redirect to landing page with auto scroll to dashboard
         setTimeout(() => {
           window.location.href = '/#dynamic_modules';
@@ -85,7 +85,7 @@ export default function LoginPage() {
         <div className="glow-spot-gold top-[-10%] left-[-10%] w-[500px] h-[500px] animate-blob-slow" />
         <div className="glow-spot-gold bottom-[-10%] right-[-10%] w-[500px] h-[500px] animate-blob-medium" />
         <div className="glow-spot-gold top-[40%] left-[30%] w-[600px] h-[600px] animate-blob-slow" />
-        
+
         {/* Float 3D Bubbles */}
         <div className="glass-bubble-gold top-[10%] left-[8%] w-32 h-32 animate-float-slow" />
         <div className="glass-bubble-gold top-[55%] right-[12%] w-24 h-24 animate-float-medium" />

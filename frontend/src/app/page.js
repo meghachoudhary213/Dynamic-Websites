@@ -14,6 +14,90 @@ import MarbleRocksCanvas from '../components/MarbleRocksCanvas';
 import DynamicChatbot from '../components/DynamicChatbot';
 import { API_URL } from '../config';
 
+// Premium HTML5 Hologram Visualizer for SmartEngine
+const CanvasHologram = () => {
+  const canvasRef = useRef(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+    let width = canvas.width = 380;
+    let height = canvas.height = 400;
+    
+    const particles = [];
+    const particleCount = 45;
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: (Math.random() - 0.5) * 0.8,
+        radius: Math.random() * 2 + 1,
+        color: i % 2 === 0 ? '#6366f1' : '#00f5ff'
+      });
+    }
+    
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+      
+      // Draw grid circle backgrounds
+      ctx.strokeStyle = 'rgba(99, 102, 241, 0.08)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(width/2, height/2, 120, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(width/2, height/2, 60, 0, Math.PI * 2);
+      ctx.stroke();
+      
+      // Draw orbital scanner line
+      const scanY = (Math.sin(Date.now() / 1500) + 1) * (height / 2) + 50;
+      ctx.strokeStyle = 'rgba(0, 245, 255, 0.25)';
+      ctx.shadowColor = '#00f5ff';
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.moveTo(width/2 - 140, scanY);
+      ctx.lineTo(width/2 + 140, scanY);
+      ctx.stroke();
+      ctx.shadowBlur = 0; // Reset
+      
+      // Draw and update particles
+      particles.forEach((p, idx) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > width) p.vx *= -1;
+        if (p.y < 0 || p.y > height) p.vy *= -1;
+        
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Draw connecting vector lines
+        for (let j = idx + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+          if (dist < 80) {
+            ctx.strokeStyle = `rgba(99, 102, 241, ${0.15 - (dist / 80) * 0.15})`;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
+        }
+      });
+      
+      animationFrameId = requestAnimationFrame(render);
+    };
+    
+    render();
+    return () => cancelAnimationFrame(animationFrameId);
+  }, []);
+  
+  return <canvas ref={canvasRef} className="w-full h-full block bg-[#030014]/60" />;
+};
+
 export default function Home() {
   const [config, setConfig] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -198,6 +282,79 @@ export default function Home() {
   const [mockInterviewQIndex, setMockInterviewQIndex] = useState(-1);
   const [interviewAnswer, setInterviewAnswer] = useState('');
   const [interviewFeedback, setInterviewFeedback] = useState('');
+
+  // 11. SmartEngine (AI SaaS Platform) States
+  const [saasTab, setSaasTab] = useState('analytics'); // analytics | workflows | recommendations | files | team | chat
+  const [saasLogs, setSaasLogs] = useState([
+    '⚡ Established system pipeline index coordinates.',
+    '🔮 Edge models successfully calibrated with Tilwara server node.',
+    '🛡️ Secure salts encryption protocols active.'
+  ]);
+  const [saasFiles, setSaasFiles] = useState([
+    { name: 'Model_Weights_V4.bin', size: '2.4 GB', type: 'Weights' },
+    { name: 'Token_Embeddings_Schema.json', size: '124 KB', type: 'JSON' }
+  ]);
+  const [saasTeam, setSaasTeam] = useState([
+    { name: 'Dr. Priya Nair', role: 'Chief Scientist', email: 'priya@smartengine.ai', status: 'ACTIVE' },
+    { name: 'Er. Amit Agrawal', role: 'Security Architect', email: 'amit@smartengine.ai', status: 'ON_STANDBY' }
+  ]);
+  const [saasNewMemberEmail, setSaasNewMemberEmail] = useState('');
+  const [saasNewMemberRole, setSaasNewMemberRole] = useState('Operator');
+  const [promptInput, setPromptInput] = useState('');
+  const [promptLogs, setPromptLogs] = useState([]);
+  const [latencyMeter, setLatencyMeter] = useState(18);
+  const [tokensTicked, setTokensTicked] = useState(240500);
+  const [searchPaletteOpen, setSearchPaletteOpen] = useState(false);
+  const [paletteQuery, setPaletteQuery] = useState('');
+  const [voiceTelemetryActive, setVoiceTelemetryActive] = useState(false);
+  const [voiceWaves, setVoiceWaves] = useState([12, 45, 82, 34, 18, 90, 64]);
+  const [draggedWidgets, setDraggedWidgets] = useState([
+    { id: 'w_latency', title: 'Gateway Latency', value: '18ms', desc: 'Average edge api response time.' },
+    { id: 'w_tokens', title: 'LLM Active Tokens', value: '240.5K', desc: 'Realtime token consumption rate.' },
+    { id: 'w_load', title: 'Container Load', value: '42%', desc: 'Tilwara-Bhedaghat edge processor.' }
+  ]);
+
+  // Typing Effect for SmartEngine Hero
+  const [typingText, setTypingText] = useState('LLM Agent Orchestrator');
+  useEffect(() => {
+    const typingPhrases = [
+      'LLM Agent Orchestrator',
+      'Autonomous Microservices',
+      'Real-time Vector Pipelines',
+      'Self-Healing Container Nodes'
+    ];
+    let phraseIdx = 0;
+    let charIdx = 0;
+    let isDeleting = false;
+    let timeoutId;
+    
+    const tick = () => {
+      const currentPhrase = typingPhrases[phraseIdx];
+      if (!isDeleting) {
+        setTypingText(currentPhrase.substring(0, charIdx + 1));
+        charIdx++;
+        if (charIdx === currentPhrase.length) {
+          isDeleting = true;
+          timeoutId = setTimeout(tick, 2000); // Hold phrase
+        } else {
+          timeoutId = setTimeout(tick, 80); // Speed of typing
+        }
+      } else {
+        setTypingText(currentPhrase.substring(0, charIdx - 1));
+        charIdx--;
+        if (charIdx === 0) {
+          isDeleting = false;
+          phraseIdx = (phraseIdx + 1) % typingPhrases.length;
+          timeoutId = setTimeout(tick, 500); // Pause before next phrase
+        } else {
+          timeoutId = setTimeout(tick, 40); // Speed of deleting
+        }
+      }
+    };
+    
+    tick();
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   const playClickSound = () => {
     try {
@@ -423,6 +580,23 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [config]);
 
+  // Live SmartEngine telemetry simulator
+  useEffect(() => {
+    const category = config?.category || (config?.businessType && config.businessType.includes('_') ? config.businessType.split('_')[0] : config?.businessType);
+    if (category !== 'smartengine') return;
+    const interval = setInterval(() => {
+      setLatencyMeter(prev => {
+        const nextVal = prev + (Math.random() - 0.5) * 4;
+        return Math.min(Math.max(Math.round(nextVal), 12), 35);
+      });
+      setTokensTicked(prev => prev + Math.floor(Math.random() * 80) + 10);
+      setVoiceWaves(prev => prev.map(() => Math.floor(Math.random() * 85) + 10));
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [config]);
+
+
   const triggerMockSubmit = (e, message) => {
     e.preventDefault();
     setSubmitting(true);
@@ -517,7 +691,21 @@ export default function Home() {
   const businessType = config.category || (config.businessType && config.businessType.includes('_') ? config.businessType.split('_')[0] : config.businessType) || 'coaching';
 
   return (
-    <div className={`min-h-screen flex flex-col transition-all duration-1000 relative overflow-hidden ${businessType === 'coaching' ? 'matte-gold-theme' : ''} ${siteLightMode ? 'light-site' : ''}`} style={{ backgroundColor: businessType === 'coaching' ? undefined : (siteLightMode ? '#fdfbf7' : theme.background) }}>
+    <div className={`min-h-screen flex flex-col transition-all duration-1000 relative overflow-hidden ${businessType === 'coaching' ? 'matte-gold-theme' : ''} ${businessType === 'smartengine' ? 'smartengine-theme' : ''} ${siteLightMode ? 'light-site' : ''}`} style={{ backgroundColor: businessType === 'coaching' ? undefined : (siteLightMode ? '#fdfbf7' : theme.background) }}>
+      {/* Dynamic Animated Glass orbs & neon grid mesh for SmartEngine Platform */}
+      {businessType === 'smartengine' && (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10 matrix-mesh">
+          <div style={{ background: `radial-gradient(circle, ${theme.primary}2a, transparent 75%)` }} className="moving-orb top-[-10%] left-[-10%] w-[700px] h-[700px]" />
+          <div style={{ background: `radial-gradient(circle, ${theme.secondary}22, transparent 75%)` }} className="moving-orb top-[30%] right-[-10%] w-[600px] h-[600px]" />
+          <div style={{ background: `radial-gradient(circle, ${theme.primary}18, transparent 70%)` }} className="moving-orb top-[60%] left-[-15%] w-[800px] h-[800px]" />
+          <div style={{ background: `radial-gradient(circle, ${theme.secondary}24, transparent 70%)` }} className="moving-orb bottom-[-5%] right-[10%] w-[700px] h-[700px]" />
+
+          {/* Glowing orbs */}
+          <div className="glow-spot-indigo top-[10%] right-[20%] w-96 h-96" />
+          <div className="glow-spot-purple top-[45%] left-[5%] w-80 h-80" />
+        </div>
+      )}
+
       {/* Dynamic Animated Glass & Glow Bubbles for Matte Gold Theme */}
       {businessType === 'coaching' && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
@@ -607,11 +795,11 @@ export default function Home() {
             >
               {siteLightMode ? <Moon className="w-4 h-4 text-stone-700" /> : <Sun className="w-4 h-4 text-amber-400" />}
             </button>
-            {businessType === 'coaching' && (
+            {(businessType === 'coaching' || businessType === 'smartengine') && (
               currentUser ? (
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-mono text-[var(--accent)] font-bold hidden sm:inline-block">
-                    🎓 {currentUser.email.split('@')[0]}
+                    {businessType === 'smartengine' ? '⚡' : '🎓'} {currentUser.email.split('@')[0]}
                   </span>
                   <button
                     onClick={() => {
@@ -621,7 +809,11 @@ export default function Home() {
                         element.scrollIntoView({ behavior: 'smooth' });
                       }
                     }}
-                    className="text-[10px] border border-amber-500/30 bg-gradient-to-r from-amber-400 to-amber-500 text-black px-3.5 py-1.5 rounded-full font-black transition-all hover:scale-105 active:scale-95 shadow-md"
+                    className={`text-[10px] border border-amber-500/30 px-3.5 py-1.5 rounded-full font-black transition-all hover:scale-105 active:scale-95 shadow-md ${
+                      businessType === 'smartengine'
+                        ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white'
+                        : 'bg-gradient-to-r from-amber-400 to-amber-500 text-black'
+                    }`}
                   >
                     Dashboard Portal 🚀
                   </button>
@@ -631,6 +823,7 @@ export default function Home() {
                       localStorage.removeItem('userToken');
                       setCurrentUser(null);
                       setCoachingTab('student_portal');
+                      setSaasTab('analytics');
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
                     className="text-[10px] border border-rose-500/30 bg-rose-500/5 hover:bg-rose-500/20 text-rose-400 px-3 py-1.5 rounded-full font-bold transition-all"
@@ -651,7 +844,7 @@ export default function Home() {
                       setShowAuthModal(true);
                     }
                   }}
-                  className="text-[10px] border border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/20 text-white px-4 py-1.5 rounded-full font-bold transition-all active:scale-95 shadow-inner"
+                  className="text-[10px] border border-indigo-500/30 bg-indigo-500/5 hover:bg-indigo-500/20 text-white px-4 py-1.5 rounded-full font-bold transition-all active:scale-95 shadow-inner"
                 >
                   Login
                 </button>
@@ -696,9 +889,19 @@ export default function Home() {
             </span>
           </div>
 
-          <h1 className={`text-4xl md:text-5xl lg:text-7xl font-royal royal-heading tracking-wide leading-[1.12] text-[var(--text-custom)] text-glow ${businessType === 'coaching' ? 'text-center max-w-4xl font-bold not-italic' : 'font-normal italic'}`}>
-            {hero.title}
-          </h1>
+          {businessType === 'smartengine' ? (
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-sans font-extrabold tracking-tight leading-[1.05] text-white">
+              The Flagship Platform for <br />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400">
+                {typingText}
+              </span>
+              <span className="text-cyan-400 font-normal ml-1">|</span>
+            </h1>
+          ) : (
+            <h1 className={`text-4xl md:text-5xl lg:text-7xl font-royal royal-heading tracking-wide leading-[1.12] text-[var(--text-custom)] text-glow ${businessType === 'coaching' ? 'text-center max-w-4xl font-bold not-italic' : 'font-normal italic'}`}>
+              {hero.title}
+            </h1>
+          )}
 
           <p className={`text-slate-300 text-sm md:text-base leading-relaxed font-sans tracking-wide ${businessType === 'coaching' ? 'text-center max-w-2xl mx-auto' : 'max-w-xl'}`}>
             {hero.subtitle}
@@ -743,23 +946,41 @@ export default function Home() {
         <div className={`relative flex animate-in fade-in slide-in-from-right-5 duration-700 delay-200 ${businessType === 'coaching' ? 'lg:col-span-12 justify-center mx-auto mt-6' : 'lg:col-span-5 justify-center lg:justify-end'}`}>
           <div className="w-[320px] h-[340px] md:w-[380px] md:h-[400px] rounded-3xl overflow-hidden royal-frame relative group shadow-2xl">
             <div className="w-full h-full rounded-2xl overflow-hidden relative">
-              <img 
-                src={hero.bgImage} 
-                alt="Dynamic visual representation" 
-                className="w-full h-full object-cover opacity-85 group-hover:scale-110 transition-transform duration-700" 
-              />
+              {businessType === 'smartengine' ? (
+                <CanvasHologram />
+              ) : (
+                <img 
+                  src={hero.bgImage} 
+                  alt="Dynamic visual representation" 
+                  className="w-full h-full object-cover opacity-85 group-hover:scale-110 transition-transform duration-700" 
+                />
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-custom)] via-transparent to-transparent opacity-80" />
               
-              <div className="absolute bottom-6 left-6 right-6 glass-panel border border-amber-500/20 rounded-2xl p-4 animate-float">
-                <span className="text-[10px] text-amber-500 font-semibold uppercase tracking-wider block mb-1 font-sans">
-                  Jabalpur Smart Engine OS
+              <div className="absolute bottom-6 left-6 right-6 glass-panel border border-indigo-500/20 rounded-2xl p-4 animate-float">
+                <span className="text-[10px] text-indigo-400 font-semibold uppercase tracking-wider block mb-1 font-sans">
+                  {businessType === 'smartengine' ? 'Autonomous AI Core' : 'Jabalpur Smart Engine OS'}
                 </span>
                 <p className="text-white font-royal royal-heading font-medium text-xs leading-snug">
-                  Fully functional no-code dynamic layout swapper active. Switch themes instantly.
+                  {businessType === 'smartengine'
+                    ? 'Distributed multi-agent pipeline nodes compiled with 18ms latency targets.'
+                    : 'Fully functional no-code dynamic layout swapper active. Switch themes instantly.'}
                 </p>
               </div>
             </div>
           </div>
+
+          {/* Floating UI micro-cards around hologram for extra premium touches */}
+          {businessType === 'smartengine' && (
+            <>
+              <div className="absolute top-[10%] left-[-15%] glass-panel border border-indigo-500/30 rounded-xl p-3 shadow-2xl animate-float font-mono text-[9px] text-slate-300">
+                <span className="text-emerald-400 font-bold">✔ edge nodes:</span> active
+              </div>
+              <div className="absolute bottom-[20%] right-[-10%] glass-panel border border-indigo-500/30 rounded-xl p-3 shadow-2xl animate-float font-mono text-[9px] text-slate-300">
+                <span className="text-indigo-400 font-bold">latency:</span> {latencyMeter}ms
+              </div>
+            </>
+          )}
         </div>
       </section>
 
@@ -2751,6 +2972,506 @@ export default function Home() {
           </div>
         )}
 
+        {/* 11. SmartEngine (Futuristic AI SaaS Platform) Dashboard */}
+        {businessType === 'smartengine' && (
+          <div className="space-y-8 animate-in fade-in duration-1000 font-sans text-left">
+            {/* Command Palette Overlay Trigger */}
+            {searchPaletteOpen && (
+              <div className="fixed inset-0 z-50 flex items-start justify-center bg-slate-950/80 backdrop-blur-sm p-4 pt-[10vh] animate-in fade-in duration-200">
+                <div className="max-w-lg w-full bg-[#0a081a] border border-indigo-500/30 rounded-2xl shadow-2xl p-4 space-y-4">
+                  <div className="flex items-center gap-2 border-b border-indigo-500/20 pb-3">
+                    <Search className="w-4 h-4 text-indigo-400" />
+                    <input 
+                      type="text" 
+                      placeholder="Search commands everywhere (e.g. scale, salts, prompt)..." 
+                      value={paletteQuery}
+                      onChange={(e) => setPaletteQuery(e.target.value)}
+                      className="w-full bg-transparent text-xs text-white focus:outline-none placeholder-slate-600"
+                      autoFocus
+                    />
+                    <button 
+                      onClick={() => setSearchPaletteOpen(false)}
+                      className="text-[9px] bg-white/5 border border-white/10 px-2 py-1 rounded text-slate-400 hover:text-white"
+                    >
+                      ESC
+                    </button>
+                  </div>
+
+                  <div className="space-y-1.5 max-h-[220px] overflow-y-auto pr-1">
+                    {[
+                      { cmd: 'Scale container node A3', desc: 'Accelerate processor speed bounds', keywords: 'scale container' },
+                      { cmd: 'Audit password encryption salts', desc: 'Secure MERN hash structures', keywords: 'salts hash secure' },
+                      { cmd: 'Execute agent workflow compile', desc: 'Run distributed LLM processes', keywords: 'execute agent workflow' },
+                      { cmd: 'Upload new model weights bin', desc: 'Push weights file to vector vault', keywords: 'upload file weights' }
+                    ].filter(item => !paletteQuery || item.cmd.toLowerCase().includes(paletteQuery.toLowerCase()) || item.keywords.toLowerCase().includes(paletteQuery.toLowerCase())).map((item, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => {
+                          playClickSound();
+                          setSearchPaletteOpen(false);
+                          setSaasLogs(prev => [`⚡ Command executed: "${item.cmd}" successfully dispatched.`, ...prev]);
+                          if (window.showToast) window.showToast(`Executed: ${item.cmd}`, 'success');
+                        }}
+                        className="w-full flex items-center justify-between text-left p-3 rounded-xl bg-white/2 hover:bg-indigo-500/10 border border-white/5 hover:border-indigo-500/30 transition-all"
+                      >
+                        <div>
+                          <p className="text-xs font-semibold text-white">{item.cmd}</p>
+                          <p className="text-[9px] text-slate-500">{item.desc}</p>
+                        </div>
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Top Dashboard Telemetry Header */}
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-white/5 pb-6">
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping" />
+                  <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-wider">ACTIVE INSTANCE SECURED</span>
+                </div>
+                <h3 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+                  <Cpu className="w-6 h-6 text-indigo-400 animate-pulse" />
+                  SmartEngine AI Console Workspace
+                </h3>
+                <p className="text-xs text-slate-400">Deploy self-managing LLM agents, run predictive vector routes, and evaluate server grids.</p>
+              </div>
+
+              {/* Command Palette Button */}
+              <button
+                onClick={() => { playClickSound(); setSearchPaletteOpen(true); }}
+                className="flex items-center gap-2 bg-indigo-950/40 hover:bg-indigo-900/40 text-slate-200 border border-indigo-500/30 hover:border-indigo-500/50 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all active:scale-95 shadow-lg"
+              >
+                <Search className="w-4 h-4 text-indigo-400" />
+                <span>Search Commands</span>
+                <span className="text-[9px] bg-indigo-500/20 border border-indigo-500/30 px-1.5 py-0.5 rounded text-indigo-300 font-mono">⌘K</span>
+              </button>
+            </div>
+
+            {/* Dashboard Workspace Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              
+              {/* Left Column: Module tabs and forms (8 columns) */}
+              <div className="lg:col-span-8 space-y-6">
+                
+                {/* Dynamic Tab Selector (Vercel Style glass line) */}
+                <div className="flex border-b border-white/5 pb-2 gap-3 overflow-x-auto whitespace-nowrap scrollbar-none font-mono text-[10px] font-bold uppercase tracking-wider">
+                  {[
+                    { id: 'analytics', label: 'Telemetry', icon: BarChart2 },
+                    { id: 'workflows', label: 'AI Workflows', icon: Layers },
+                    { id: 'recommendations', label: 'Insights', icon: Sparkles },
+                    { id: 'files', label: 'Vector Vault', icon: UploadCloud },
+                    { id: 'team', label: 'Core Team', icon: Users }
+                  ].map(tab => {
+                    const Icon = tab.icon;
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => { playClickSound(); setSaasTab(tab.id); }}
+                        className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all border cursor-pointer ${
+                          saasTab === tab.id
+                            ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/40 shadow-inner font-black'
+                            : 'text-slate-400 border-transparent hover:text-slate-200'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        {tab.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* TAB 1: TELEMETRY & ANALYTICS WIDGETS */}
+                {saasTab === 'analytics' && (
+                  <div className="space-y-6 animate-in fade-in duration-300">
+                    
+                    {/* Simulated Drag & Drop widgets (clickable layout shuffle simulation) */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {draggedWidgets.map((widget, wIdx) => (
+                        <div 
+                          key={widget.id}
+                          onClick={() => {
+                            playClickSound();
+                            // Shift widgets order circularly to simulate drag-drop layout swap
+                            const updated = [...draggedWidgets];
+                            const shifted = updated.shift();
+                            updated.push(shifted);
+                            setDraggedWidgets(updated);
+                          }}
+                          className="saas-card p-5 rounded-2xl border relative overflow-hidden group shadow-lg cursor-pointer hover:border-indigo-500/40"
+                        >
+                          <div className="absolute top-0 right-0 w-12 h-12 bg-indigo-500/5 rounded-full blur-lg" />
+                          <span className="text-[8px] text-slate-500 uppercase font-bold tracking-wider font-mono block">
+                            {widget.title} (Click to Drag-Swap)
+                          </span>
+                          <h4 className="text-2xl font-mono font-black text-white mt-1 group-hover:text-indigo-400 transition-colors">
+                            {widget.id === 'w_latency' ? `${latencyMeter}ms` : widget.id === 'w_tokens' ? `${(tokensTicked / 1000).toFixed(1)}K` : widget.value}
+                          </h4>
+                          <p className="text-[10px] text-slate-400 leading-normal mt-1">
+                            {widget.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Highly Polished Interactive CSS Chart (API Load telemetries) */}
+                    <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="text-xs font-bold text-white font-mono uppercase tracking-wider">Active Token Consumption Ratio</h4>
+                          <p className="text-[10px] text-slate-500">Live compute loads allocated across Bhedaghat server nodes</p>
+                        </div>
+                        <span className="text-[10px] font-mono bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 px-2 py-0.5 rounded font-bold">
+                          {(tokensTicked).toLocaleString()} Total Tokens
+                        </span>
+                      </div>
+
+                      {/* Custom bar chart using styled divs */}
+                      <div className="h-44 flex items-end gap-3.5 pt-4 border-b border-white/5 font-mono text-[9px] text-slate-500">
+                        {[
+                          { hour: '10:00', height: 'h-[30%]', load: '30%', color: 'bg-indigo-500/60' },
+                          { hour: '11:00', height: 'h-[55%]', load: '55%', color: 'bg-indigo-500/70' },
+                          { hour: '12:00', height: 'h-[85%]', load: '85%', color: 'bg-purple-500/70' },
+                          { hour: '13:00', height: `h-[${Math.round((latencyMeter/35)*100)}%]`, load: `${Math.round((latencyMeter/35)*100)}%`, color: 'bg-indigo-500 animate-pulse' }
+                        ].map((bar, idx) => (
+                          <div key={idx} className="flex-1 flex flex-col justify-end items-center h-full group relative">
+                            <div className="absolute top-[-25px] opacity-0 group-hover:opacity-100 transition-opacity bg-indigo-950 border border-indigo-500/30 px-1.5 py-0.5 rounded text-[8px] text-white">
+                              {bar.load} Load
+                            </div>
+                            <div className={`w-full rounded-t-lg transition-all duration-1000 shadow-lg ${bar.height} ${bar.color} hover:bg-cyan-400`} />
+                            <span className="mt-2 block shrink-0">{bar.hour}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 2: AI WORKFLOWS */}
+                {saasTab === 'workflows' && (
+                  <div className="space-y-6 animate-in fade-in duration-300">
+                    <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-4">
+                      <h4 className="text-xs font-bold text-white font-mono uppercase tracking-wider">Automated Processing Workflow</h4>
+                      <p className="text-slate-400 text-xs leading-normal">Orchestrate the streaming sequence of embeddings generation, storage indexing, and client-side agent triggers.</p>
+                      
+                      {/* Flowchart elements */}
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-center pt-2">
+                        <div className="bg-slate-900 border border-white/10 p-3.5 rounded-xl text-center">
+                          <span className="text-lg block">📥</span>
+                          <span className="text-[10px] font-bold text-white block mt-1">Data Feed</span>
+                          <span className="text-[8px] text-slate-500 block">Raw ingest</span>
+                        </div>
+                        <div className="text-center text-slate-600 font-mono text-sm hidden md:block">➔</div>
+                        <div className="bg-slate-900 border border-white/10 p-3.5 rounded-xl text-center">
+                          <span className="text-lg block">🔮</span>
+                          <span className="text-[10px] font-bold text-white block mt-1">Vector Index</span>
+                          <span className="text-[8px] text-slate-500 block">Embedding compute</span>
+                        </div>
+                        <div className="text-center text-slate-600 font-mono text-sm hidden md:block">➔</div>
+                        <div className="bg-slate-900 border border-white/10 p-3.5 rounded-xl text-center glow-outline">
+                          <span className="text-lg block">🤖</span>
+                          <span className="text-[10px] font-bold text-indigo-400 block mt-1">Agent Action</span>
+                          <span className="text-[8px] text-slate-500 block">Self-healing route</span>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-4 pt-2">
+                        <button
+                          onClick={() => {
+                            playClickSound();
+                            setSaasLogs(prev => [
+                              `🚀 Workflow executed at ${new Date().toLocaleTimeString()}: Ingestion node parsed 142 vectors. Execution latency: 12ms.`,
+                              ...prev
+                            ]);
+                            if (window.showToast) window.showToast('Workflow Run Complete', 'success');
+                          }}
+                          className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer"
+                        >
+                          Execute Workflow Run
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 3: INSIGHTS & RECOMMENDATIONS */}
+                {saasTab === 'recommendations' && (
+                  <div className="space-y-4 animate-in fade-in duration-300">
+                    <h4 className="text-xs font-bold text-white font-mono uppercase tracking-wider">AI Platform Recommendations</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {[
+                        { title: 'Scale container node A3', desc: 'Latency spikes observed near Tilwara. Scale processors by 1.5x.', act: 'Scale Node', done: 'Node scaled and verified.' },
+                        { title: 'Enforce password encryption salts', desc: 'Standard security evaluation recommends salt hashing.', act: 'Audit Salt', done: 'Secure password salts audited.' }
+                      ].map((item, idx) => (
+                        <div key={idx} className="saas-card p-5 rounded-2xl border border-white/5 space-y-3 relative overflow-hidden">
+                          <span className="text-[8px] bg-indigo-500/10 text-indigo-300 font-bold px-2 py-0.5 rounded-full block w-fit font-mono">CRITICAL INSIGHT</span>
+                          <h5 className="font-bold text-xs text-white mt-1">{item.title}</h5>
+                          <p className="text-[10px] text-slate-400 leading-normal">{item.desc}</p>
+                          <button
+                            onClick={() => {
+                              playClickSound();
+                              setSaasLogs(prev => [`🛡️ Optimization logged: "${item.done}" applied successfully.`, ...prev]);
+                              if (window.showToast) window.showToast(item.done, 'success');
+                            }}
+                            className="bg-white/5 hover:bg-indigo-600 border border-white/10 hover:border-transparent text-slate-200 hover:text-white text-[9px] font-bold py-1.5 px-3 rounded-lg transition-all cursor-pointer"
+                          >
+                            {item.act}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 4: FILE VAULT */}
+                {saasTab === 'files' && (
+                  <div className="space-y-6 animate-in fade-in duration-300">
+                    <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-4">
+                      <div className="border-2 border-dashed border-white/10 p-8 rounded-2xl text-center space-y-3 relative group hover:border-indigo-500/30 transition-all cursor-pointer">
+                        <UploadCloud className="w-10 h-10 text-indigo-400 mx-auto group-hover:scale-110 transition-transform" />
+                        <div>
+                          <p className="text-xs font-bold text-white">Drag & drop model datasets here</p>
+                          <p className="text-[9px] text-slate-500">Supports .bin, .json, and .onnx vectors maps (Max 5GB)</p>
+                        </div>
+                        <input 
+                          type="file" 
+                          onChange={(e) => {
+                            playClickSound();
+                            const file = e.target.files[0];
+                            if (file) {
+                              setSaasFiles(prev => [...prev, { name: file.name, size: `${(file.size / 1024).toFixed(1)} KB`, type: file.name.split('.').pop().toUpperCase() }]);
+                              setSaasLogs(prev => [`📥 File loaded to vector vault: "${file.name}" indexed.`, ...prev]);
+                            }
+                          }}
+                          className="absolute inset-0 opacity-0 cursor-pointer" 
+                        />
+                      </div>
+
+                      {/* File Listings */}
+                      <div className="space-y-2">
+                        <span className="text-[8px] text-slate-500 uppercase font-bold tracking-wider font-mono block">Indexed Files Catalog</span>
+                        <div className="space-y-2">
+                          {saasFiles.map((file, idx) => (
+                            <div key={idx} className="bg-slate-900 border border-white/5 p-3 rounded-xl flex items-center justify-between">
+                              <div>
+                                <h5 className="font-bold text-xs text-white">{file.name}</h5>
+                                <span className="text-[8px] text-slate-500 font-mono mt-0.5 block">{file.size} • Type: {file.type}</span>
+                              </div>
+                              <button 
+                                onClick={() => {
+                                  playClickSound();
+                                  setSaasFiles(prev => prev.filter(f => f.name !== file.name));
+                                  setSaasLogs(prev => [`🗑️ File purged: "${file.name}" removed from storage index.`, ...prev]);
+                                }}
+                                className="p-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-400 rounded-lg transition-transform active:scale-95 cursor-pointer"
+                              >
+                                <Trash className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 5: TEAM COLLABORATORS */}
+                {saasTab === 'team' && (
+                  <div className="space-y-6 animate-in fade-in duration-300">
+                    <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-4">
+                      <h4 className="text-xs font-bold text-white font-mono uppercase tracking-wider">Invite Workspace Collaborators</h4>
+                      <form onSubmit={(e) => {
+                        e.preventDefault();
+                        if (!saasNewMemberEmail) return;
+                        setSaasTeam(prev => [...prev, { name: saasNewMemberEmail.split('@')[0], role: saasNewMemberRole, email: saasNewMemberEmail, status: 'ON_STANDBY' }]);
+                        setSaasLogs(prev => [`👤 Collaborator invite generated: "${saasNewMemberEmail}" added.`, ...prev]);
+                        setSaasNewMemberEmail('');
+                      }} className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+                        <div className="space-y-1">
+                          <label className="text-[9px] text-slate-500 uppercase font-bold tracking-wider font-mono">Email Address</label>
+                          <input 
+                            type="email" required 
+                            value={saasNewMemberEmail}
+                            onChange={(e) => setSaasNewMemberEmail(e.target.value)}
+                            placeholder="collaborator@domain.com"
+                            className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2.5 rounded-lg text-white placeholder-slate-700 focus:outline-none" 
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[9px] text-slate-500 uppercase font-bold tracking-wider font-mono">Role Level</label>
+                          <select 
+                            value={saasNewMemberRole}
+                            onChange={(e) => setSaasNewMemberRole(e.target.value)}
+                            className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2.5 rounded-lg text-white"
+                          >
+                            <option>Operator</option>
+                            <option>Scientist</option>
+                            <option>Security Lead</option>
+                          </select>
+                        </div>
+                        <button 
+                          type="submit"
+                          className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs py-2.5 rounded-lg font-bold transition-all cursor-pointer"
+                        >
+                          Invite Member
+                        </button>
+                      </form>
+
+                      {/* Team Listing */}
+                      <div className="space-y-2 pt-2">
+                        <span className="text-[8px] text-slate-500 uppercase font-bold tracking-wider font-mono block">Core Collaborators Roster</span>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {saasTeam.map((member, idx) => (
+                            <div key={idx} className="bg-slate-900 border border-white/5 p-4 rounded-xl flex items-center justify-between gap-4">
+                              <div>
+                                <h5 className="font-bold text-xs text-white capitalize">{member.name}</h5>
+                                <p className="text-[9px] text-slate-400 font-mono mt-0.5">{member.email}</p>
+                                <span className="text-[8px] bg-white/5 text-slate-400 font-bold px-2 py-0.5 rounded-full mt-1.5 inline-block">{member.role}</span>
+                              </div>
+                              <span className={`text-[8px] font-bold font-mono px-2 py-1 rounded ${
+                                member.status === 'ACTIVE' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'
+                              }`}>
+                                {member.status}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+              </div>
+
+              {/* Right Column: AI Assistant Chat sidebar (4 columns) */}
+              <div className="lg:col-span-4 space-y-6">
+                
+                {/* AI Chat Console Panel */}
+                <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-4 flex flex-col min-h-[360px] justify-between">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-white/5 pb-3">
+                      <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
+                        <Bot className="w-4 h-4 text-indigo-400" />
+                        AI Agent Chat Assistant
+                      </h4>
+                      
+                      {/* Voice telemetry trigger */}
+                      <button 
+                        onClick={() => { playClickSound(); setVoiceTelemetryActive(!voiceTelemetryActive); }}
+                        className={`p-1.5 rounded-lg border transition-all ${
+                          voiceTelemetryActive ? 'border-cyan-500/40 text-cyan-400 bg-cyan-500/5 animate-pulse' : 'border-white/10 text-slate-400'
+                        }`}
+                        title="Voice Telemetry Stream"
+                      >
+                        <Volume2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    {/* Prompt suggestions chips */}
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        { label: 'Audit security salts', prompt: 'Audit secure salts encryption protocols' },
+                        { label: 'Check edge latency', prompt: 'List active container latency rates' }
+                      ].map((chip, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => { playClickSound(); setPromptInput(chip.prompt); }}
+                          className="bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-2.5 py-1 text-[8px] font-mono text-slate-300 transition-all cursor-pointer"
+                        >
+                          {chip.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Live active chat prompt logs */}
+                    <div className="space-y-2 h-[160px] overflow-y-auto pr-1 text-[9px] font-mono leading-relaxed max-h-[160px]">
+                      {promptLogs.length === 0 ? (
+                        <p className="text-slate-600 text-center py-8">No prompt parameters entered yet.</p>
+                      ) : (
+                        promptLogs.map((log, idx) => (
+                          <div key={idx} className={`p-2.5 rounded-xl border ${
+                            log.sender === 'user'
+                              ? 'bg-slate-900 border-white/5 text-right ml-4 text-slate-300'
+                              : 'bg-indigo-950/20 border-indigo-500/20 text-left mr-4 text-indigo-300'
+                          }`}>
+                            <span className="text-[7px] text-slate-500 block uppercase mb-1">{log.sender === 'user' ? 'USER PROMPT' : 'AGENT ANSWER'}</span>
+                            <p>{log.text}</p>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Form submit input */}
+                  <div className="space-y-3 border-t border-white/5 pt-3">
+                    {/* Simulated Voice Telemetry Waves */}
+                    {voiceTelemetryActive && (
+                      <div className="h-6 flex items-end justify-center gap-1 bg-black/40 border border-cyan-500/20 rounded-lg py-1 px-3">
+                        {voiceWaves.map((h, idx) => (
+                          <div key={idx} style={{ height: `${h}%` }} className="w-1 bg-cyan-400 rounded-full transition-all duration-300" />
+                        ))}
+                      </div>
+                    )}
+
+                    <form 
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        if (!promptInput) return;
+                        playClickSound();
+                        const pText = promptInput;
+                        setPromptLogs(prev => [...prev, { sender: 'user', text: pText }]);
+                        setPromptInput('');
+                        
+                        setTimeout(() => {
+                          let response = `AI parsed response generated: completed analysis loop for prompt "${pText}". Execution speed: 12ms.`;
+                          if (pText.toLowerCase().includes('salt')) {
+                            response = `🛡️ Security salt validation success. Enforced Cryptographic SHA-256 password hash protocols (factor 10 salts verified).`;
+                          } else if (pText.toLowerCase().includes('latency')) {
+                            response = `⚡ Average processor edge latency: ${latencyMeter}ms. Bargi dam nodes operating inside green thresholds.`;
+                          }
+                          setPromptLogs(prev => [...prev, { sender: 'agent', text: response }]);
+                          setSaasLogs(prev => [`🤖 AI Agent feedback: "${response.substring(0, 45)}..." logged.`, ...prev]);
+                        }, 800);
+                      }}
+                      className="flex gap-2"
+                    >
+                      <input 
+                        type="text" 
+                        value={promptInput}
+                        onChange={(e) => setPromptInput(e.target.value)}
+                        placeholder={voiceTelemetryActive ? "Listening for voice prompts..." : "Ask SaaS Assistant..."}
+                        className="flex-1 bg-slate-950 border border-white/10 text-xs px-3 py-2 rounded-xl text-white placeholder-slate-700 focus:outline-none" 
+                      />
+                      <button 
+                        type="submit"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-3 py-2 flex items-center justify-center transition-transform active:scale-95 cursor-pointer"
+                      >
+                        <Send className="w-3.5 h-3.5" />
+                      </button>
+                    </form>
+                  </div>
+                </div>
+
+                {/* Real-time System Log Console */}
+                <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-3">
+                  <span className="text-[8px] text-slate-500 uppercase font-bold tracking-wider font-mono block">Real-time System Pipeline Logs</span>
+                  <div className="bg-black border border-white/5 p-4 rounded-xl font-mono text-[8px] text-indigo-400 overflow-y-auto space-y-2 h-[140px] shadow-inner text-left max-h-[140px]">
+                    {saasLogs.map((log, idx) => (
+                      <p key={idx} className="leading-normal hover:text-white transition-colors">
+                        {log}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        )}
       </section>
       )}
 
@@ -2868,14 +3589,20 @@ export default function Home() {
 
             {/* Left Side: Brand Panel */}
             <div className="bg-[#050505] p-10 flex flex-col justify-center items-center text-center relative overflow-hidden border-r border-white/5">
-              <div className="absolute top-0 left-0 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute top-0 left-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
               <div className="space-y-6 max-w-xs relative z-10">
-                <h2 className="text-4xl md:text-5xl font-black tracking-wider bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500 bg-clip-text text-transparent font-poppins drop-shadow-lg">
-                  NextRank
+                <h2 className={`text-4xl md:text-5xl font-black tracking-wider bg-clip-text text-transparent font-poppins drop-shadow-lg ${
+                  businessType === 'smartengine'
+                    ? 'bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400'
+                    : 'bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500'
+                }`}>
+                  {businessType === 'smartengine' ? 'SmartEngine' : 'NextRank'}
                 </h2>
-                <div className="w-12 h-1 bg-amber-500/30 mx-auto rounded-full" />
+                <div className={`w-12 h-1 mx-auto rounded-full ${businessType === 'smartengine' ? 'bg-indigo-500/30' : 'bg-amber-500/30'}`} />
                 <p className="text-slate-400 text-xs leading-relaxed font-sans tracking-wide">
-                  Learn skills for your future career with industry level board prep training.
+                  {businessType === 'smartengine'
+                    ? 'Deploy autonomous AI engineering microservices, vector logs, and agents.'
+                    : 'Learn skills for your future career with industry level board prep training.'}
                 </p>
               </div>
             </div>
@@ -2884,11 +3611,11 @@ export default function Home() {
             <div className="p-10 flex flex-col justify-center relative bg-[#0a0a0a] text-left">
               <div className="space-y-6 max-w-sm w-full mx-auto">
                 <div>
-                  <h3 className="text-2xl font-bold text-amber-400 font-poppins tracking-wide">
-                    {authTab === 'login' ? 'Welcome Back' : 'Welcome to NextRank'}
+                  <h3 className={`text-2xl font-bold font-poppins tracking-wide ${businessType === 'smartengine' ? 'text-indigo-400' : 'text-amber-400'}`}>
+                    {authTab === 'login' ? 'Welcome Back' : `Welcome to ${businessType === 'smartengine' ? 'SmartEngine' : 'NextRank'}`}
                   </h3>
                   <p className="text-slate-400 text-xs mt-1 font-sans">
-                    {authTab === 'login' ? 'Login to continue learning' : 'Create credentials to start learning'}
+                    {authTab === 'login' ? 'Login to continue workspace' : 'Create credentials to start workspace'}
                   </p>
                 </div>
 
@@ -2939,14 +3666,18 @@ export default function Home() {
                     </div>
                   )}
 
-                  {/* Submit Button - Gold Gradient */}
+                   {/* Submit Button */}
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full py-3.5 rounded-xl font-bold text-black text-xs uppercase bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 transition-all duration-300 shadow-lg active:scale-95 flex items-center justify-center gap-2 tracking-widest font-sans font-bold"
+                    className={`w-full py-3.5 rounded-xl font-bold text-xs uppercase transition-all duration-300 shadow-lg active:scale-95 flex items-center justify-center gap-2 tracking-widest font-sans ${
+                      businessType === 'smartengine'
+                        ? 'bg-gradient-to-r from-indigo-500 via-purple-600 to-cyan-500 text-white hover:opacity-95'
+                        : 'bg-gradient-to-r from-amber-400 to-amber-500 text-black hover:from-amber-300 hover:to-amber-400'
+                    }`}
                   >
                     {submitting ? (
-                      <div className="w-4 h-4 rounded-full border-t-2 border-black animate-spin" />
+                      <div className={`w-4 h-4 rounded-full border-t-2 animate-spin ${businessType === 'smartengine' ? 'border-white' : 'border-black'}`} />
                     ) : authTab === 'login' ? 'LOGIN' : 'REGISTER'}
                   </button>
                 </form>
@@ -2962,7 +3693,7 @@ export default function Home() {
                         setAuthError('');
                         setAuthSuccess('');
                       }}
-                      className="text-amber-500 font-bold hover:underline"
+                      className={`font-bold hover:underline ${businessType === 'smartengine' ? 'text-indigo-400' : 'text-amber-500'}`}
                     >
                       {authTab === 'login' ? 'Register' : 'Login'}
                     </button>

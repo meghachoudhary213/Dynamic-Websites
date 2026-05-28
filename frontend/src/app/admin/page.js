@@ -751,6 +751,7 @@ export default function AdminDashboard() {
                       <option value="tourism">Tourism Planners (ExploreAura)</option>
                       <option value="cybersecurity">Cybersecurity (ThreatZero)</option>
                       <option value="career">Career Job Portal (JobSphere)</option>
+                      <option value="smartengine">Autonomous AI SaaS (SmartEngine)</option>
                     </select>
                   </div>
 

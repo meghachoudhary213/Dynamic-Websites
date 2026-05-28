@@ -753,5 +753,93 @@ export const defaultTemplates = {
       metaDescription: "Accelerate your career with JobSphere's resume analyzer, AI interviews, and placement trackers.",
       keywords: ["jobs in jabalpur", "jobsphere career portal", "internships finder MP"]
     }
+  },
+  smartengine: {
+    businessType: 'smartengine',
+    theme: {
+      name: 'SmartEngine AI',
+      primary: '#6366f1', // Neon Blue/Indigo
+      secondary: '#a855f7', // Neon Purple
+      accent: '#00f5ff', // Neon Cyan
+      background: '#030014', // Extreme Deep Tech Obsidian Black
+      textColor: '#f1f5f9', // Silver White
+      glassmorphism: true,
+      fontFamily: 'Space Grotesk',
+      borderRadius: '2xl'
+    },
+    hero: {
+      title: "SmartEngine AI Platform",
+      subtitle: "The world-class autonomous AI engineering ecosystem. Spin up self-optimizing server microservices, orchestrate intelligent LLM agent swarms, and visual real-time vector logs with microsecond execution speeds.",
+      ctaText: "Launch SaaS Workspace",
+      ctaLink: "#dynamic_modules",
+      bgImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920&auto=format&fit=crop",
+      jabalpurBranding: {
+        landmark: "Marble Gorges",
+        interactiveEffect: "electric_grid"
+      }
+    },
+    navigation: {
+      logoText: "SmartEngine",
+      links: [
+        { label: "AI Console", href: "#home" },
+        { label: "Interactive Workspace", href: "#dynamic_modules" },
+        { label: "Platform Perks", href: "#features" },
+        { label: "Core Architecture", href: "#about" },
+        { label: "SaaS Enterprise Gate", href: "#contact" }
+      ]
+    },
+    sections: [
+      {
+        id: "features",
+        type: "features",
+        title: "Autonomous SaaS Infrastructure",
+        subtitle: "Enterprise assets built on low-latency microservices, Vercel-like performance, and highly intelligent workflows.",
+        visible: true,
+        order: 1,
+        content: [
+          { icon: "⚡", title: "LLM Agent Orchestrator", desc: "Deploy autonomous swarms of self-improving agents that write code, scan databases, and solve tickets in real-time." },
+          { icon: "🔮", title: "Predictive Analytics Node", desc: "Forecast container load requirements and model tokens consumption metrics using high-fidelity edge regression nets." },
+          { icon: "⛓️", title: "Automated Vector Pipelines", desc: "Feed raw text data arrays directly into distributed high-speed vector embeddings databases without write locks." }
+        ]
+      },
+      {
+        id: "stats",
+        type: "stats",
+        title: "Platform Scalability Ratios",
+        subtitle: "Live verified telemetry illustrating SmartEngine AI operations performance logs.",
+        visible: true,
+        order: 2,
+        content: [
+          { number: "18ms", label: "Model Response Latency" },
+          { number: "99.999%", label: "Edge Gateway Uptime Ratio" },
+          { number: "4.2M", label: "Concurrent Transactions/Sec" }
+        ]
+      },
+      {
+        id: "about",
+        type: "about",
+        title: "Engineering Intelligent Future Nodes",
+        subtitle: "Our SaaS Architectural Paradigm",
+        visible: true,
+        order: 3,
+        content: {
+          text: "SmartEngine represents the absolute pinnacle of next-generation cloud automation. Leveraging deep cyber-grid clustering and low-overhead MERN orchestration, we empower teams to deploy full-fledged production databases, integrate voice triggers, and launch vector caches with a single click. Designed in Sanskardhani, we celebrate raw structural integrity and sleek glass aesthetics.",
+          image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop"
+        }
+      }
+    ],
+    footer: {
+      text: "© 2026 SmartEngine AI. Autonomous SaaS infrastructure orchestrated globally.",
+      socials: [
+        { platform: "github", url: "#" },
+        { platform: "linkedin", url: "#" },
+        { platform: "twitter", url: "#" }
+      ]
+    },
+    seo: {
+      metaTitle: "SmartEngine - Autonomous AI SaaS Platform",
+      metaDescription: "Step into SmartEngine, the next-generation autonomous AI SaaS platform featuring live telemetry, vector databases, and agent workspaces.",
+      keywords: ["SmartEngine AI", "SaaS incubator jabalpur", "autonomous AI platform"]
+    }
   }
 };

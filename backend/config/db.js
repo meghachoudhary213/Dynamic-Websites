@@ -69,11 +69,19 @@ export async function connectDB() {
 
     // Seed default admin and config if empty
     await seedDefaultData();
+    
+    // Force active website configuration to 'smartengine' flagship
+    await WebsiteConfig.setActiveConfig('smartengine');
+    console.log('🔮 Flagship "smartengine" template activated as primary MERN template.');
   } catch (error) {
     console.warn('⚠️ MongoDB connection failed. Switching to High-Fidelity JSON Fallback Engine!');
     console.error(`Reason: ${error.message}`);
     useMongoDB = false;
     initializeJSONDB();
+    
+    // Force active website configuration to 'smartengine' in fallback JSON database
+    await WebsiteConfig.setActiveConfig('smartengine');
+    console.log('🔮 Flagship "smartengine" template activated in JSON Database.');
   }
 }
 
@@ -93,32 +101,34 @@ async function seedDefaultData() {
     console.log('🌱 Seeded default admin user in MongoDB (admin@jabalpur.gov / jabalpur2026)');
   }
 
-  const configCount = await MongooseWebsiteConfig.countDocuments();
-  if (configCount === 0) {
-    // Seed all 10 templates and activate coaching as default
-    const defaultModulesMap = {
-      coaching: ['students', 'attendance', 'tests', 'notes', 'fees', 'analytics'],
-      ecommerce: ['products', 'orders', 'payments'],
-      real_estate: ['properties', 'tours', 'consultations'],
-      hospital: ['appointments', 'doctors', 'reports'],
-      cafe: ['menu', 'tables', 'orders'],
-      startup: ['sandboxes', 'servers', 'teams'],
-      gym: ['bmi', 'workouts', 'trainers'],
-      tourism: ['itinerary', 'budget', 'bookings'],
-      cybersecurity: ['threats', 'quizzes', 'firewall'],
-      career: ['resume', 'interviews', 'placements']
-    };
-    for (const key of Object.keys(defaultTemplates)) {
-      const isCoaching = key === 'coaching';
+  // Seed all templates dynamically if missing
+  const defaultModulesMap = {
+    coaching: ['students', 'attendance', 'tests', 'notes', 'fees', 'analytics'],
+    ecommerce: ['products', 'orders', 'payments'],
+    real_estate: ['properties', 'tours', 'consultations'],
+    hospital: ['appointments', 'doctors', 'reports'],
+    cafe: ['menu', 'tables', 'orders'],
+    startup: ['sandboxes', 'servers', 'teams'],
+    gym: ['bmi', 'workouts', 'trainers'],
+    tourism: ['itinerary', 'budget', 'bookings'],
+    cybersecurity: ['threats', 'quizzes', 'firewall'],
+    career: ['resume', 'interviews', 'placements'],
+    smartengine: ['analytics', 'workflows', 'recommendations', 'chatbot', 'files', 'team']
+  };
+
+  for (const key of Object.keys(defaultTemplates)) {
+    const exists = await MongooseWebsiteConfig.findOne({ businessType: key });
+    if (!exists) {
+      const isSmartEngine = key === 'smartengine';
       await MongooseWebsiteConfig.create({
         ...defaultTemplates[key],
         websiteName: defaultTemplates[key].theme.name,
-        isActive: isCoaching,
+        isActive: isSmartEngine,
         dashboardModules: defaultModulesMap[key] || [],
         fonts: defaultTemplates[key].theme.fontFamily || 'Space Grotesk'
       });
+      console.log(`🌱 Seeded missing "${key}" template in MongoDB.`);
     }
-    console.log('🌱 Seeded all 10 Jabalpur templates in MongoDB. Activated "coaching" site.');
   }
 }
 
@@ -157,7 +167,8 @@ function initializeJSONDB() {
     gym: ['bmi', 'workouts', 'trainers'],
     tourism: ['itinerary', 'budget', 'bookings'],
     cybersecurity: ['threats', 'quizzes', 'firewall'],
-    career: ['resume', 'interviews', 'placements']
+    career: ['resume', 'interviews', 'placements'],
+    smartengine: ['analytics', 'workflows', 'recommendations', 'chatbot', 'files', 'team']
   };
 
   const initialDB = {
@@ -186,7 +197,7 @@ function initializeJSONDB() {
       _id: `config_${key}`,
       ...defaultTemplates[key],
       websiteName: defaultTemplates[key].theme.name,
-      isActive: key === 'coaching',
+      isActive: key === 'smartengine',
       dashboardModules: defaultModulesMap[key] || [],
       fonts: defaultTemplates[key].theme.fontFamily || 'Space Grotesk',
       createdAt: new Date().toISOString()
