@@ -6,6 +6,7 @@ import {
   User, Mail, Phone, Lock, Eye, EyeOff, Sun, Moon, 
   ArrowRight, Sparkles, ShieldCheck, Check, X, ShieldAlert 
 } from 'lucide-react';
+import { API_URL } from '../../config';
 
 export default function RegisterPage() {
   const [siteLightMode, setSiteLightMode] = useState(false);
@@ -80,7 +81,7 @@ export default function RegisterPage() {
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/generate-otp', {
+      const res = await fetch(`${API_URL}/api/auth/generate-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.toLowerCase(), phone })
@@ -128,7 +129,7 @@ export default function RegisterPage() {
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/register', {
+      const res = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

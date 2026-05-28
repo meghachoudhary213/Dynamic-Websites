@@ -12,6 +12,7 @@ import {
 import { io } from 'socket.io-client';
 import MarbleRocksCanvas from '../components/MarbleRocksCanvas';
 import DynamicChatbot from '../components/DynamicChatbot';
+import { API_URL } from '../config';
 
 export default function Home() {
   const [config, setConfig] = useState(null);
@@ -210,7 +211,7 @@ export default function Home() {
     const token = localStorage.getItem('userToken');
     if (token) {
       try {
-        const res = await fetch('http://localhost:5000/api/auth/user/me', {
+        const res = await fetch(`${API_URL}/api/auth/user/me`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -244,7 +245,7 @@ export default function Home() {
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/register', {
+      const res = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -287,7 +288,7 @@ export default function Home() {
     setAuthSuccess('');
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -331,7 +332,7 @@ export default function Home() {
   // Load Active Config
   const loadActiveConfig = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/website/active');
+      const res = await fetch(`${API_URL}/api/website/active`);
       const data = await res.json();
       if (data.success && data.config) {
         setConfig(data.config);
@@ -342,7 +343,7 @@ export default function Home() {
       setLoading(false);
     } catch (err) {
       console.error('Error loading active config:', err);
-      setError('Connection failed. Please verify that the Express backend is running on http://localhost:5000.');
+      setError(`Connection failed. Please verify that the Express backend is running on ${API_URL}.`);
       setLoading(false);
     }
   };
@@ -368,7 +369,7 @@ export default function Home() {
     checkLoggedInUser();
 
     // Listen to real-time socket config swaps
-    const socket = io('http://localhost:5000');
+    const socket = io(API_URL);
     
     socket.on('config-updated', (updatedConfig) => {
       console.log('🔌 Real-time config update received:', updatedConfig);
@@ -451,7 +452,7 @@ export default function Home() {
       try {
         const cleanPrice = typeof payPrice === 'string' ? parseInt(payPrice.replace(/[^0-9]/g, '')) : payPrice;
         
-        const res = await fetch('http://localhost:5000/api/website/simulate-payment', {
+        const res = await fetch(`${API_URL}/api/website/simulate-payment`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

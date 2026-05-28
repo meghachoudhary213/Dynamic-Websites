@@ -9,6 +9,7 @@ import {
   ChevronRight, Sun, Moon, Users
 } from 'lucide-react';
 import { io } from 'socket.io-client';
+import { API_URL } from '../../config';
 
 export default function AdminDashboard() {
   const [token, setToken] = useState(null);
@@ -82,7 +83,7 @@ export default function AdminDashboard() {
     loadAllConfigurations();
     loadNotifications();
 
-    const socket = io('http://localhost:5000');
+    const socket = io(API_URL);
 
     socket.on('config-updated', (updated) => {
       if (updated.isActive) {
@@ -157,7 +158,7 @@ export default function AdminDashboard() {
     e.preventDefault();
     setAuthError('');
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -182,7 +183,7 @@ export default function AdminDashboard() {
 
   const loadSystemStats = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/status');
+      const res = await fetch(`${API_URL}/api/status`);
       const data = await res.json();
       setServerStatus({
         status: data.status,
@@ -195,7 +196,7 @@ export default function AdminDashboard() {
 
   const loadAllConfigurations = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/website/configs', {
+      const res = await fetch(`${API_URL}/api/website/configs`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -217,7 +218,7 @@ export default function AdminDashboard() {
 
   const loadNotifications = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/website/notifications', {
+      const res = await fetch(`${API_URL}/api/website/notifications`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -235,7 +236,7 @@ export default function AdminDashboard() {
   const handleSwitchTemplate = async (businessType) => {
     playClickSound();
     try {
-      const res = await fetch('http://localhost:5000/api/website/switch', {
+      const res = await fetch(`${API_URL}/api/website/switch`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -261,7 +262,7 @@ export default function AdminDashboard() {
     e.preventDefault();
     playClickSound();
     try {
-      const res = await fetch('http://localhost:5000/api/website/create', {
+      const res = await fetch(`${API_URL}/api/website/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -296,7 +297,7 @@ export default function AdminDashboard() {
     e.preventDefault();
     playClickSound();
     try {
-      const res = await fetch('http://localhost:5000/api/auth/register', {
+      const res = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -327,7 +328,7 @@ export default function AdminDashboard() {
 
   const loadUsersList = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/auth/users', {
+      const res = await fetch(`${API_URL}/api/auth/users`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -348,7 +349,7 @@ export default function AdminDashboard() {
   const handleSaveConfig = async () => {
     playClickSound();
     try {
-      const res = await fetch('http://localhost:5000/api/website/config', {
+      const res = await fetch(`${API_URL}/api/website/config`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -370,7 +371,7 @@ export default function AdminDashboard() {
     playClickSound();
     if (!confirm('Are you sure you want to restore default template configurations? All custom edits will be erased.')) return;
     try {
-      const res = await fetch('http://localhost:5000/api/website/reset', {
+      const res = await fetch(`${API_URL}/api/website/reset`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -393,7 +394,7 @@ export default function AdminDashboard() {
   const handleTriggerAIContent = async () => {
     playClickSound();
     try {
-      const res = await fetch('http://localhost:5000/api/ai/generate-content', {
+      const res = await fetch(`${API_URL}/api/ai/generate-content`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -437,7 +438,7 @@ export default function AdminDashboard() {
   const handleTriggerAISuggestTheme = async (styleMode) => {
     playClickSound();
     try {
-      const res = await fetch('http://localhost:5000/api/ai/suggest-theme', {
+      const res = await fetch(`${API_URL}/api/ai/suggest-theme`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -470,7 +471,7 @@ export default function AdminDashboard() {
   const handleTriggerAISEOScan = async () => {
     playClickSound();
     try {
-      const res = await fetch('http://localhost:5000/api/ai/seo-evaluator', {
+      const res = await fetch(`${API_URL}/api/ai/seo-evaluator`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -495,7 +496,7 @@ export default function AdminDashboard() {
   const handleManualPaymentSimulation = async () => {
     playClickSound();
     try {
-      await fetch('http://localhost:5000/api/website/simulate-payment', {
+      await fetch(`${API_URL}/api/website/simulate-payment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

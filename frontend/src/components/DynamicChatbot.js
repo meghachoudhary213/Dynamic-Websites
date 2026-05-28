@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageSquare, X, Send, Bot, Sparkles, HelpCircle } from 'lucide-react';
+import { API_URL } from '../config';
 
 export default function DynamicChatbot({ businessType = 'coaching', colors = {} }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -90,7 +91,7 @@ export default function DynamicChatbot({ businessType = 'coaching', colors = {} 
     setIsTyping(true);
 
     try {
-      const res = await fetch('http://localhost:5000/api/ai/chatbot', {
+      const res = await fetch(`${API_URL}/api/ai/chatbot`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text, businessType })

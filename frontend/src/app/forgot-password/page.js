@@ -6,6 +6,7 @@ import {
   Mail, Phone, Lock, Eye, EyeOff, Sun, Moon, 
   ArrowRight, Sparkles, ShieldCheck, Check, X, ShieldAlert 
 } from 'lucide-react';
+import { API_URL } from '../../config';
 
 export default function ForgotPasswordPage() {
   const [siteLightMode, setSiteLightMode] = useState(false);
@@ -81,7 +82,7 @@ export default function ForgotPasswordPage() {
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/generate-otp', {
+      const res = await fetch(`${API_URL}/api/auth/generate-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.toLowerCase(), phone })
@@ -133,7 +134,7 @@ export default function ForgotPasswordPage() {
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/reset-password', {
+      const res = await fetch(`${API_URL}/api/auth/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
