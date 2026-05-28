@@ -1357,7 +1357,7 @@ export default function AdminDashboard() {
                   <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full inline-block" />
                 </div>
                 <div className="bg-white/5 border border-white/5 text-[9px] text-slate-400 px-4 py-1.5 rounded-lg w-1/2 text-center truncate font-mono">
-                  http://localhost:3000/
+                  {typeof window !== 'undefined' ? window.location.origin + '/' : 'http://localhost:3000/'}
                 </div>
                 <button 
                   onClick={reloadPreviewIframe} 
@@ -1370,7 +1370,7 @@ export default function AdminDashboard() {
               {/* Iframe target */}
               <iframe
                 ref={iframeRef}
-                src="http://localhost:3000/"
+                src="/"
                 className="flex-1 w-full border-none bg-slate-950"
                 title="Live Jabalpur Engine Viewer"
               />
