@@ -117,9 +117,21 @@ export default function Home() {
   const [authEmail, setAuthEmail] = useState('');
   const [authPassword, setAuthPassword] = useState('');
   const [authName, setAuthName] = useState('');
+  const [authPhone, setAuthPhone] = useState('');
+  const [authOtp, setAuthOtp] = useState('');
+  const [authOtpSent, setAuthOtpSent] = useState(false);
+  const [authOtpValue, setAuthOtpValue] = useState('');
+  const [authCountdown, setAuthCountdown] = useState(0);
   const [authError, setAuthError] = useState('');
   const [authSuccess, setAuthSuccess] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (authCountdown > 0) {
+      const timer = setTimeout(() => setAuthCountdown(authCountdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [authCountdown]);
 
   useEffect(() => {
     if (authError) {
@@ -308,21 +320,113 @@ export default function Home() {
   const [paletteQuery, setPaletteQuery] = useState('');
   const [voiceTelemetryActive, setVoiceTelemetryActive] = useState(false);
   const [voiceWaves, setVoiceWaves] = useState([12, 45, 82, 34, 18, 90, 64]);
+
+  // Dynamic MERN Custom Sandbox State Parameters
+  const [outfitStyle, setOutfitStyle] = useState('Royal Traditional');
+  const [outfitSize, setOutfitSize] = useState('M');
+  const [outfitColor, setOutfitColor] = useState('#D4AF37');
+  const [outfitPreviewReport, setOutfitPreviewReport] = useState('');
+
+  const [bpRooms, setBpRooms] = useState(3);
+  const [bpFloors, setBpFloors] = useState(2);
+  const [bpWidth, setBpWidth] = useState(50);
+  const [bpPreviewReport, setBpPreviewReport] = useState('');
+
+  const [diagSugar, setDiagSugar] = useState(90);
+  const [diagBps, setDiagBps] = useState(120);
+  const [diagHeartRate, setDiagHeartRate] = useState(72);
+  const [diagReport, setDiagReport] = useState('');
+
+  const [roastTemp, setRoastTemp] = useState(200);
+  const [roastDuration, setRoastDuration] = useState(15);
+  const [roastBean, setRoastBean] = useState('Arabica Single Origin');
+  const [roastReport, setRoastReport] = useState('');
+
+  const [simDdosIp, setSimDdosIp] = useState('182.28.12.92');
+  const [simIntensity, setSimIntensity] = useState(50);
+  const [simDdosActive, setSimDdosActive] = useState(false);
   const [draggedWidgets, setDraggedWidgets] = useState([
     { id: 'w_latency', title: 'Gateway Latency', value: '18ms', desc: 'Average edge api response time.' },
     { id: 'w_tokens', title: 'LLM Active Tokens', value: '240.5K', desc: 'Realtime token consumption rate.' },
     { id: 'w_load', title: 'Container Load', value: '42%', desc: 'Tilwara-Bhedaghat edge processor.' }
   ]);
 
-  // Typing Effect for SmartEngine Hero
-  const [typingText, setTypingText] = useState('LLM Agent Orchestrator');
+  // Typing Effect for MERN SaaS Landing Pages - Custom & Dynamic
+  const [typingText, setTypingText] = useState('');
   useEffect(() => {
-    const typingPhrases = [
-      'LLM Agent Orchestrator',
-      'Autonomous Microservices',
-      'Real-time Vector Pipelines',
-      'Self-Healing Container Nodes'
-    ];
+    if (!config) return;
+    const category = config.category || (config.businessType && config.businessType.includes('_') ? config.businessType.split('_')[0] : config.businessType) || 'coaching';
+
+    const phrasesMap = {
+      coaching: [
+        'Class 12th Board Preparations',
+        'Competitive IIT-JEE/NEET Diagnostics',
+        'Real-time Biometric Parent RFID Logs',
+        'Adaptive Science & Commerce Prep'
+      ],
+      ecommerce: [
+        'Luxury Wardrobe Couture Collections',
+        'Indian Organic Silk Weavers',
+        'Animated Products & Checkout',
+        'Interactive Fashion Sandbox'
+      ],
+      real_estate: [
+        'Luxury Gated Riversides Villas',
+        'Madan Mahal Structural balance',
+        '3D Spatial Virtual Tours Builder',
+        'Regional Plot Search Engines'
+      ],
+      hospital: [
+        'Healing Frost Telemetry Care',
+        'Sanskardhani Clinical specialities',
+        'Emergency WebSocket Sirens Dispatch',
+        'Secured health report Vault'
+      ],
+      cafe: [
+        'Coffees lounge overlooking Gorges',
+        'Cozy Acoustic Music Sessions',
+        'Online dine-in Deck bookings',
+        'Artisanal Gourmet showcase'
+      ],
+      startup: [
+        'Incubating Silicon Valley start-ups',
+        'Bargi green hydro server grids',
+        'Low-overhead sandbox compilers',
+        'Dynamic MERN developers workspace'
+      ],
+      gym: [
+        'Biomechanical power gyms club',
+        'Active calorie BMI trackers',
+        'Barbell volume volume loaders',
+        'Conquering athletic targets'
+      ],
+      tourism: [
+        'Excursions down Marble Gorges',
+        'SkyGlass Travel budget engines',
+        'Tailored weekend AI travel schedules',
+        'Shoreline eco-cottages bookings'
+      ],
+      cybersecurity: [
+        'ThreatZero matrix firewall block',
+        'Simulated network pen-test grids',
+        'Zero-Trust security diagnostics',
+        'Multi-factor salt cryptographies'
+      ],
+      career: [
+        'FutureHire placement accelerators',
+        'Deep-learning resume parser score',
+        'Conversational AI mock interviews',
+        'Central India internships discovery'
+      ],
+      smartengine: [
+        'LLM Agent Orchestrator Swarms',
+        'Autonomous Microservices Deployments',
+        'Real-time Vector Pipelines',
+        'Self-Healing Container Nodes'
+      ]
+    };
+
+    const typingPhrases = phrasesMap[category] || phrasesMap.smartengine;
     let phraseIdx = 0;
     let charIdx = 0;
     let isDeleting = false;
@@ -354,7 +458,7 @@ export default function Home() {
     
     tick();
     return () => clearTimeout(timeoutId);
-  }, []);
+  }, [config]);
 
   const playClickSound = () => {
     try {
@@ -384,6 +488,37 @@ export default function Home() {
     }
   };
 
+  const handleGenerateAuthOtp = async () => {
+    playClickSound();
+    setAuthError('');
+    setAuthSuccess('');
+
+    if (!authEmail && !authPhone) {
+      setAuthError('Please provide your Email or Phone Number to request an OTP code.');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/api/auth/generate-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: authEmail.toLowerCase(), phone: authPhone })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setAuthOtpSent(true);
+        setAuthOtpValue(data.otp); // Save generated OTP
+        setAuthCountdown(60);
+        setAuthSuccess(`🔑 Simulated verification OTP successfully sent! Code: ${data.otp}`);
+      } else {
+        setAuthError(data.message || 'Failed to generate registration OTP.');
+      }
+    } catch (err) {
+      setAuthError('Could not connect to NextRank OTP server.');
+    }
+  };
+
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -402,13 +537,28 @@ export default function Home() {
       return;
     }
 
+    if (!authOtpSent) {
+      setAuthError('Please request an OTP verification code first.');
+      setSubmitting(false);
+      return;
+    }
+
+    if (!authOtp) {
+      setAuthError('Please input the 6-digit OTP code received.');
+      setSubmitting(false);
+      return;
+    }
+
     try {
       const res = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          name: authName,
           email: authEmail.toLowerCase(),
+          phone: authPhone,
           password: authPassword,
+          otp: authOtp,
           role: 'student'
         })
       });
@@ -423,6 +573,12 @@ export default function Home() {
           setShowAuthModal(false);
           setAuthEmail('');
           setAuthPassword('');
+          setAuthName('');
+          setAuthPhone('');
+          setAuthOtp('');
+          setAuthOtpSent(false);
+          setAuthOtpValue('');
+          setAuthCountdown(0);
           setAuthSuccess('');
           // Smooth scroll to the dashboard command desk
           const element = document.getElementById('dynamic_modules');
@@ -519,6 +675,12 @@ export default function Home() {
       theme.borderRadius === 'xl' ? '12px' : 
       theme.borderRadius === '2xl' ? '16px' : 
       theme.borderRadius === '3xl' ? '24px' : '8px'
+    );
+    root.style.setProperty('--font-family-custom', 
+      theme.fontFamily === 'Space Grotesk' ? 'var(--font-space-grotesk)' : 
+      theme.fontFamily === 'Outfit' ? 'var(--font-poppins)' : 
+      theme.fontFamily === 'Poppins' ? 'var(--font-poppins)' : 
+      theme.fontFamily === 'Inter' ? 'var(--font-space-grotesk)' : 'var(--font-montserrat)'
     );
   };
 
@@ -660,6 +822,33 @@ export default function Home() {
     }, 2000);
   };
 
+  const downloadReceiptSlip = () => {
+    playClickSound();
+    const receiptContent = `==================================================
+        JABALPUR SMARTENGINE - TRANSACTION RECEIPT        
+==================================================
+TRANSACTION ID : ${payTransactionId || 'TXN-81928092'}
+ROSTER PLAN    : ${payPlanName ? payPlanName.toUpperCase() : 'PREMIUM SUBSCRIPTION'}
+PAID AMOUNT    : ${payPrice || 'N/A'}
+ESCROW GATEWAY : RAZORPAY SIMULATOR V3.2
+STATUS         : CAPTURED / SUCCESSFUL
+TIMESTAMP      : ${new Date().toLocaleString()}
+CLIENT EMAIL   : ${currentUser ? currentUser.email : 'VISITOR'}
+SECURITY CODE  : SH-3829-9102-JBP
+==================================================
+         SECURE EDGE NODE JABALPUR NEXUS          
+==================================================
+THANK YOU FOR YOUR TRUST AND BUSINESS WITH SMARTENGINE!`;
+
+    const element = document.createElement("a");
+    const file = new Blob([receiptContent], { type: 'text/plain' });
+    element.href = URL.createObjectURL(file);
+    element.download = `Receipt_${payTransactionId || 'TXN-81928092'}.txt`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
   if (loading) {
     return (
       <div className="flex-1 bg-slate-950 flex flex-col items-center justify-center text-white h-screen">
@@ -691,47 +880,29 @@ export default function Home() {
   const businessType = config.category || (config.businessType && config.businessType.includes('_') ? config.businessType.split('_')[0] : config.businessType) || 'coaching';
 
   return (
-    <div className={`min-h-screen flex flex-col transition-all duration-1000 relative overflow-hidden ${businessType === 'coaching' ? 'matte-gold-theme' : ''} ${businessType === 'smartengine' ? 'smartengine-theme' : ''} ${siteLightMode ? 'light-site' : ''}`} style={{ backgroundColor: businessType === 'coaching' ? undefined : (siteLightMode ? '#fdfbf7' : theme.background) }}>
-      {/* Dynamic Animated Glass orbs & neon grid mesh for SmartEngine Platform */}
-      {businessType === 'smartengine' && (
+    <div className={`min-h-screen flex flex-col transition-all duration-1000 relative overflow-hidden ${businessType}-theme ${businessType === 'coaching' ? 'matte-gold-theme' : ''} ${siteLightMode ? 'light-site' : ''}`} style={{ backgroundColor: businessType === 'coaching' ? undefined : (siteLightMode ? '#fdfbf7' : theme.background), fontFamily: 'var(--font-family-custom), sans-serif' }}>
+      {/* Dynamic Animated Glass Orbs & Neon Grid Mesh - Premium Startup Layout */}
+      {!siteLightMode && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10 matrix-mesh">
-          <div style={{ background: `radial-gradient(circle, ${theme.primary}2a, transparent 75%)` }} className="moving-orb top-[-10%] left-[-10%] w-[700px] h-[700px]" />
-          <div style={{ background: `radial-gradient(circle, ${theme.secondary}22, transparent 75%)` }} className="moving-orb top-[30%] right-[-10%] w-[600px] h-[600px]" />
-          <div style={{ background: `radial-gradient(circle, ${theme.primary}18, transparent 70%)` }} className="moving-orb top-[60%] left-[-15%] w-[800px] h-[800px]" />
-          <div style={{ background: `radial-gradient(circle, ${theme.secondary}24, transparent 70%)` }} className="moving-orb bottom-[-5%] right-[10%] w-[700px] h-[700px]" />
+          {/* Moving colorful glow orbs */}
+          <div style={{ background: `radial-gradient(circle, ${theme.primary}25, transparent 75%)` }} className="moving-orb top-[-10%] left-[-10%] w-[700px] h-[700px]" />
+          <div style={{ background: `radial-gradient(circle, ${theme.secondary}20, transparent 75%)` }} className="moving-orb top-[30%] right-[-10%] w-[600px] h-[600px]" />
+          <div style={{ background: `radial-gradient(circle, ${theme.primary}15, transparent 70%)` }} className="moving-orb top-[60%] left-[-15%] w-[800px] h-[800px]" />
+          <div style={{ background: `radial-gradient(circle, ${theme.secondary}22, transparent 70%)` }} className="moving-orb bottom-[-5%] right-[10%] w-[700px] h-[700px]" />
 
-          {/* Glowing orbs */}
-          <div className="glow-spot-indigo top-[10%] right-[20%] w-96 h-96" />
-          <div className="glow-spot-purple top-[45%] left-[5%] w-80 h-80" />
-        </div>
-      )}
+          {/* Curated ambient glow highlights */}
+          <div style={{ background: `radial-gradient(circle, ${theme.primary}18, transparent 70%)` }} className="absolute top-[10%] right-[20%] w-96 h-96 blur-[120px] rounded-full" />
+          <div style={{ background: `radial-gradient(circle, ${theme.secondary}15, transparent 70%)` }} className="absolute top-[45%] left-[5%] w-80 h-80 blur-[120px] rounded-full" />
 
-      {/* Dynamic Animated Glass & Glow Bubbles for Matte Gold Theme */}
-      {businessType === 'coaching' && (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-          {/* Animated Ambient Glow spots */}
-          <div className="glow-spot-gold top-[-5%] left-[-5%] w-[600px] h-[600px] animate-blob-slow" />
-          <div className="glow-spot-gold top-[25%] right-[-10%] w-[550px] h-[550px] animate-blob-medium" />
-          <div className="glow-spot-gold top-[50%] left-[-10%] w-[650px] h-[650px] animate-blob-slow" />
-          <div className="glow-spot-gold top-[75%] right-[-5%] w-[500px] h-[500px] animate-blob-medium" />
-          <div className="glow-spot-gold bottom-[-5%] left-[10%] w-[600px] h-[600px] animate-blob-slow" />
-          
-          {/* Realistic 3D Glassmorphic Floating Bubbles with Gold outlines (distributed through scroll depth) */}
-          {/* Top Area (Hero & Navigation) */}
-          <div className="glass-bubble-gold top-[5%] left-[3%] w-28 h-28 animate-float-slow" />
-          <div className="glass-bubble-gold top-[14%] right-[5%] w-36 h-36 animate-float-medium" />
-          
-          {/* Mid Area 1 (Features & Stats) */}
-          <div className="glass-bubble-gold top-[28%] left-[8%] w-24 h-24 animate-float-slowest" />
-          <div className="glass-bubble-gold top-[42%] right-[10%] w-40 h-40 animate-float-slow" />
-          
-          {/* Mid Area 2 (About & Mission) */}
-          <div className="glass-bubble-gold top-[58%] left-[4%] w-32 h-32 animate-float-medium" />
-          <div className="glass-bubble-gold top-[70%] right-[8%] w-20 h-20 animate-float-slowest" />
-          
-          {/* Bottom Area (Dashboard Console & Footer) */}
-          <div className="glass-bubble-gold top-[83%] left-[10%] w-44 h-44 animate-float-slow" />
-          <div className="glass-bubble-gold top-[94%] right-[4%] w-28 h-28 animate-float-medium" />
+          {/* 3D Glassmorphic floating bubbles tailored to the active theme accent */}
+          <div style={{ border: `1px solid ${theme.primary}2d`, background: `linear-gradient(135deg, rgba(255,255,255,0.05) 0%, ${theme.primary}0a 100%)` }} className="glass-bubble-gold top-[5%] left-[3%] w-28 h-28 animate-float-slow" />
+          <div style={{ border: `1px solid ${theme.secondary}2d`, background: `linear-gradient(135deg, rgba(255,255,255,0.05) 0%, ${theme.secondary}0a 100%)` }} className="glass-bubble-gold top-[14%] right-[5%] w-36 h-36 animate-float-medium" />
+          <div style={{ border: `1px solid ${theme.primary}2d`, background: `linear-gradient(135deg, rgba(255,255,255,0.05) 0%, ${theme.primary}0a 100%)` }} className="glass-bubble-gold top-[28%] left-[8%] w-24 h-24 animate-float-slowest" />
+          <div style={{ border: `1px solid ${theme.secondary}2d`, background: `linear-gradient(135deg, rgba(255,255,255,0.05) 0%, ${theme.secondary}0a 100%)` }} className="glass-bubble-gold top-[42%] right-[10%] w-40 h-40 animate-float-slow" />
+          <div style={{ border: `1px solid ${theme.primary}2d`, background: `linear-gradient(135deg, rgba(255,255,255,0.05) 0%, ${theme.primary}0a 100%)` }} className="glass-bubble-gold top-[58%] left-[4%] w-32 h-32 animate-float-medium" />
+          <div style={{ border: `1px solid ${theme.secondary}2d`, background: `linear-gradient(135deg, rgba(255,255,255,0.05) 0%, ${theme.secondary}0a 100%)` }} className="glass-bubble-gold top-[70%] right-[8%] w-20 h-20 animate-float-slowest" />
+          <div style={{ border: `1px solid ${theme.primary}2d`, background: `linear-gradient(135deg, rgba(255,255,255,0.05) 0%, ${theme.primary}0a 100%)` }} className="glass-bubble-gold top-[83%] left-[10%] w-44 h-44 animate-float-slow" />
+          <div style={{ border: `1px solid ${theme.secondary}2d`, background: `linear-gradient(135deg, rgba(255,255,255,0.05) 0%, ${theme.secondary}0a 100%)` }} className="glass-bubble-gold top-[94%] right-[4%] w-28 h-28 animate-float-medium" />
         </div>
       )}
       {/* Ambient background light blobs */}
@@ -898,8 +1069,12 @@ export default function Home() {
               <span className="text-cyan-400 font-normal ml-1">|</span>
             </h1>
           ) : (
-            <h1 className={`text-4xl md:text-5xl lg:text-7xl font-royal royal-heading tracking-wide leading-[1.12] text-[var(--text-custom)] text-glow ${businessType === 'coaching' ? 'text-center max-w-4xl font-bold not-italic' : 'font-normal italic'}`}>
-              {hero.title}
+            <h1 className={`text-4xl md:text-5xl lg:text-7xl font-royal royal-heading tracking-wide leading-[1.12] text-[var(--text-custom)] text-glow ${businessType === 'coaching' ? 'text-center max-w-4xl font-bold not-italic' : 'font-normal'}`}>
+              {hero.title} for <br />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 font-extrabold not-italic block mt-2 text-glow">
+                {typingText}
+              </span>
+              <span className="text-cyan-400 font-normal ml-1 typing-caret"></span>
             </h1>
           )}
 
@@ -992,10 +1167,10 @@ export default function Home() {
           <section 
             key={section.id} 
             id={section.id} 
-            className="py-16 md:py-24 px-6 max-w-7xl mx-auto w-full border-t border-white/5"
+            className="py-16 md:py-24 px-6 max-w-7xl mx-auto w-full border-t border-white/5 transition-all duration-300"
           >
             <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-              <h2 className="text-3xl md:text-4xl font-royal royal-heading font-semibold tracking-wide text-[var(--text-custom)]">
+              <h2 className="text-3xl md:text-4xl font-royal royal-heading font-semibold tracking-wide text-[var(--text-custom)] uppercase">
                 {section.title}
               </h2>
               {/* Centered Royal Crown Divider */}
@@ -1009,16 +1184,17 @@ export default function Home() {
               </p>
             </div>
 
+            {/* A. Generic / Legacy Section Types */}
             {section.type === 'features' && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {section.content.map((feat, fIdx) => (
+                {(section.content || []).map((feat, fIdx) => (
                   <div key={fIdx} className="royal-card rounded-[var(--radius-custom)] p-8 space-y-4 group relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
                     <div 
                       style={{ background: `${theme.primary}12`, borderColor: 'rgba(251,191,36,0.2)' }}
                       className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border text-glow"
                     >
-                      {feat.icon}
+                      {feat.icon || '✦'}
                     </div>
                     <h3 className="text-lg font-royal royal-heading font-semibold text-white group-hover:text-amber-400 transition-colors">
                       {feat.title}
@@ -1033,7 +1209,7 @@ export default function Home() {
 
             {section.type === 'stats' && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {section.content.map((stat, sIdx) => (
+                {(section.content || []).map((stat, sIdx) => (
                   <div key={sIdx} className="royal-card rounded-[var(--radius-custom)] p-8 text-center space-y-2 relative overflow-hidden">
                     <div className="absolute -top-10 -left-10 w-24 h-24 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
                     <p className="text-4xl md:text-5xl font-royal royal-heading font-bold text-glow" style={{ color: theme.accent || '#fbbf24' }}>
@@ -1048,7 +1224,7 @@ export default function Home() {
               </div>
             )}
 
-            {section.type === 'about' && (
+            {section.type === 'about' && section.content && (
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                 <div className="lg:col-span-6 space-y-6">
                   <p className="text-slate-300 text-sm leading-relaxed font-sans tracking-wide">
@@ -1069,7 +1245,7 @@ export default function Home() {
                   <div className="royal-frame rounded-3xl shadow-2xl relative max-w-md mx-auto overflow-hidden">
                     <div className="rounded-2xl overflow-hidden aspect-video relative">
                       <img 
-                        src={section.content.image} 
+                        src={section.content.image || "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=800"} 
                         alt="Core vision graphic" 
                         className="w-full h-full object-cover" 
                       />
@@ -1079,6 +1255,624 @@ export default function Home() {
                 </div>
               </div>
             )}
+
+            {/* B. Industry-Specific Tailored Section Renderers */}
+            
+            {/* 1. Coaching / Education */}
+            {section.type === 'courses' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {(section.content || []).map((course, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 space-y-4 flex flex-col justify-between hover:scale-105 transition-transform">
+                    <div className="space-y-2">
+                      <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 font-bold uppercase tracking-wider">{course.target}</span>
+                      <h3 className="text-lg font-bold text-white leading-snug">{course.name}</h3>
+                      <p className="text-xs text-slate-400">Duration: <strong className="text-slate-300">{course.duration}</strong></p>
+                      <p className="text-xs text-slate-400">Coached by: <span className="text-[var(--primary)] font-semibold">{course.faculty}</span></p>
+                    </div>
+                    <div className="pt-4 border-t border-white/5 flex items-center justify-between">
+                      <span className="text-xl font-black text-glow text-white">{course.fees}</span>
+                      <button 
+                        onClick={() => triggerRazorpaySimulation(course.name, course.fees)}
+                        className="text-[10px] uppercase font-bold tracking-widest px-4 py-2 rounded-lg text-white font-sans bg-indigo-600 hover:bg-indigo-700 transition-colors shadow active:scale-95"
+                      >
+                        Enroll Now
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'faculty' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {(section.content || []).map((fac, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 text-center space-y-4">
+                    <div className="w-20 h-20 rounded-full overflow-hidden mx-auto border-2 border-amber-500/30 shadow-xl shadow-amber-500/5">
+                      <img src={fac.image || fac.img} alt={fac.name} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="text-md font-bold text-white">{fac.name}</h3>
+                      <p className="text-xs text-[var(--accent)] font-semibold font-mono">{fac.subject}</p>
+                      <p className="text-[10px] text-slate-400 font-medium">{fac.qual} • {fac.exp}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'results' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {(section.content || []).map((res, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 text-center space-y-3 relative overflow-hidden group">
+                    <span className="absolute top-3 right-3 text-lg opacity-40 group-hover:scale-125 transition-transform">🏆</span>
+                    <p className="text-3xl font-black text-glow" style={{ color: theme.primary || '#D4AF37' }}>{res.number}</p>
+                    <div className="w-6 h-[1px] bg-slate-500/20 mx-auto" />
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">{res.label}</h4>
+                    <p className="text-[10px] text-slate-400">{res.desc}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* 2. E-Commerce */}
+            {section.type === 'products' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {(section.content || []).map((prod, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-4 space-y-4 hover:scale-105 transition-transform flex flex-col justify-between">
+                    <div className="space-y-3">
+                      <div className="rounded-xl overflow-hidden aspect-square border border-white/5 relative">
+                        <img src={prod.image || prod.img} alt={prod.name} className="w-full h-full object-cover" />
+                        <span className="absolute top-2 right-2 bg-slate-950/80 backdrop-blur-md px-2 py-0.5 rounded text-[8px] font-bold text-amber-400 font-mono">⭐ {prod.rating}</span>
+                      </div>
+                      <h3 className="text-sm font-bold text-white leading-snug">{prod.name}</h3>
+                    </div>
+                    <div className="pt-3 border-t border-white/5 flex items-center justify-between">
+                      <span className="text-md font-black text-white">{prod.price}</span>
+                      <button 
+                        onClick={() => triggerRazorpaySimulation(prod.name, prod.price)}
+                        className="text-[10px] uppercase font-bold tracking-widest px-4 py-2 rounded-lg text-white bg-amber-500 hover:bg-amber-600 transition-colors shadow active:scale-95"
+                      >
+                        Buy Now
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'offers' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {(section.content || []).map((off, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 flex flex-col justify-between border-l-4 border-l-emerald-500">
+                    <div className="space-y-2">
+                      <span className="bg-emerald-500/10 text-emerald-400 text-[10px] font-mono px-2 py-1 rounded-full font-bold uppercase w-fit block">{off.promo}</span>
+                      <h3 className="text-2xl font-black text-white">{off.discount}</h3>
+                      <p className="text-xs text-slate-300">{off.desc}</p>
+                    </div>
+                    <div className="pt-4 mt-4 border-t border-white/5 flex items-center justify-between">
+                      <span className="text-[10px] font-mono text-slate-400 uppercase">Artisan Code: <code className="text-indigo-400 font-bold ml-1">{off.code}</code></span>
+                      <button 
+                        onClick={() => {
+                          navigator.clipboard.writeText(off.code);
+                          if (window.showToast) window.showToast('Promo Code Copied!', 'success');
+                          setSaasLogs(prev => [`💳 Promo claimed: "${off.code}" copied to clipboard.`, ...prev]);
+                        }}
+                        className="text-[9px] uppercase font-bold tracking-wider px-3.5 py-1.5 rounded bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-colors"
+                      >
+                        Copy Code
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'categories' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {(section.content || []).map((cat, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-4 hover:scale-105 transition-transform text-center space-y-3">
+                    <div className="rounded-xl overflow-hidden aspect-video border border-white/5 relative">
+                      <img src={cat.image} alt={cat.name} className="w-full h-full object-cover opacity-80" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                      <span className="absolute bottom-2 left-2 text-[9px] font-mono px-2 py-0.5 rounded-full bg-slate-950/80 text-indigo-400 font-bold">{cat.count}</span>
+                    </div>
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-200">{cat.name}</h3>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* 3. Real Estate */}
+            {section.type === 'properties' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {(section.content || []).map((prop, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-4 space-y-4 hover:scale-105 transition-transform flex flex-col justify-between">
+                    <div className="space-y-3">
+                      <div className="rounded-xl overflow-hidden aspect-video border border-white/5 relative">
+                        <img src={prop.image} alt={prop.name} className="w-full h-full object-cover" />
+                        <span className="absolute top-2 right-2 bg-slate-950/80 backdrop-blur-md px-2 py-0.5 rounded text-[8px] font-bold text-amber-500 font-mono">{prop.type}</span>
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-bold text-white leading-snug">{prop.name}</h3>
+                        <p className="text-[10px] text-slate-400 font-mono mt-1">📏 {prop.size}</p>
+                      </div>
+                    </div>
+                    <div className="pt-3 border-t border-white/5 flex items-center justify-between">
+                      <span className="text-md font-black text-amber-500">{prop.price}</span>
+                      <button 
+                        onClick={() => triggerRazorpaySimulation(`Booking Fee - ${prop.name}`, '5000')}
+                        className="text-[10px] uppercase font-bold tracking-widest px-4 py-2 rounded-lg text-white bg-amber-600 hover:bg-amber-700 transition-colors shadow active:scale-95"
+                      >
+                        Reserve Tour
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'regions' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {(section.content || []).map((reg, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 space-y-3">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-sm font-bold text-white uppercase tracking-wider">{reg.name}</h3>
+                      <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400">{reg.growth}</span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 leading-relaxed">{reg.desc}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'agents' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto w-full">
+                {(section.content || []).map((ag, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-full overflow-hidden border border-white/10 shrink-0">
+                      <img src={ag.image} alt={ag.name} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="text-sm font-bold text-white">{ag.name}</h3>
+                      <p className="text-[10px] text-amber-500 font-semibold">{ag.role}</p>
+                      <p className="text-[9px] text-slate-400">{ag.exp}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* 4. Hospital */}
+            {section.type === 'services' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {(section.content || []).map((serv, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 space-y-4">
+                    <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-xl text-cyan-400">{serv.icon}</div>
+                    <h3 className="text-md font-bold text-white">{serv.name}</h3>
+                    <p className="text-xs text-slate-400 leading-relaxed">{serv.desc}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'doctors' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto w-full">
+                {(section.content || []).map((doc, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-full overflow-hidden border border-white/10 shrink-0">
+                      <img src={doc.image} alt={doc.name} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="text-sm font-bold text-white">{doc.name}</h3>
+                      <p className="text-[10px] text-cyan-400 font-semibold">{doc.specialty}</p>
+                      <p className="text-[9px] text-slate-400">{doc.qual} • {doc.exp}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'appointments' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {(section.content || []).map((appt, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 space-y-4 flex flex-col justify-between">
+                    <div className="space-y-1">
+                      <span className={`text-[8px] font-mono font-bold px-2 py-0.5 rounded-full w-fit block uppercase ${appt.status === 'AVAILABLE' ? 'bg-emerald-500/10 text-emerald-400' : appt.status === 'LIMITED' ? 'bg-amber-500/10 text-amber-400' : 'bg-rose-500/10 text-rose-400'}`}>{appt.status}</span>
+                      <h3 className="text-sm font-bold text-white font-mono">{appt.time}</h3>
+                      <p className="text-[10px] text-slate-400">{appt.slots}</p>
+                    </div>
+                    <button 
+                      onClick={() => {
+                        playClickSound();
+                        if (appt.status === 'FULL') {
+                          alert('This appointment session is fully booked! Please select another timing.');
+                          return;
+                        }
+                        alert(`🩺 Simulated booking slot reserved: ${appt.time}. Clinical admission lead appended!`);
+                        setSaasLogs(prev => [`🩺 Outpatient appt token requested for slot: ${appt.time}.`, ...prev]);
+                      }}
+                      className="w-full text-center text-[10px] uppercase font-bold tracking-widest py-2 rounded-lg text-white bg-cyan-600 hover:bg-cyan-700 transition-colors cursor-pointer"
+                    >
+                      {appt.status === 'FULL' ? 'No Slots' : 'Reserve Slot'}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* 5. Cafe */}
+            {section.type === 'menu' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {(section.content || []).map((item, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-4 space-y-4 flex flex-col justify-between">
+                    <div className="space-y-3">
+                      <div className="rounded-xl overflow-hidden aspect-square border border-white/5 relative">
+                        <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                        <span className="absolute top-2 right-2 bg-amber-950/90 border border-amber-500/25 px-2.5 py-0.5 rounded-md text-[8px] font-bold text-amber-400 font-mono uppercase">{item.category}</span>
+                      </div>
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-200">{item.name}</h3>
+                    </div>
+                    <div className="pt-3 border-t border-white/5 flex items-center justify-between">
+                      <span className="text-sm font-black text-amber-500 font-mono">{item.price}</span>
+                      <button 
+                        onClick={() => triggerRazorpaySimulation(item.name, item.price)}
+                        className="text-[9px] uppercase font-bold tracking-wider px-3.5 py-1.5 rounded-md text-white bg-amber-700 hover:bg-amber-800 transition-colors shadow active:scale-95 cursor-pointer"
+                      >
+                        Order Online
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'gigs' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto w-full">
+                {(section.content || []).map((gig, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 space-y-4 border-l-4 border-l-amber-500 flex flex-col justify-between">
+                    <div className="space-y-1">
+                      <span className="text-[9px] font-mono font-bold text-amber-500">{gig.date} • {gig.timing}</span>
+                      <h3 className="text-md font-bold text-white">{gig.name}</h3>
+                      <p className="text-xs text-slate-400">Featuring: <strong className="text-slate-300">{gig.artist}</strong></p>
+                    </div>
+                    <button 
+                      onClick={() => alert(`🎵 Simulated reservation confirmed for: "${gig.name}" acoustic night lounge seat!`)}
+                      className="w-full text-center text-[9px] font-bold uppercase tracking-wider py-1.5 rounded bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-colors cursor-pointer"
+                    >
+                      Book Free Entry Seat
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'gallery' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {(section.content || []).map((gal, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-3 space-y-3">
+                    <div className="rounded-xl overflow-hidden aspect-video border border-white/5 relative">
+                      <img src={gal.image} alt={gal.caption} className="w-full h-full object-cover" />
+                    </div>
+                    <p className="text-[10px] font-mono text-slate-400 text-center uppercase tracking-wider">{gal.caption}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* 6. Startup */}
+            {section.type === 'programs' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {(section.content || []).map((prog, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 space-y-3 border-l-4 border-l-blue-500">
+                    <span className="text-[9px] font-mono font-bold text-blue-400">{prog.duration}</span>
+                    <h3 className="text-md font-bold text-white">{prog.name}</h3>
+                    <div className="flex justify-between items-center text-[10px] text-slate-400 pt-2 border-t border-white/5 font-mono">
+                      <span>Perks: <strong>{prog.equity}</strong></span>
+                      <span>Limit: <strong>{prog.cap}</strong></span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'mentors' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto w-full">
+                {(section.content || []).map((ment, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-sm font-bold text-white">{ment.name}</h3>
+                      <p className="text-[10px] text-blue-400 font-semibold">{ment.role}</p>
+                      <p className="text-[9px] text-slate-400 mt-1">{ment.exp} • {ment.qual}</p>
+                    </div>
+                    <button 
+                      onClick={() => alert(`🤖 Simulated 1-on-1 advisor slot booked under ${ment.name}! check server pipeline logs.`)}
+                      className="mt-4 text-[9px] uppercase font-bold tracking-wider py-1.5 rounded-lg border border-blue-500/30 text-blue-400 bg-blue-500/5 hover:bg-blue-500/10 cursor-pointer"
+                    >
+                      Book Mentoring Slot
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'showcase' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {(section.content || []).map((show, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-5 flex justify-between items-center">
+                    <div>
+                      <h3 className="text-xs font-bold text-white uppercase tracking-wider">{show.company}</h3>
+                      <p className="text-[10px] text-slate-400">{show.slogan}</p>
+                    </div>
+                    <span className="bg-blue-500/15 text-blue-400 font-mono text-[9px] font-black px-2.5 py-0.5 rounded-full">{show.status}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* 7. Gym */}
+            {section.type === 'workouts' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {(section.content || []).map((work, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 space-y-3 border-l-4 border-l-red-500">
+                    <span className="text-[9px] font-mono font-bold text-red-500">{work.frequency}</span>
+                    <h3 className="text-md font-bold text-white leading-snug">{work.name}</h3>
+                    <p className="text-xs text-slate-300">Target Lift: <strong className="text-white">{work.focus}</strong></p>
+                    <span className="bg-slate-900 border border-white/5 text-[9px] font-mono px-2 py-0.5 rounded font-bold text-slate-400 w-fit block uppercase">{work.load}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'trainers' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto w-full">
+                {(section.content || []).map((tr, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-sm font-bold text-white">{tr.name}</h3>
+                      <p className="text-[10px] text-red-500 font-semibold">{tr.role}</p>
+                      <p className="text-[9px] text-slate-400 mt-1 font-mono">{tr.certs} • {tr.exp}</p>
+                    </div>
+                    <button 
+                      onClick={() => alert(`🏋️ Dynamic training consult requested under coach ${tr.name}!`)}
+                      className="mt-4 text-[9px] uppercase font-bold tracking-wider py-1.5 rounded-lg border border-red-500/30 text-red-500 bg-red-500/5 hover:bg-red-500/10 cursor-pointer"
+                    >
+                      Inquire Consulting
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'plans' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {(section.content || []).map((pl, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 flex flex-col justify-between hover:scale-105 transition-transform">
+                    <div className="space-y-3">
+                      <span className="text-[9px] font-mono font-bold text-slate-500 uppercase tracking-widest block">MEMBERSHIP PROGRAM</span>
+                      <h3 className="text-lg font-black text-white leading-normal uppercase">{pl.tier}</h3>
+                      <p className="text-xs text-slate-400 leading-relaxed font-mono">{pl.perks}</p>
+                    </div>
+                    <div className="pt-4 border-t border-white/5 flex items-center justify-between">
+                      <span className="text-lg font-black text-red-500">{pl.price}</span>
+                      <button 
+                        onClick={() => triggerRazorpaySimulation(pl.tier, pl.price)}
+                        className="text-[9px] uppercase font-bold tracking-wider px-4 py-2 rounded-lg text-white bg-red-600 hover:bg-red-700 transition-colors shadow active:scale-95 cursor-pointer"
+                      >
+                        Join FlexArena
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* 8. Tourism */}
+            {section.type === 'packages' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {(section.content || []).map((pkg, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 flex flex-col justify-between hover:scale-102 transition-transform">
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-start">
+                        <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-sky-500/10 text-sky-400 font-bold uppercase">{pkg.timing}</span>
+                      </div>
+                      <h3 className="text-lg font-bold text-white">{pkg.name}</h3>
+                      <p className="text-xs text-slate-300 font-medium">Highlight: <span className="text-sky-400">{pkg.highlight}</span></p>
+                    </div>
+                    <div className="pt-4 mt-4 border-t border-white/5 flex items-center justify-between">
+                      <span className="text-md font-black text-white">{pkg.price}</span>
+                      <button 
+                        onClick={() => triggerRazorpaySimulation(pkg.name, pkg.price)}
+                        className="text-[9px] uppercase font-bold tracking-widest px-4 py-2 rounded bg-sky-600 hover:bg-sky-700 text-white transition-colors cursor-pointer"
+                      >
+                        Book Expedition
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'stays' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {(section.content || []).map((sty, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-4 space-y-4 hover:scale-105 transition-transform flex flex-col justify-between">
+                    <div className="space-y-2">
+                      <h3 className="text-sm font-bold text-white leading-snug">{sty.hotel}</h3>
+                      <p className="text-[10px] text-slate-400">Location: <strong className="text-slate-300">{sty.location}</strong></p>
+                      <p className="text-[10px] text-sky-400 font-bold">⭐ {sty.rating}</p>
+                    </div>
+                    <div className="pt-3 border-t border-white/5 flex items-center justify-between">
+                      <span className="text-sm font-black text-sky-500 font-mono">{sty.rate}</span>
+                      <button 
+                        onClick={() => triggerRazorpaySimulation(sty.hotel, sty.rate)}
+                        className="text-[9px] uppercase font-bold tracking-wider px-3.5 py-1.5 rounded text-white bg-sky-600 hover:bg-sky-700 cursor-pointer"
+                      >
+                        Book Stay
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'itineraries' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {(section.content || []).map((iti, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 space-y-3">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-xs font-bold text-white uppercase tracking-wider leading-snug">{iti.title}</h3>
+                      <span className="bg-sky-500/10 text-sky-400 font-mono text-[9px] font-bold px-2 py-0.5 rounded-full shrink-0">{iti.duration}</span>
+                    </div>
+                    <div className="w-full bg-white/2 border border-white/5 rounded-lg p-3 text-[10px] text-slate-400 font-mono leading-normal">
+                      <strong>Route Mapped:</strong> <span className="text-slate-300">{iti.route}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* 9. Cybersecurity */}
+            {section.type === 'quizzes' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto w-full">
+                {(section.content || []).map((quiz, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 space-y-4">
+                    <span className="text-[8px] bg-emerald-500/10 text-emerald-400 font-mono px-2 py-0.5 rounded-full block w-fit font-black uppercase">Cyber Matrix Question {idx + 1}</span>
+                    <h3 className="text-sm font-bold text-white leading-relaxed font-mono">{quiz.q}</h3>
+                    <div className="space-y-2 pt-2">
+                      {quiz.options.map((opt, oIdx) => (
+                        <button
+                          key={oIdx}
+                          onClick={() => {
+                            playClickSound();
+                            const isCorrect = oIdx === quiz.correct;
+                            if (isCorrect) {
+                              alert('🛡️ ACCESS KEY GRANTED! Your security response matches secure coordinates.');
+                              setSaasLogs(prev => [`🛡️ Quiz match: Question ${idx+1} completed successfully.`, ...prev]);
+                            } else {
+                              alert('❌ KEY DENIED! Network firewall bypass parameters mismatch.');
+                            }
+                          }}
+                          className="w-full text-left p-3 rounded-lg bg-white/2 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/30 text-[11px] text-slate-300 transition-colors font-mono cursor-pointer"
+                        >
+                          {oIdx + 1}. {opt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'tips' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {(section.content || []).map((tip, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 space-y-2">
+                    <h3 className="text-xs font-bold text-emerald-400 flex items-center gap-1.5 uppercase font-mono">
+                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping shrink-0" />
+                      {tip.title}
+                    </h3>
+                    <p className="text-[11px] text-slate-400 leading-relaxed font-sans">{tip.desc}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'threats' && (
+              <div className="royal-card rounded-[var(--radius-custom)] p-6 max-w-3xl mx-auto w-full space-y-4">
+                <span className="text-[8px] bg-rose-500/10 text-rose-400 font-mono px-2 py-0.5 rounded-full font-bold uppercase tracking-widest w-fit block">Mitigated Intrusion Registry</span>
+                <div className="space-y-2">
+                  {(section.content || []).map((thr, idx) => (
+                    <div key={idx} className="p-3.5 bg-slate-950 border border-white/5 rounded-xl flex items-center justify-between font-mono text-[10px] text-slate-400 hover:bg-slate-900 transition-all">
+                      <div>
+                        <p className="font-bold text-slate-200">{thr.threat} <span className="text-[8px] bg-rose-500/10 text-rose-500 px-1.5 py-0.5 rounded uppercase font-black ml-1.5">{thr.action}</span></p>
+                        <p className="text-[9px] text-slate-500 mt-1">{thr.source} • {thr.time}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 10. Career */}
+            {section.type === 'internships' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {(section.content || []).map((intern, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-5 space-y-4 flex flex-col justify-between">
+                    <div className="space-y-2 text-left">
+                      <span className="bg-indigo-500/10 text-indigo-400 text-[8px] font-mono px-2 py-0.5 rounded-full font-black uppercase">{intern.company}</span>
+                      <h3 className="text-xs font-bold text-white uppercase tracking-wider leading-snug">{intern.title}</h3>
+                      <p className="text-[10px] text-slate-400">Stipend: <strong className="text-slate-300">{intern.stipend}</strong></p>
+                      <p className="text-[9px] text-slate-500 font-mono">📍 {intern.location}</p>
+                    </div>
+                    <button 
+                      onClick={() => alert(`💼 Simulated application filed for "${intern.title}" internship at ${intern.company}! check terminal logs.`)}
+                      className="w-full text-center text-[9px] font-bold uppercase tracking-wider py-1.5 rounded bg-indigo-600 hover:bg-indigo-700 text-white transition-all cursor-pointer"
+                    >
+                      Apply Now
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'skills' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {(section.content || []).map((sk, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 space-y-2 border-l-4 border-l-indigo-500">
+                    <span className="text-[9px] font-mono font-bold text-indigo-400 uppercase tracking-widest">{sk.level} Skill</span>
+                    <h3 className="text-md font-bold text-white">{sk.name}</h3>
+                    <p className="text-[10px] text-slate-400">Duration: <strong className="text-slate-300">{sk.duration}</strong></p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'success' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {(section.content || []).map((sc, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-6 space-y-3">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-xs font-bold text-white uppercase tracking-wider font-sans">{sc.student}</h3>
+                      <span className="bg-indigo-500/10 text-indigo-400 font-mono text-[9px] font-black px-2 py-0.5 rounded-full shrink-0">{sc.package}</span>
+                    </div>
+                    <p className="text-[9px] text-slate-500 font-mono leading-none">Placed at: <span className="text-amber-500 font-bold">{sc.placed}</span></p>
+                    <div className="bg-white/2 border border-white/5 rounded-lg p-3 text-[10px] text-slate-400 italic font-sans leading-normal">
+                      "{sc.feedback}"
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* 11. SmartEngine Flagship */}
+            {section.type === 'analytics' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {(section.content || []).map((an, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-5 space-y-2">
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider font-mono">{an.label}</h3>
+                    <div className="flex justify-between items-center text-[10px] text-slate-400 font-mono pt-1">
+                      <span>Core Load: <strong className="text-indigo-400">{an.load}</strong></span>
+                      <span>Swarms: <strong className="text-cyan-400">{an.activeAgents}</strong></span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {section.type === 'workflows' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {(section.content || []).map((wf, idx) => (
+                  <div key={idx} className="royal-card rounded-[var(--radius-custom)] p-5 space-y-3 border-l-4 border-l-indigo-500">
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider font-mono">{wf.task}</h3>
+                    <div className="flex justify-between items-center text-[9px] text-slate-400 font-mono pt-1">
+                      <span>Efficiency: <strong className="text-emerald-400">{wf.efficiency}</strong></span>
+                      <span>Uptime: <strong className="text-indigo-400">{wf.uptime}</strong></span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
           </section>
         );
       })}
@@ -1089,2374 +1883,963 @@ export default function Home() {
           ======================================================== */}
       {((businessType !== 'coaching') || currentUser) && (
         <section id="dynamic_modules" className="py-20 md:py-24 px-6 max-w-7xl mx-auto w-full border-t border-white/5 relative">
-        <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-          <div className="inline-block bg-[var(--primary)]/10 text-[var(--primary)] font-bold text-[10px] tracking-widest px-3 py-1 rounded-full uppercase font-sans">
-            Active Operating System Module
+          {/* Top telemetry and header controls */}
+          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+            <div className="inline-block bg-[var(--primary)]/10 text-[var(--primary)] font-bold text-[10px] tracking-widest px-3 py-1 rounded-full uppercase font-mono border border-[var(--primary)]/20 animate-pulse">
+              ⚡ ACTIVE WORKSPACE CONSOLE NODE
+            </div>
+            <h2 className="text-3xl md:text-5xl font-royal royal-heading font-semibold tracking-wide text-[var(--text-custom)]">
+              Smart Interactive Command Desk
+            </h2>
+            {/* Centered Royal Crown Divider */}
+            <div className="flex items-center justify-center gap-3 my-2 opacity-80 pointer-events-none">
+              <span className="h-[1px] w-12 bg-gradient-to-r from-transparent to-amber-500/50"></span>
+              <span className="text-amber-500/70 text-[10px] tracking-widest font-sans">✦ ♛ ✦</span>
+              <span className="h-[1px] w-12 bg-gradient-to-l from-transparent to-amber-500/50"></span>
+            </div>
+            <p className="text-slate-400 text-xs md:text-sm font-sans tracking-wide max-w-xl mx-auto">
+              Administrate and scale operations dynamically. Choose from 5 active modules, drag widgets, run local AI sandboxes, and simulate payments for **{theme.name}**.
+            </p>
           </div>
-          <h2 className="text-3xl md:text-4xl font-royal royal-heading font-semibold tracking-wide text-[var(--text-custom)]">
-            Smart Interactive Command Desk
-          </h2>
-          {/* Centered Royal Crown Divider */}
-          <div className="flex items-center justify-center gap-3 my-2 opacity-80 pointer-events-none">
-            <span className="h-[1px] w-12 bg-gradient-to-r from-transparent to-amber-500/50"></span>
-            <span className="text-amber-500/70 text-[10px] tracking-widest font-sans">✦ ♛ ✦</span>
-            <span className="h-[1px] w-12 bg-gradient-to-l from-transparent to-amber-500/50"></span>
-          </div>
-          <p className="text-slate-400 text-xs md:text-sm font-sans tracking-wide">
-            Experience the custom interactive widgets programmed for **{theme.name}** ({theme.themeIdea || businessType.toUpperCase()}).
-          </p>
-        </div>
 
-        {feedbackMsg && (
-          <div className="max-w-2xl mx-auto mb-8 bg-emerald-500/10 border border-emerald-500/30 p-4 rounded-xl text-emerald-300 text-xs text-center animate-pulse">
-            {feedbackMsg}
-          </div>
-        )}
-
-        {/* 1. NextRank Institute (Coaching up to 12th) */}
-        {businessType === 'coaching' && (
-          <div className="space-y-16 animate-in fade-in duration-1000 font-poppins">
-            
-            {/* Live Stats Counters */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {[
-                { label: "Students Enrolled", value: "12,500+", color: "from-blue-600 to-indigo-600", icon: "👥" },
-                { label: "AIR Selections", value: "42+", color: "from-amber-500 to-orange-600", icon: "🏆" },
-                { label: "Mock Tests Conducted", value: "1,250+", color: "from-cyan-500 to-teal-500", icon: "📝" },
-                { label: "Expert Faculty", value: "80+", color: "from-purple-500 to-indigo-500", icon: "👨‍🏫" }
-              ].map((stat, sIdx) => (
-                <div key={sIdx} className="royal-card p-6 text-center space-y-2 relative overflow-hidden rounded-2xl border border-white/10 shadow-[0_0_20px_rgba(79,70,229,0.08)] bg-white/[0.04]">
-                  <div className="absolute top-0 right-0 w-12 h-12 bg-white/5 rounded-full blur-lg" />
-                  <span className="text-3xl block">{stat.icon}</span>
-                  <p className="text-3xl font-extrabold text-glow font-poppins text-white">{stat.value}</p>
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{stat.label}</p>
+          {/* Active Command Palette Overlay trigger */}
+          {searchPaletteOpen && (
+            <div className="fixed inset-0 z-50 flex items-start justify-center bg-slate-950/80 backdrop-blur-sm p-4 pt-[10vh] animate-in fade-in duration-200">
+              <div className="max-w-lg w-full bg-[#0a081a] border border-[var(--primary)]/30 rounded-2xl shadow-2xl p-4 space-y-4">
+                <div className="flex items-center gap-2 border-b border-white/10 pb-3">
+                  <Search className="w-4 h-4 text-[var(--primary)]" />
+                  <input 
+                    type="text" 
+                    placeholder={`Search actions in ${theme.name} (e.g. scale, sandbox, vault, salt)...`} 
+                    value={paletteQuery}
+                    onChange={(e) => setPaletteQuery(e.target.value)}
+                    className="w-full bg-transparent text-xs text-white focus:outline-none placeholder-slate-600 font-mono"
+                    autoFocus
+                  />
+                  <button 
+                    onClick={() => setSearchPaletteOpen(false)}
+                    className="text-[9px] bg-white/5 border border-white/10 px-2 py-1 rounded text-slate-400 hover:text-white"
+                  >
+                    ESC
+                  </button>
                 </div>
-              ))}
-            </div>
 
-            {/* Courses Section */}
-            <div id="courses" className="space-y-6">
-              <div className="text-center space-y-2">
-                <h3 className="text-2xl font-royal royal-heading font-bold text-white text-glow">Our Premium Learning Tracks</h3>
-                <p className="text-slate-400 text-xs max-w-md mx-auto">Explore high-fidelity digital classrooms designed to bridge students towards competitive success.</p>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                {coachingCourses.map((course) => (
-                  <div key={course.id} className="royal-card p-5 flex flex-col justify-between h-[290px] rounded-2xl relative border border-white/5 hover:border-[var(--accent)]/30 transition-all group overflow-hidden bg-white/[0.04]">
-                    <div className="absolute -top-12 -right-12 w-24 h-24 bg-[var(--primary)]/10 rounded-full blur-xl group-hover:bg-[var(--accent)]/20 transition-all" />
-                    <div>
-                      <span className="text-[9px] bg-[var(--primary)]/20 text-indigo-400 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">{course.target}</span>
-                      <h4 className="font-poppins font-bold text-sm text-white mt-3 group-hover:text-[var(--accent)] transition-all">{course.name}</h4>
-                      <p className="text-slate-400 text-[10px] mt-2">Duration: <strong className="text-slate-200">{course.duration}</strong></p>
-                      <p className="text-slate-400 text-[10px]">Faculty: <strong className="text-slate-200">{course.faculty}</strong></p>
-                    </div>
-                    <div className="border-t border-white/5 pt-3 mt-4 flex items-center justify-between">
-                      <span className="font-mono text-xs font-black text-emerald-400">{course.fees}</span>
-                      <button 
-                        onClick={() => {
-                          if (!currentUser) {
-                            playClickSound();
-                            setAuthTab('login');
-                            setAuthError('');
-                            setAuthSuccess('');
-                            setShowAuthModal(true);
-                          } else {
-                            triggerRazorpaySimulation(`${course.name} Enrollment`, course.fees);
-                          }
-                        }}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[9px] px-3 py-1.5 rounded-lg transition-transform active:scale-95 shadow"
-                      >
-                        Enroll Now
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Smart Features Grid */}
-            <div id="features" className="space-y-6">
-              <div className="text-center space-y-2">
-                <h3 className="text-2xl font-royal royal-heading font-bold text-white text-glow">Smart Glass Education Features</h3>
-                <p className="text-slate-400 text-xs max-w-md mx-auto">AI-powered analytics and attendance systems configured to maximize retention.</p>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                  { title: "AI Rank Predictor", desc: "Input mock scores to forecast competitive IIT-JEE and NEET national percentiles instantly.", icon: "🤖" },
-                  { title: "Smart Attendance", desc: "Live biometric RFID tracking grids logged straight to parent nodes with microsecond latency.", icon: "📅" },
-                  { title: "Online Mock Tests", desc: "Adaptive MCQ equation diagnostic series mapping conceptual weaknesses dynamically.", icon: "📝" },
-                  { title: "AI Study Planner", desc: "Calculate targeted revision routines and study hour timetables personalized to weak areas.", icon: "🧠" },
-                  { title: "Weak Subject Analyzer", desc: "Heatmap performance algorithms identifying physics or chemistry deficit nodes.", icon: "📊" },
-                  { title: "Performance Heatmaps", desc: "Visual rating analytics tracking attendance curves and comparative state rank trends.", icon: "🔥" }
-                ].map((feat, idx) => (
-                  <div key={idx} className="royal-card p-6 rounded-2xl border border-white/5 space-y-3 relative overflow-hidden group hover:border-[var(--accent)]/30 bg-white/[0.04]">
-                    <div className="absolute top-0 right-0 w-12 h-12 bg-white/5 rounded-full blur-md" />
-                    <span className="text-3xl block group-hover:scale-110 transition-transform">{feat.icon}</span>
-                    <h4 className="font-poppins font-bold text-sm text-white">{feat.title}</h4>
-                    <p className="text-slate-400 text-xs leading-relaxed">{feat.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Video Demo Section */}
-            <div id="video_demo" className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center border-t border-white/5 pt-12">
-              <div className="lg:col-span-5 space-y-4">
-                <span className="text-[10px] text-amber-500 font-bold uppercase tracking-widest block font-mono">Lecture Preview Sandbox</span>
-                <h3 className="text-2xl font-royal royal-heading font-bold text-white text-glow">Interactive Video Lecture Classroom</h3>
-                <p className="text-slate-400 text-xs leading-relaxed font-sans">
-                  Savor full high-fidelity visual preview lectures loaded straight from our physics, chemistry, and mathematics databases. Click on alternate tracks to preview syllabus components immediately!
-                </p>
-                <div className="space-y-2 pt-2">
+                <div className="space-y-1.5 max-h-[220px] overflow-y-auto pr-1">
                   {[
-                    { label: "Physics - Electromagnetism Class 12", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
-                    { label: "Chemistry - Organic Benzene Synthesis", url: "https://www.w3schools.com/html/movie.mp4" }
-                  ].map((vid, idx) => (
+                    { cmd: 'Audit and enforce password salts', desc: 'Secure passwords using factor-10 Bcrypt hashing keys.', keywords: 'salts hash secure' },
+                    { cmd: 'Simulate high-concurrency payment', desc: 'Trigger secure Razorpay mock checkout logs.', keywords: 'payment razorpay simulate' },
+                    { cmd: 'Clean local cache vector vault', desc: 'Purge file schema tables index listings.', keywords: 'vault purge clean' },
+                    { cmd: 'Scale active Edge cloud container', desc: 'Spin up self-optimizing microservices cores.', keywords: 'scale server cloud' }
+                  ].filter(item => !paletteQuery || item.cmd.toLowerCase().includes(paletteQuery.toLowerCase()) || item.keywords.toLowerCase().includes(paletteQuery.toLowerCase())).map((item, idx) => (
                     <button
                       key={idx}
-                      onClick={() => setSelectedVideo(vid.url)}
-                      className={`w-full text-left p-3 rounded-xl border text-xs font-semibold transition-all ${
-                        selectedVideo === vid.url 
-                          ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-white' 
-                          : 'border-white/5 bg-white/5 text-slate-400 hover:bg-white/10'
-                      }`}
+                      onClick={() => {
+                        playClickSound();
+                        setSearchPaletteOpen(false);
+                        setSaasLogs(prev => [`⚡ CommandPalette executed: "${item.cmd}" applied successfully.`, ...prev]);
+                        if (window.showToast) window.showToast(`Executed: ${item.cmd}`, 'success');
+                      }}
+                      className="w-full flex items-center justify-between text-left p-3 rounded-xl bg-white/2 hover:bg-[var(--primary)]/10 border border-white/5 hover:border-[var(--primary)]/30 transition-all"
                     >
-                      🎥 {vid.label}
+                      <div>
+                        <p className="text-xs font-semibold text-white">{item.cmd}</p>
+                        <p className="text-[9px] text-slate-500">{item.desc}</p>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
                     </button>
                   ))}
                 </div>
               </div>
-              <div className="lg:col-span-7">
-                <div className="royal-frame rounded-2xl overflow-hidden shadow-2xl relative">
-                  <video 
-                    src={selectedVideo} 
-                    controls 
-                    className="w-full rounded-xl opacity-90 hover:opacity-100 transition-opacity aspect-video object-cover"
-                  />
-                  <div className="absolute top-4 left-4 bg-slate-950/80 border border-white/10 rounded-lg px-3 py-1 text-[10px] text-[var(--accent)] font-mono tracking-wider font-bold">
-                    NextRank Glass Player
-                  </div>
-                </div>
-              </div>
             </div>
+          )}
 
-            {/* Faculty Section */}
-            <div id="faculty" className="space-y-6 border-t border-white/5 pt-12">
-              <div className="text-center space-y-2">
-                <h3 className="text-2xl font-royal royal-heading font-bold text-white text-glow">Sanskardhani's Elite Mentors</h3>
-                <p className="text-slate-400 text-xs max-w-md mx-auto">Learn from board-certified engineering and medical educators guiding competitive prep nodes.</p>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                {coachingFaculty.map((fac, idx) => (
-                  <div key={idx} className="royal-card rounded-2xl overflow-hidden border border-white/5 relative group shadow-lg text-center p-6 space-y-4 bg-white/[0.04]">
-                    <div className="w-24 h-24 rounded-full overflow-hidden mx-auto border-2 border-amber-500/30 group-hover:border-amber-500/60 transition-all shadow-lg relative">
-                      <img src={fac.img} alt={fac.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                    </div>
-                    <div className="space-y-1">
-                      <h4 className="font-poppins font-bold text-sm text-white">{fac.name}</h4>
-                      <p className="text-[10px] text-[var(--accent)] font-bold tracking-widest font-mono uppercase">{fac.subject} specialist</p>
-                      <p className="text-[9px] text-slate-400">Exp: <strong className="text-slate-300">{fac.exp}</strong> | Qual: <strong className="text-slate-300">{fac.qual}</strong></p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Student Leaderboard Results Section */}
-            <div id="results" className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start border-t border-white/5 pt-12">
-              {/* Leaderboard */}
-              <div className="lg:col-span-7 space-y-4">
-                <h4 className="font-royal royal-heading font-bold text-lg text-white flex items-center gap-2 text-glow">
-                  🏆 NextRank AIR National Leaderboard UI
-                </h4>
-                <p className="text-slate-400 text-xs font-sans">Active ranking scores tracked from real-time database mocks.</p>
-                <div className="space-y-2">
-                  {[
-                    { rank: "AIR 12", name: "Rahul Deshmukh (JEE Advanced)", percentile: "99.98%", score: "342/360" },
-                    { rank: "AIR 28", name: "Kritika Soni (NEET Medical)", percentile: "99.95%", score: "708/720" },
-                    { rank: "AIR 84", name: "Divyansh Patel (JEE Main)", percentile: "99.88%", score: "312/360" }
-                  ].map((res, rIdx) => (
-                    <div key={rIdx} className="bg-white/[0.04] border border-white/5 p-4 rounded-xl flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-3">
-                        <span className="w-12 text-center bg-amber-500/20 text-amber-400 font-bold px-2 py-0.5 rounded font-mono">{res.rank}</span>
-                        <span className="font-poppins font-semibold text-white">{res.name}</span>
-                      </div>
-                      <div className="flex gap-4 font-mono text-[10px]">
-                        <span className="text-[var(--accent)]">Percentile: <strong>{res.percentile}</strong></span>
-                        <span className="text-emerald-400">Score: <strong>{res.score}</strong></span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Testimonials */}
-              <div className="lg:col-span-5 space-y-4">
-                <h4 className="font-royal royal-heading font-bold text-lg text-white text-glow">🌟 Parent & Student Testimonials</h4>
-                <div className="royal-card p-6 rounded-2xl border border-white/5 relative overflow-hidden space-y-4 bg-white/[0.04]">
-                  <div className="absolute top-4 right-4 text-5xl text-white/5 font-serif select-none pointer-events-none">“</div>
-                  <p className="text-slate-300 text-xs italic leading-relaxed font-sans">
-                    "NextRank Institute has completely changed my son's approach to JEE preparations. The smart rank predictors and immediate doubt assistances solved equations within minutes. Jabalpur is proud to have such a futuristic educational ecosystem."
-                  </p>
-                  <div className="border-t border-white/5 pt-3 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white text-xs">V</div>
-                    <div>
-                      <p className="font-poppins font-bold text-xs text-white">Vijay Patel</p>
-                      <p className="text-[9px] text-slate-500">Parent of Aarav Patel, Class 12</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* ========================================================
-                NEXUS SMART INTERACTIVE COMMAND DESK
-                Features 9 operational management modules & 4 AI systems
-                ======================================================== */}
-            <div className="border-t border-white/5 pt-12 space-y-6">
-              <div className="text-center space-y-2">
-                <span className="text-[9px] bg-indigo-500/10 text-indigo-400 font-bold px-3 py-1 rounded-full uppercase tracking-wider font-mono">
-                  Smart Command Dashboard
-                </span>
-                <h3 className="text-2xl font-royal royal-heading font-bold text-white text-glow">Smart Interactive Command Desk</h3>
-                <p className="text-slate-400 text-xs max-w-md mx-auto">
-                  Administrate NextRank operations dynamically. Choose from 9 operational modules and utilize advanced local AI features!
-                </p>
-              </div>
-
-              {/* Tab Navigation for 9 Modules */}
-              <div className="flex bg-slate-900/40 border border-white/5 p-1 rounded-xl gap-1 overflow-x-auto scrollbar-none whitespace-nowrap">
-                {[
-                  { id: 'student_portal', label: '🎓 Student Deck' },
-                  { id: 'students', label: 'Students Admin' },
-                  { id: 'faculty', label: 'Faculty' },
-                  { id: 'courses', label: 'Courses' },
-                  { id: 'tests', label: 'Test Builder' },
-                  { id: 'attendance', label: 'RFID Log' },
-                  { id: 'notes', label: 'Notes Library' },
-                  { id: 'fees', label: 'Fees Manager' },
-                  { id: 'admissions', label: 'Admissions' },
-                  { id: 'analytics', label: 'AI Analytics' }
-                ].filter(tab => {
-                  if (!currentUser) return true; // Show all if not logged in
-                  if (currentUser.role === 'admin') return true; // Show all to admin
-                  // For student, restrict to learning modules only
-                  return ['student_portal', 'courses', 'notes', 'faculty', 'analytics'].includes(tab.id);
-                }).map(tab => (
+          {/* Main split work dashboard layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative z-10">
+            
+            {/* Left 8-Columns: Interactive Modules */}
+            <div className="lg:col-span-8 space-y-6">
+              
+              {/* Dynamic Workspace tabs (Vercel styled) */}
+              <div className="flex border-b border-white/5 pb-2 gap-2 overflow-x-auto whitespace-nowrap scrollbar-none font-mono text-[10px] font-bold uppercase tracking-wider">
+                {(businessType === 'smartengine'
+                  ? [
+                      { id: 'analytics', label: 'Telemetry Desk' },
+                      { id: 'workflows', label: 'AI Workflows' },
+                      { id: 'recommendations', label: 'Insights & Recs' },
+                      { id: 'files', label: 'Vector Vault' },
+                      { id: 'team', label: 'Collaborators Roster' }
+                    ]
+                  : [
+                      { id: 'analytics', label: 'Telemetry Desk' },
+                      { id: 'sandbox', label: 'Local AI Sandbox' },
+                      { id: 'files', label: 'Vector Vault' },
+                      { id: 'team', label: 'Collaborators Roster' }
+                    ]
+                ).map(tab => (
                   <button
                     key={tab.id}
-                    onClick={() => { playClickSound(); setCoachingTab(tab.id); }}
-                    className={`px-3 py-2 rounded-lg text-[10px] font-bold uppercase transition-all ${
-                      coachingTab === tab.id 
-                        ? 'bg-indigo-600 text-white shadow-lg' 
-                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    onClick={() => { playClickSound(); setSaasTab(tab.id); }}
+                    className={`flex items-center gap-1.5 px-4.5 py-2.5 rounded-xl transition-all border cursor-pointer ${
+                      saasTab === tab.id
+                        ? 'bg-[var(--primary)]/10 text-[var(--primary)] border-[var(--primary)]/30 shadow-inner font-black'
+                        : 'text-slate-400 border-transparent hover:text-slate-200'
                     }`}
                   >
                     {tab.label}
                   </button>
                 ))}
+
+                {/* Command Palette trigger */}
+                <button
+                  onClick={() => { playClickSound(); setSearchPaletteOpen(true); }}
+                  className="ml-auto bg-[var(--primary)]/5 hover:bg-[var(--primary)]/10 border border-[var(--primary)]/20 hover:border-[var(--primary)]/40 px-3 py-1.5 rounded-xl text-[9px] font-mono text-[var(--primary)] flex items-center gap-1 transition-all"
+                >
+                  <Search className="w-3 h-3" /> COMMAND PANEL (⌘K)
+                </button>
               </div>
 
-              {/* Tab content area */}
-              <div className="royal-card p-6 rounded-2xl border border-white/5 min-h-[300px] animate-in fade-in duration-300 bg-white/[0.04]">
-                
-                {/* 0. STUDENT DECK PORTAL */}
-                {coachingTab === 'student_portal' && (
-                  <div>
-                    {!currentUser ? (
-                      /* Beautiful Locked Glassmorphism Dashboard Preview */
-                      <div className="max-w-2xl mx-auto bg-[#0d0d0d]/80 border border-amber-500/20 rounded-3xl p-8 space-y-6 backdrop-blur-md text-center relative overflow-hidden min-h-[340px] flex flex-col justify-center items-center shadow-2xl">
-                        <div className="absolute -top-16 -right-16 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-                        <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl mb-2 animate-float">
-                          🔒
-                        </div>
-                        <div className="space-y-2 max-w-md">
-                          <h4 className="text-xl font-bold text-white font-poppins tracking-wide">NextRank Student Deck Locked</h4>
-                          <p className="text-slate-400 text-xs font-sans leading-relaxed">
-                            Milestone Portal is currently locked. Please use the <strong className="text-amber-400">"Login"</strong> option in the top navbar to authenticate and unlock your personalized AI studies metrics, interactive mock series, and RFID gate attendance logs.
-                          </p>
-                        </div>
-                        <button
-                          onClick={() => {
-                            playClickSound();
-                            setAuthTab('login');
-                            setAuthError('');
-                            setAuthSuccess('');
-                            setShowAuthModal(true);
-                          }}
-                          className="mt-4 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-black text-xs px-6 py-3 rounded-xl transition-all shadow-lg active:scale-95 uppercase tracking-wider"
-                        >
-                          Authenticate Portal
-                        </button>
+              {/* TAB 1: TELEMETRY DESK */}
+              {saasTab === 'analytics' && (
+                <div className="space-y-6 animate-in fade-in duration-300">
+                  
+                  {/* Draggable layout telemetry cards row */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {getIndustryWidgets().map((widget, idx) => (
+                      <div
+                        key={widget.id}
+                        onClick={() => {
+                          playClickSound();
+                          // Circular swap metrics sequence on click
+                          const list = getIndustryWidgets();
+                          setSaasLogs(prev => [`⚡ Draggable widget click: swapped layout index for "${widget.title}".`, ...prev]);
+                        }}
+                        className="saas-card p-5 rounded-2xl border relative overflow-hidden group shadow-lg cursor-pointer hover:border-[var(--primary)]/30"
+                      >
+                        <div className="absolute top-0 right-0 w-12 h-12 bg-[var(--primary)]/5 rounded-full blur-lg" />
+                        <span className="text-[8px] text-slate-500 uppercase font-bold tracking-wider font-mono block">
+                          {widget.title} (Click to Drag-Swap)
+                        </span>
+                        <h4 className="text-2xl font-mono font-black text-white mt-1 group-hover:text-[var(--primary)] transition-colors">
+                          {widget.value}
+                        </h4>
+                        <p className="text-[10px] text-slate-400 leading-normal mt-1">
+                          {widget.desc}
+                        </p>
                       </div>
-                    ) : (
-                      /* Active Student Dashboard Portal */
-                      <div className="space-y-8 animate-in fade-in duration-500">
-                        {/* Welcome Header */}
-                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900/40 border border-white/5 p-6 rounded-2xl">
-                          <div>
-                            <span className="text-[9px] bg-emerald-500/10 text-emerald-400 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider block w-fit mb-2">
-                              🎓 Active Student Console
-                            </span>
-                            <h4 className="text-lg font-bold text-white font-poppins">Namaste, {currentUser.email.split('@')[0]}!</h4>
-                            <p className="text-xs text-slate-400 font-sans mt-0.5">Your personalized learning benchmarks and AI test models are loaded.</p>
-                          </div>
-                          <div className="text-left md:text-right font-mono text-xs">
-                            <span className="text-slate-500 block">Digital Student ID:</span>
-                            <span className="font-bold text-[var(--accent)] text-xs tracking-wider">NR-2026-{(currentUser._id || '902').substring(0,6).toUpperCase()}</span>
-                          </div>
-                        </div>
+                    ))}
+                  </div>
 
-                        {/* Performance Scorecards */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                          {[
-                            { label: "Overall Attendance", value: "96.4%", desc: "RFID Gate Registered", color: "text-emerald-400" },
-                            { label: "Mock Diagnostic Score", value: quizScoreReport ? quizScoreReport : "Pending", desc: "Adaptive MCQ diagnostic", color: "text-[var(--accent)]" },
-                            { label: "Course Coverage", value: "72.8%", desc: "Units 1-4 syllabus completed", color: "text-indigo-400" }
-                          ].map((stat, idx) => (
-                            <div key={idx} className="bg-slate-900/20 border border-white/5 rounded-xl p-5 space-y-2 relative overflow-hidden">
-                              <div className="absolute top-0 right-0 w-8 h-8 bg-white/5 rounded-full blur-md" />
-                              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block font-sans">{stat.label}</span>
-                              <p className={`text-2xl font-black font-mono ${stat.color}`}>{stat.value}</p>
-                              <span className="text-[9px] text-slate-500 font-sans block">{stat.desc}</span>
+                  {/* Interactive Custom SVG Analytics Chart */}
+                  <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="text-xs font-bold text-white font-mono uppercase tracking-wider">Active Telemetry Load Graph</h4>
+                        <p className="text-[10px] text-slate-500">Live compute loads allocated across Central India edge nodes</p>
+                      </div>
+                      <span className="text-[10px] font-mono bg-[var(--primary)]/10 border border-[var(--primary)]/30 text-[var(--primary)] px-2 py-0.5 rounded font-bold animate-pulse">
+                        TELEMETRY ACTIVE
+                      </span>
+                    </div>
+
+                    {/* Styled CSS vector line chart */}
+                    <div className="h-44 flex items-end justify-between pt-6 border-b border-white/5 font-mono text-[9px] text-slate-500 relative">
+                      {/* Grid background lines */}
+                      <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20">
+                        <div className="h-[1px] w-full border-t border-dashed border-white/10" />
+                        <div className="h-[1px] w-full border-t border-dashed border-white/10" />
+                        <div className="h-[1px] w-full border-t border-dashed border-white/10" />
+                      </div>
+
+                      {/* Render dynamic charts */}
+                      {getIndustryChartData().map((bar, idx) => (
+                        <div key={idx} className="flex flex-col items-center gap-1.5 flex-1 group z-10">
+                          <span className="text-[var(--primary)] opacity-0 group-hover:opacity-100 transition-opacity font-bold text-[8px] bg-slate-950 border border-[var(--primary)]/20 px-1 py-0.5 rounded -mt-6 block absolute">
+                            {bar.val}
+                          </span>
+                          <div 
+                            style={{ height: `${bar.y}%` }} 
+                            className="w-10 bg-gradient-to-t from-[var(--primary)]/10 via-[var(--primary)]/40 to-[var(--primary)] rounded-t shadow-[0_0_15px_rgba(99,102,241,0.2)] transition-all group-hover:scale-y-105 duration-500 cursor-pointer"
+                          />
+                          <span className="text-[8px] uppercase tracking-wider font-semibold text-slate-400 mt-1">{bar.x}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                </div>
+              )}
+
+              {/* TAB 2: INDUSTRY-SPECIFIC AI SANDBOX */}
+              {saasTab === 'sandbox' && (
+                <div className="space-y-6 animate-in fade-in duration-300">
+                  <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-4">
+                    <div>
+                      <span className="text-[8px] text-[var(--primary)] font-bold tracking-widest uppercase block font-mono">Industry Sandbox Compile</span>
+                      <h4 className="text-sm font-bold text-white font-poppins">{theme.name} Custom Operations Sandbox</h4>
+                      <p className="text-slate-400 text-xs mt-0.5">Interact with the custom compiled diagnostics designed for class-level {businessType} environments.</p>
+                    </div>
+
+                    {/* Render different sandboxes based on theme */}
+                    {/* A. LIBAAS FASHION OUTFIT DESIGNER */}
+                    {businessType === 'ecommerce' && (
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start border-t border-white/5 pt-4">
+                        <div className="md:col-span-7 space-y-4 text-xs text-left">
+                          <div>
+                            <label className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block mb-1.5">Select Clothing Style</label>
+                            <div className="flex gap-2">
+                              {['Royal Traditional', 'Contemporary Silk', 'Fusion Gold'].map(st => (
+                                <button key={st} onClick={() => setOutfitStyle(st)} className={`px-3 py-1.5 rounded-lg border text-[10px] font-bold ${outfitStyle === st ? 'border-[var(--primary)] bg-[var(--primary)]/10 text-white' : 'border-white/5 bg-white/5 text-slate-400'}`}>{st}</button>
+                              ))}
                             </div>
-                          ))}
-                        </div>
-
-                        {/* Interactive Quiz / Mock Sandbox */}
-                        <div className="bg-slate-900/30 border border-white/5 p-6 rounded-2xl space-y-4">
-                          <div>
-                            <span className="text-[9px] text-[var(--accent)] font-bold tracking-widest uppercase block font-mono">Adaptive Diagnostic sandbox</span>
-                            <h5 className="text-sm font-bold text-white font-poppins">NextRank Mini Board & JEE MCQ Diagnostic Quiz</h5>
-                            <p className="text-slate-400 text-xs">Simulate board physics & chemistry questions to calculate conceptual strengths and evaluate your ranking percentile.</p>
                           </div>
 
-                          {activeQuizIndex === -1 ? (
-                            <button
-                              onClick={() => { playClickSound(); setActiveQuizIndex(0); setSelectedQuizAnswers({}); setQuizScoreReport(''); }}
-                              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-6 py-2.5 rounded-xl transition-all shadow active:scale-95 animate-pulse"
-                            >
-                              ⚡ Start Mock Quiz (3 Questions)
-                            </button>
-                          ) : activeQuizIndex < 3 ? (
-                            <div className="space-y-4 border border-white/10 p-5 rounded-xl bg-slate-950/60">
-                              <div className="flex justify-between items-center text-[10px] text-slate-500 font-mono border-b border-white/5 pb-2">
-                                <span>MCQ QUESTION {activeQuizIndex + 1} OF 3</span>
-                                <span>TOPIC: {activeQuizIndex === 0 ? 'Electromagnetism (Physics)' : activeQuizIndex === 1 ? 'Organic Chemistry' : 'Modern Physics'}</span>
-                              </div>
-                              
-                              <p className="text-white text-xs font-semibold font-poppins">
-                                {activeQuizIndex === 0 && "Q1: The unit of electric potential difference is:"}
-                                {activeQuizIndex === 1 && "Q2: Which compound is known as Laughing Gas (has nitrous oxide)?"}
-                                {activeQuizIndex === 2 && "Q3: Lenz's Law is a consequence of the law of conservation of:"}
-                              </p>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-[9px] text-slate-400 font-bold uppercase block mb-1.5">Size Coordinates</label>
+                              <select value={outfitSize} onChange={(e) => setOutfitSize(e.target.value)} className="w-full bg-slate-950 border border-white/10 text-[10px] p-2 rounded-lg text-white font-bold">
+                                <option>S</option>
+                                <option>M</option>
+                                <option>L</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label className="text-[9px] text-slate-400 font-bold uppercase block mb-1.5">HSL Color Tone</label>
+                              <select value={outfitColor} onChange={(e) => setOutfitColor(e.target.value)} className="w-full bg-slate-950 border border-white/10 text-[10px] p-2 rounded-lg text-white font-bold">
+                                <option value="#D4AF37">Antique Gold</option>
+                                <option value="#818cf8">Lavender Accent</option>
+                                <option value="#ef4444">Volcanic Saffron</option>
+                              </select>
+                            </div>
+                          </div>
 
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2">
-                                {(activeQuizIndex === 0 ? ['Ohm', 'Ampere', 'Volt', 'Watt'] : 
-                                  activeQuizIndex === 1 ? ['Nitric Oxide', 'Nitrous Oxide', 'Nitrogen Dioxide', 'Nitrogen Pentoxide'] :
-                                  ['Charge', 'Mass', 'Momentum', 'Energy']
-                                ).map((opt, oIdx) => (
-                                  <button
-                                    key={oIdx}
-                                    onClick={() => {
-                                      playClickSound();
-                                      setSelectedQuizAnswers(prev => ({ ...prev, [activeQuizIndex]: opt }));
-                                    }}
-                                    className={`text-left text-xs p-3 rounded-xl border transition-all ${
-                                      selectedQuizAnswers[activeQuizIndex] === opt 
-                                        ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-white font-bold' 
-                                        : 'border-white/5 bg-slate-900/60 text-slate-400 hover:bg-white/5'
-                                    }`}
-                                  >
-                                    {String.fromCharCode(65 + oIdx)}. {opt}
-                                  </button>
-                                ))}
-                              </div>
+                          <button 
+                            onClick={() => {
+                              playClickSound();
+                              const rep = `🎉 Styled customized ${outfitStyle} (${outfitSize}) in ${outfitColor === '#D4AF37' ? 'Antique Gold' : outfitColor === '#818cf8' ? 'Lavender' : 'Volcanic Saffron'} HSL coordinates successfully!`;
+                              setOutfitPreviewReport(rep);
+                              setSaasLogs(prev => [`📥 Style designed: "${outfitStyle}" compiled successfully.`, ...prev]);
+                            }}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[10px] tracking-widest px-5 py-2.5 rounded-xl transition-all uppercase shadow active:scale-95"
+                          >
+                            Compile Outfit Design
+                          </button>
+                        </div>
 
-                              <div className="flex justify-end gap-2 pt-4 border-t border-white/5">
-                                <button
-                                  onClick={() => {
-                                    playClickSound();
-                                    if (activeQuizIndex === 2) {
-                                      // Score quiz
-                                      let correct = 0;
-                                      if (selectedQuizAnswers[0] === 'Volt') correct++;
-                                      if (selectedQuizAnswers[1] === 'Nitrous Oxide') correct++;
-                                      if (selectedQuizAnswers[2] === 'Energy') correct++;
-                                      setQuizScoreReport(`${correct}/3 Correct`);
-                                      setActiveQuizIndex(3); // Completed
-                                    } else {
-                                      setActiveQuizIndex(activeQuizIndex + 1);
-                                    }
-                                  }}
-                                  disabled={!selectedQuizAnswers[activeQuizIndex]}
-                                  className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-bold text-xs px-5 py-2 rounded-xl transition-all shadow"
-                                >
-                                  {activeQuizIndex === 2 ? 'Compile Results' : 'Next Question'}
-                                </button>
+                        {/* Visual Outfit Preview box */}
+                        <div className="md:col-span-5 flex flex-col items-center justify-center border border-white/5 bg-slate-950 p-6 rounded-2xl h-48 relative overflow-hidden">
+                          <div style={{ background: `radial-gradient(circle, ${outfitColor}2a, transparent 75%)` }} className="absolute inset-0 pointer-events-none" />
+                          <div style={{ backgroundColor: outfitColor }} className="w-16 h-20 rounded-xl opacity-60 border-2 border-white/20 shadow-xl flex items-center justify-center font-bold text-black text-xs animate-pulse">
+                            👗
+                          </div>
+                          <span className="text-[9px] font-mono text-slate-400 mt-3 uppercase tracking-wider">{outfitStyle} ({outfitSize})</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* B. AASHIYANAEX 3D BLUEPRINT DESIGNER */}
+                    {businessType === 'real_estate' && (
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start border-t border-white/5 pt-4">
+                        <div className="md:col-span-7 space-y-4 text-xs text-left">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-[9px] text-slate-400 font-bold uppercase block mb-1">Target Rooms: {bpRooms}</label>
+                              <input type="range" min="1" max="5" value={bpRooms} onChange={(e) => setBpRooms(parseInt(e.target.value))} className="w-full accent-[var(--primary)]" />
+                            </div>
+                            <div>
+                              <label className="text-[9px] text-slate-400 font-bold uppercase block mb-1">Floors Multiplier: {bpFloors}</label>
+                              <input type="range" min="1" max="3" value={bpFloors} onChange={(e) => setBpFloors(parseInt(e.target.value))} className="w-full accent-[var(--primary)]" />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="text-[9px] text-slate-400 font-bold uppercase block mb-1">Plot Width Coordinates: {bpWidth}ft</label>
+                            <input type="range" min="30" max="70" value={bpWidth} onChange={(e) => setBpWidth(parseInt(e.target.value))} className="w-full accent-[var(--primary)]" />
+                          </div>
+
+                          <button 
+                            onClick={() => {
+                              playClickSound();
+                              const rep = `🏡 3D duplex structure compiled: ${bpRooms} rooms, ${bpFloors} floors, ${bpWidth}ft width plot index. Blueprint coordinates saved!`;
+                              setBpPreviewReport(rep);
+                              setSaasLogs(prev => [`🏡 Blueprint compiled: "${bpRooms} Rooms / ${bpFloors} Floors" duplex verified.`, ...prev]);
+                            }}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[10px] tracking-widest px-5 py-2.5 rounded-xl transition-all uppercase shadow active:scale-95"
+                          >
+                            Compile 3D Blueprints
+                          </button>
+                        </div>
+
+                        {/* Interactive Room Wireframe Blueprint boxes */}
+                        <div className="md:col-span-5 flex flex-col items-center justify-center border border-white/5 bg-slate-950 p-4 rounded-2xl h-48 relative overflow-hidden">
+                          <div className="grid grid-cols-3 gap-2 w-full max-w-[160px]">
+                            {Array.from({ length: Math.min(6, bpRooms * bpFloors) }).map((_, rIdx) => (
+                              <div key={rIdx} className="border border-[var(--primary)]/40 bg-[var(--primary)]/10 text-[var(--primary)] text-[8px] font-bold py-2 rounded text-center animate-pulse">
+                                Room {rIdx + 1}
                               </div>
+                            ))}
+                          </div>
+                          <span className="text-[9px] font-mono text-slate-400 mt-4 uppercase tracking-wider">3D Duplex Blueprint Grid</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* C. AAROGYACARE HEALTH CLINICAL ANALYZER */}
+                    {businessType === 'hospital' && (
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start border-t border-white/5 pt-4">
+                        <div className="md:col-span-7 space-y-4 text-xs text-left">
+                          <div className="grid grid-cols-3 gap-3">
+                            <div>
+                              <label className="text-[9px] text-slate-400 font-bold uppercase block mb-1">Blood Sugar (mg/dL)</label>
+                              <input type="number" value={diagSugar} onChange={(e) => setDiagSugar(parseInt(e.target.value))} className="w-full bg-slate-950 border border-white/10 text-xs p-2.5 rounded-lg text-white" />
+                            </div>
+                            <div>
+                              <label className="text-[9px] text-slate-400 font-bold uppercase block mb-1">Systolic BP (mmHg)</label>
+                              <input type="number" value={diagBps} onChange={(e) => setDiagBps(parseInt(e.target.value))} className="w-full bg-slate-950 border border-white/10 text-xs p-2.5 rounded-lg text-white" />
+                            </div>
+                            <div>
+                              <label className="text-[9px] text-slate-400 font-bold uppercase block mb-1">Heart Rate (bpm)</label>
+                              <input type="number" value={diagHeartRate} onChange={(e) => setDiagHeartRate(parseInt(e.target.value))} className="w-full bg-slate-950 border border-white/10 text-xs p-2.5 rounded-lg text-white" />
+                            </div>
+                          </div>
+
+                          <button 
+                            onClick={() => {
+                              playClickSound();
+                              const isSafe = diagSugar < 140 && diagBps < 130 && diagHeartRate < 100;
+                              const rep = `🩺 Health analysis completed. Sugar: ${diagSugar}mg/dL, BP: ${diagBps}mmHg, HeartRate: ${diagHeartRate}bpm. Diagnostics Status: ${isSafe ? 'EXCELLENT' : 'HIGH DISPATCH ALERT'}`;
+                              setDiagReport(rep);
+                              setSaasLogs(prev => [`🩺 Diagnostics simulated: patient blood sugar verified at ${diagSugar} mg/dL.`, ...prev]);
+                            }}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[10px] tracking-widest px-5 py-2.5 rounded-xl transition-all uppercase shadow active:scale-95"
+                          >
+                            Simulate Diagnostics Metrics
+                          </button>
+                        </div>
+
+                        <div className="md:col-span-5 flex flex-col items-center justify-center border border-white/5 bg-slate-950 p-6 rounded-2xl h-48 text-center space-y-2">
+                          <div className="w-10 h-10 rounded-full bg-[var(--primary)]/10 border border-[var(--primary)]/30 flex items-center justify-center text-xl text-[var(--primary)] animate-ping">
+                            🩺
+                          </div>
+                          <span className="text-[10px] font-mono text-slate-300 font-bold uppercase block">Pulse diagnostic telemetry</span>
+                          <span className="text-[9px] font-mono text-slate-500">Wait Queue: 12 Token Patients</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* D. CAFE AURA COFFEE ROAST SELECTOR */}
+                    {businessType === 'cafe' && (
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start border-t border-white/5 pt-4">
+                        <div className="md:col-span-7 space-y-4 text-xs text-left">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-[9px] text-slate-400 font-bold uppercase block mb-1">Roasting Temp: {roastTemp}°C</label>
+                              <input type="range" min="180" max="240" value={roastTemp} onChange={(e) => setRoastTemp(parseInt(e.target.value))} className="w-full accent-[var(--primary)]" />
+                            </div>
+                            <div>
+                              <label className="text-[9px] text-slate-400 font-bold uppercase block mb-1">Roasting Duration: {roastDuration} mins</label>
+                              <input type="range" min="10" max="25" value={roastDuration} onChange={(e) => setRoastDuration(parseInt(e.target.value))} className="w-full accent-[var(--primary)]" />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="text-[9px] text-slate-400 font-bold uppercase block mb-1.5">Select Organic Coffee Beans</label>
+                            <div className="flex gap-2">
+                              {['Arabica Single Origin', 'Robusta Classic Blend'].map(b => (
+                                <button key={b} onClick={() => setRoastBean(b)} className={`px-3 py-1.5 rounded-lg border text-[10px] font-bold ${roastBean === b ? 'border-[var(--primary)] bg-[var(--primary)]/10 text-white' : 'border-white/5 bg-white/5 text-slate-400'}`}>{b}</button>
+                              ))}
+                            </div>
+                          </div>
+
+                          <button 
+                            onClick={() => {
+                              playClickSound();
+                              const rep = `☕ Roasting single-origin ${roastBean} at ${roastTemp}°C for ${roastDuration} mins. Aroma parameters matching peak quality criteria!`;
+                              setRoastReport(rep);
+                              setSaasLogs(prev => [`☕ Roaster active: single-origin "${roastBean}" roasts completed.`, ...prev]);
+                            }}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[10px] tracking-widest px-5 py-2.5 rounded-xl transition-all uppercase shadow active:scale-95"
+                          >
+                            Start Roasting Coffee
+                          </button>
+                        </div>
+
+                        {/* Interactive Coffee Cup filling graphic */}
+                        <div className="md:col-span-5 flex flex-col items-center justify-center border border-white/5 bg-slate-950 p-6 rounded-2xl h-48 relative overflow-hidden">
+                          <div style={{ background: `radial-gradient(circle, ${theme.primary}20, transparent 75%)` }} className="absolute inset-0 pointer-events-none" />
+                          <div className="w-16 h-12 border-4 border-amber-900 rounded-b-3xl relative flex items-end justify-center overflow-hidden">
+                            <div style={{ height: `${(roastTemp - 180) * 1.6}%` }} className="w-full bg-amber-950 transition-all duration-[2000ms] ease-out" />
+                          </div>
+                          <div className="w-20 h-1 bg-amber-900 rounded-full" />
+                          <span className="text-[9px] font-mono text-slate-400 mt-4 uppercase tracking-wider">Aromatic Coffee Fill Level</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* E. startup (NEXATECH HUB AI SANDBOX) */}
+                    {businessType === 'startup' && (
+                      <div className="space-y-4 border-t border-white/5 pt-4">
+                        <div className="flex gap-2">
+                          <input 
+                            type="text" 
+                            value={aiSandboxPrompt}
+                            onChange={(e) => setAiSandboxPrompt(e.target.value)}
+                            className="flex-1 bg-white/5 border border-white/10 text-xs px-3.5 py-2.5 rounded-xl text-white placeholder-slate-700 focus:outline-none" 
+                          />
+                          <button 
+                            onClick={() => {
+                              playClickSound();
+                              setAiSandboxOutput(`// NexaTech AI compiling prompt: "${aiSandboxPrompt}"...\n[SUCCESS] Response parsed: suggested HSL styling variables compiled successfully.\nContainer node speed: 12ms`);
+                              setSaasLogs(prev => [`⚡ Compiler prompt run: "${aiSandboxPrompt}" compiled successfully.`, ...prev]);
+                            }}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-5 rounded-xl transition-all"
+                          >
+                            Compile Sandbox
+                          </button>
+                        </div>
+                        {aiSandboxOutput && (
+                          <pre className="bg-black border border-white/5 p-4 rounded-xl font-mono text-[9px] text-emerald-400 overflow-x-auto text-left">
+                            {aiSandboxOutput}
+                          </pre>
+                        )}
+                      </div>
+                    )}
+
+                    {/* F. gym (FLEXARENA WELLNESS PLANNER) */}
+                    {businessType === 'gym' && (
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start border-t border-white/5 pt-4">
+                        <div className="md:col-span-7 space-y-4 text-xs text-left">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-[9px] text-slate-400 font-bold uppercase block mb-1">Body Weight (kg)</label>
+                              <input type="number" value={bmiWeight} onChange={(e) => setBmiWeight(parseFloat(e.target.value))} className="w-full bg-slate-950 border border-white/10 p-2 rounded-lg text-white" />
+                            </div>
+                            <div>
+                              <label className="text-[9px] text-slate-400 font-bold uppercase block mb-1">Body Height (cm)</label>
+                              <input type="number" value={bmiHeight} onChange={(e) => setBmiHeight(parseFloat(e.target.value))} className="w-full bg-slate-950 border border-white/10 p-2 rounded-lg text-white" />
+                            </div>
+                          </div>
+
+                          <button 
+                            onClick={() => {
+                              playClickSound();
+                              const heightM = bmiHeight / 100;
+                              const bVal = bmiWeight / (heightM * heightM);
+                              setBmiResult(bVal.toFixed(1));
+                              setSaasLogs(prev => [`📊 BMI Telemetry calculated: score evaluated at ${bVal.toFixed(1)}.`, ...prev]);
+                            }}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[10px] tracking-widest px-5 py-2.5 rounded-xl transition-all uppercase shadow active:scale-95"
+                          >
+                            Calculate Calorie Targets
+                          </button>
+                        </div>
+
+                        <div className="md:col-span-5 flex flex-col items-center justify-center border border-white/5 bg-slate-950 p-6 rounded-2xl h-48 text-center space-y-2">
+                          {bmiResult ? (
+                            <div className="space-y-1">
+                              <p className="text-[9px] text-slate-500 font-bold uppercase">Computed BMI Score</p>
+                              <p className="font-mono text-2xl font-black text-white">{bmiResult}</p>
+                              <p className="text-[9px] text-[var(--accent)] font-bold uppercase">Target Calorie: {Math.round(bmiWeight * 22 * 1.5)} Kcal</p>
                             </div>
                           ) : (
-                            <div className="border border-emerald-500/20 p-5 rounded-xl bg-emerald-500/5 text-center space-y-3">
-                              <span className="text-3xl">🏆</span>
-                              <h6 className="font-bold text-white text-sm font-poppins">Diagnostic Finished! Your concepts are verified.</h6>
-                              <p className="text-slate-300 text-xs">Score: <strong className="text-emerald-400 text-sm font-mono">{quizScoreReport}</strong> | Calculated Percentile: <strong className="text-[var(--accent)] text-sm font-mono">{quizScoreReport.startsWith('3') ? '99.88%' : quizScoreReport.startsWith('2') ? '98.42%' : '88.15%'}</strong></p>
-                              <button
-                                onClick={() => { playClickSound(); setActiveQuizIndex(-1); }}
-                                className="bg-white/5 border border-white/10 text-slate-300 text-xs px-4 py-2 rounded-lg hover:bg-white/10"
-                              >
-                                Re-take Diagnostic
-                              </button>
-                            </div>
+                            <span className="text-[9px] font-mono text-slate-500">Awaiting Wellness Telemetry Parameters...</span>
                           )}
                         </div>
                       </div>
                     )}
-                  </div>
-                )}
 
-                {/* 1. STUDENT MANAGEMENT */}
-                {coachingTab === 'students' && (
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center flex-wrap gap-2">
-                      <h4 className="font-poppins font-bold text-sm text-white">Student Directory Logs</h4>
-                      <span className="text-[10px] font-mono text-slate-500">Total Active: {coachingStudents.length}</span>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 bg-white/5 p-4 rounded-xl border border-white/5">
-                      <input 
-                        type="text" 
-                        value={newStudentName}
-                        onChange={(e) => setNewStudentName(e.target.value)}
-                        placeholder="Student Full Name"
-                        className="bg-transparent border border-white/10 text-xs p-2 rounded-lg text-white placeholder-slate-600 focus:outline-none" 
-                      />
-                      <select
-                        value={newStudentClass}
-                        onChange={(e) => setNewStudentClass(e.target.value)}
-                        className="bg-slate-950 border border-white/10 text-xs p-2 rounded-lg text-white"
-                      >
-                        <option value="Class 12">Class 12</option>
-                        <option value="Class 11">Class 11</option>
-                        <option value="Class 10">Class 10</option>
-                        <option value="Class 9">Class 9</option>
-                        <option value="Class 6-8">Class 6-8 (Foundation)</option>
-                      </select>
-                      <button
-                        onClick={() => {
-                          if (!newStudentName) return;
-                          setCoachingStudents(prev => [
-                            ...prev,
-                            { roll: `NR-${101 + prev.length}`, name: newStudentName, class: newStudentClass, batch: 'JEE Main', performance: '100%' }
-                          ]);
-                          setNewStudentName('');
-                        }}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 rounded-lg"
-                      >
-                        + Enroll Student
-                      </button>
-                    </div>
-
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-xs text-left text-slate-300">
-                        <thead className="bg-white/5 text-[9px] uppercase font-bold tracking-wider text-slate-400">
-                          <tr>
-                            <th className="p-3">Roll Node</th>
-                            <th className="p-3">Student Name</th>
-                            <th className="p-3">Classroom Level</th>
-                            <th className="p-3">Target Batch</th>
-                            <th className="p-3">Mock Rating</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-white/5">
-                          {coachingStudents.map((stud, idx) => (
-                            <tr key={idx} className="hover:bg-white/5 transition-colors">
-                              <td className="p-3 font-mono text-[var(--accent)] font-bold">{stud.roll}</td>
-                              <td className="p-3 font-semibold text-white">{stud.name}</td>
-                              <td className="p-3">{stud.class}</td>
-                              <td className="p-3"><span className="bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-full">{stud.batch}</span></td>
-                              <td className="p-3 text-emerald-400 font-bold font-mono">{stud.performance}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-
-                {/* 2. FACULTY MANAGEMENT */}
-                {coachingTab === 'faculty' && (
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <h4 className="font-poppins font-bold text-sm text-white">Faculty Rosters</h4>
-                      <span className="text-[10px] font-mono text-slate-500">Expert Staff: {coachingFaculty.length}</span>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 bg-white/5 p-4 rounded-xl border border-white/5">
-                      <input 
-                        type="text" 
-                        value={newFacName}
-                        onChange={(e) => setNewFacName(e.target.value)}
-                        placeholder="Faculty Full Name"
-                        className="bg-transparent border border-white/10 text-xs p-2 rounded-lg text-white placeholder-slate-600 focus:outline-none" 
-                      />
-                      <select
-                        value={newFacSubject}
-                        onChange={(e) => setNewFacSubject(e.target.value)}
-                        className="bg-slate-950 border border-white/10 text-xs p-2 rounded-lg text-white"
-                      >
-                        <option value="Physics">Physics</option>
-                        <option value="Chemistry">Chemistry</option>
-                        <option value="Mathematics">Mathematics</option>
-                        <option value="Biology">Biology</option>
-                      </select>
-                      <button
-                        onClick={() => {
-                          if (!newFacName) return;
-                          setCoachingFaculty(prev => [
-                            ...prev,
-                            { name: newFacName, subject: newFacSubject, exp: '10 Yrs', qual: newFacQual, img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400' }
-                          ]);
-                          setNewFacName('');
-                        }}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 rounded-lg"
-                      >
-                        + Add Faculty Member
-                      </button>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {coachingFaculty.map((fac, idx) => (
-                        <div key={idx} className="bg-slate-950 border border-white/5 p-4 rounded-xl flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-amber-500/20">
-                            <img src={fac.img} alt={fac.name} className="w-full h-full object-cover" />
-                          </div>
-                          <div>
-                            <p className="font-poppins font-bold text-xs text-white">{fac.name}</p>
-                            <p className="text-[10px] text-indigo-400 font-bold">{fac.subject} | {fac.qual}</p>
-                            <p className="text-[9px] text-slate-500">Exp: {fac.exp}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 3. COURSE MANAGEMENT */}
-                {coachingTab === 'courses' && (
-                  <div className="space-y-4">
-                    <h4 className="font-poppins font-bold text-sm text-white">Course Curriculum Nodes</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {coachingCourses.map((course, idx) => (
-                        <div key={idx} className="bg-slate-950 border border-white/5 p-4 rounded-xl space-y-2">
-                          <div className="flex justify-between items-center">
-                            <span className="bg-indigo-500/10 text-indigo-400 text-[8px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">{course.id}</span>
-                            <span className="font-mono text-xs font-black text-emerald-400">{course.fees}</span>
-                          </div>
-                          <h5 className="font-poppins font-bold text-xs text-white">{course.name}</h5>
-                          <p className="text-[10px] text-slate-400">Instructed by: <strong>{course.faculty}</strong> | Duration: <strong>{course.duration}</strong></p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 4. TEST MANAGEMENT */}
-                {coachingTab === 'tests' && (
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <h4 className="font-poppins font-bold text-sm text-white">Test Builder Console</h4>
-                      <span className="text-[10px] font-mono text-slate-500">Scheduled tests: {coachingTests.length}</span>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 bg-white/5 p-4 rounded-xl border border-white/5">
-                      <input 
-                        type="text" 
-                        value={newTestName}
-                        onChange={(e) => setNewTestName(e.target.value)}
-                        placeholder="e.g. JEE Mock Test 5"
-                        className="bg-transparent border border-white/10 text-xs p-2 rounded-lg text-white placeholder-slate-600 focus:outline-none" 
-                      />
-                      <select
-                        value={newTestSubject}
-                        onChange={(e) => setNewTestSubject(e.target.value)}
-                        className="bg-slate-950 border border-white/10 text-xs p-2 rounded-lg text-white"
-                      >
-                        <option value="Physics">Physics</option>
-                        <option value="Chemistry">Chemistry</option>
-                        <option value="Mathematics">Mathematics</option>
-                        <option value="Biology">Biology</option>
-                      </select>
-                      <button
-                        onClick={() => {
-                          if (!newTestName) return;
-                          setCoachingTests(prev => [
-                            ...prev,
-                            { id: `T-${101 + prev.length}`, name: newTestName, subject: newTestSubject, duration: '180 mins', date: 'Tomorrow' }
-                          ]);
-                          setNewTestName('');
-                        }}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 rounded-lg"
-                      >
-                        + Schedule Mock Equation
-                      </button>
-                    </div>
-
-                    <div className="space-y-2">
-                      {coachingTests.map((t, idx) => (
-                        <div key={idx} className="bg-slate-950 border border-white/5 px-4 py-3 rounded-xl flex items-center justify-between text-xs">
-                          <div>
-                            <span className="font-mono text-slate-500 text-[10px] uppercase font-bold block">{t.id}</span>
-                            <span className="font-poppins font-bold text-white">{t.name}</span>
-                          </div>
-                          <div className="flex gap-4 font-mono text-[9px] text-slate-400">
-                            <span>Subject: <strong className="text-white">{t.subject}</strong></span>
-                            <span>Time: <strong className="text-white">{t.duration}</strong></span>
-                            <span>Date: <strong className="text-[var(--accent)]">{t.date}</strong></span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 5. ATTENDANCE SYSTEM */}
-                {coachingTab === 'attendance' && (
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <h4 className="font-poppins font-bold text-sm text-white">RFID Biometric Logs</h4>
-                      <button
-                        onClick={() => {
-                          const names = ['Aarav Sharma', 'Ananya Patel', 'Rohan Gupta', 'Sneha Verma'];
-                          const selected = names[Math.floor(Math.random() * names.length)];
-                          const hour = String(Math.floor(Math.random() * 2) + 7).padStart(2, '0');
-                          const min = String(Math.floor(Math.random() * 60)).padStart(2, '0');
-                          const randTime = `${hour}:${min} AM`;
-                          setAttendanceLogs(prev => [
-                            { name: selected, timestamp: randTime, status: hour === '07' ? 'PRESENT' : 'LATE', method: 'RFID Gate' },
-                            ...prev
-                          ]);
-                        }}
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white text-[9px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-transform"
-                      >
-                        ⚡ Simulate Gate scan
-                      </button>
-                    </div>
-
-                    <div className="space-y-2 h-[180px] overflow-y-auto pr-1">
-                      {attendanceLogs.map((log, idx) => (
-                        <div key={idx} className="bg-slate-950 border border-white/5 p-3 rounded-xl flex items-center justify-between text-[10px]">
-                          <div>
-                            <span className="font-poppins font-bold text-white block">{log.name}</span>
-                            <span className="text-slate-500 text-[9px] font-mono">Scanner: {log.method}</span>
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <span className="font-mono text-slate-400">{log.timestamp}</span>
-                            <span className={`font-bold px-2 py-0.5 rounded-full text-[8px] tracking-wider ${
-                              log.status === 'PRESENT' ? 'bg-emerald-500/10 text-emerald-400' :
-                              log.status === 'LATE' ? 'bg-amber-500/10 text-amber-400' : 'bg-rose-500/10 text-rose-400'
-                            }`}>
-                              {log.status}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 6. NOTES LIBRARY */}
-                {coachingTab === 'notes' && (
-                  <div className="space-y-4">
-                    <h4 className="font-poppins font-bold text-sm text-white">Study Notes Repository</h4>
-                    
-                    <form 
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        if (!newNoteTitle) return;
-                        setUploadedNotes(prev => [
-                          { id: Date.now(), title: newNoteTitle.endsWith('.pdf') ? newNoteTitle : newNoteTitle + '.pdf', date: 'Just now' },
-                          ...prev
-                        ]);
-                        setNewNoteTitle('');
-                      }}
-                      className="flex gap-2"
-                    >
-                      <input 
-                        type="text" required 
-                        value={newNoteTitle}
-                        onChange={(e) => setNewNoteTitle(e.target.value)}
-                        placeholder="e.g. Physics_Ch4_Quantum.pdf" 
-                        className="flex-1 bg-transparent border border-white/10 text-xs px-3 py-2 rounded-xl text-white placeholder-slate-600 focus:outline-none" 
-                      />
-                      <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 rounded-xl">
-                        + Upload Notes PDF
-                      </button>
-                    </form>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                      {uploadedNotes.map(note => (
-                        <div key={note.id} className="bg-slate-950 border border-white/5 px-4 py-3 rounded-xl flex items-center justify-between text-xs font-mono">
-                          <span className="text-slate-200">📂 {note.title}</span>
-                          <span className="text-slate-500 text-[9px]">{note.date}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 7. FEES MANAGEMENT */}
-                {coachingTab === 'fees' && (
-                  <div className="space-y-4">
-                    <h4 className="font-poppins font-bold text-sm text-white">Tuition Fees Ledgers</h4>
-                    <div className="space-y-2">
-                      {feesInvoices.map((inv, idx) => (
-                        <div key={idx} className="bg-slate-950 border border-white/5 p-4 rounded-xl flex items-center justify-between text-xs">
-                          <div>
-                            <span className="font-poppins font-bold text-white block">{inv.name}</span>
-                            <span className="text-slate-500 text-[9px]">Course: {inv.course}</span>
-                          </div>
-                          <div className="flex gap-6 font-mono text-[10px] items-center">
-                            <span className="text-emerald-400">Paid: {inv.paid}</span>
-                            <span className="text-rose-500">Due: {inv.due}</span>
-                            <span className={`font-bold px-2 py-0.5 rounded text-[8px] uppercase ${
-                              inv.status === 'PAID' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'
-                            }`}>
-                              {inv.status}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 8. ADMISSION MANAGEMENT */}
-                {coachingTab === 'admissions' && (
-                  <div className="space-y-4">
-                    <h4 className="font-poppins font-bold text-sm text-white">Admission Prospect Leads</h4>
-
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-2 bg-white/5 p-4 rounded-xl border border-white/5">
-                      <input 
-                        type="text" 
-                        value={newLeadName}
-                        onChange={(e) => setNewLeadName(e.target.value)}
-                        placeholder="Lead Name"
-                        className="bg-transparent border border-white/10 text-xs p-2 rounded-lg text-white placeholder-slate-600 focus:outline-none" 
-                      />
-                      <input 
-                        type="text" 
-                        value={newLeadPhone}
-                        onChange={(e) => setNewLeadPhone(e.target.value)}
-                        placeholder="Phone Number"
-                        className="bg-transparent border border-white/10 text-xs p-2 rounded-lg text-white placeholder-slate-600 focus:outline-none" 
-                      />
-                      <select
-                        value={newLeadTarget}
-                        onChange={(e) => setNewLeadTarget(e.target.value)}
-                        className="bg-slate-950 border border-white/10 text-xs p-2 rounded-lg text-white"
-                      >
-                        <option value="JEE">JEE</option>
-                        <option value="NEET">NEET</option>
-                        <option value="Class 10">Class 10</option>
-                      </select>
-                      <button
-                        onClick={() => {
-                          if (!newLeadName) return;
-                          setAdmissionLeads(prev => [
-                            ...prev,
-                            { name: newLeadName, phone: newLeadPhone, email: 'lead@inquiry.com', target: newLeadTarget, status: 'Inquiry' }
-                          ]);
-                          setNewLeadName('');
-                          setNewLeadPhone('');
-                        }}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 rounded-lg"
-                      >
-                        + Add Lead
-                      </button>
-                    </div>
-
-                    <div className="space-y-2">
-                      {admissionLeads.map((l, idx) => (
-                        <div key={idx} className="bg-slate-950 border border-white/5 p-3 rounded-xl flex items-center justify-between text-xs">
-                          <div>
-                            <span className="font-poppins font-bold text-white block">{l.name}</span>
-                            <span className="text-slate-500 text-[10px]">Contact: {l.phone}</span>
-                          </div>
-                          <div className="flex gap-4 font-mono text-[9px] items-center">
-                            <span className="bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded">{l.target}</span>
-                            <span className="text-amber-400 uppercase font-bold">{l.status}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 9. ANALYTICS DASHBOARD */}
-                {coachingTab === 'analytics' && (
-                  <div className="space-y-6">
-                    <h4 className="font-poppins font-bold text-sm text-white">Smart Engine Analytics Telemetry</h4>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* Attendance curves */}
-                      <div className="bg-slate-950 border border-white/5 p-4 rounded-xl space-y-3">
-                        <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider font-mono">Monthly Attendance distribution</span>
-                        <div className="h-[120px] flex items-end justify-between pt-6 font-mono text-[9px] text-slate-500">
-                          {[
-                            { month: 'Jan', val: '84%', h: '84%' },
-                            { month: 'Feb', val: '92%', h: '92%' },
-                            { month: 'Mar', val: '98%', h: '98%' },
-                            { month: 'Apr', val: '96%', h: '96%' },
-                            { month: 'May', val: '97.8%', h: '97.8%' }
-                          ].map((bar, idx) => (
-                            <div key={idx} className="flex flex-col items-center gap-1.5 flex-1 group">
-                              <span className="text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity font-bold">{bar.val}</span>
-                              <div style={{ height: bar.h }} className="w-8 bg-gradient-to-t from-indigo-600/20 to-indigo-500 rounded-t shadow-[0_0_10px_rgba(99,102,241,0.3)] transition-all group-hover:scale-y-105" />
-                              <span>{bar.month}</span>
+                    {/* G. tourism (EXPLOREAURA TRIP PLANNER) */}
+                    {businessType === 'tourism' && (
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start border-t border-white/5 pt-4">
+                        <div className="md:col-span-7 space-y-4 text-xs text-left">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-[9px] text-slate-400 font-bold uppercase block mb-1">Target Location</label>
+                              <input type="text" value={tripLocation} onChange={(e) => setTripLocation(e.target.value)} className="w-full bg-slate-950 border border-white/10 p-2 rounded-lg text-white" />
                             </div>
-                          ))}
+                            <div>
+                              <label className="text-[9px] text-slate-400 font-bold uppercase block mb-1">Duration: {budgetDays} Days</label>
+                              <input type="range" min="1" max="7" value={budgetDays} onChange={(e) => setBudgetDays(parseInt(e.target.value))} className="w-full accent-[var(--primary)]" />
+                            </div>
+                          </div>
+
+                          <button 
+                            onClick={() => {
+                              playClickSound();
+                              setGeneratedItinerary(`🗺️ Dynamic 3-Day Plan for "${tripLocation}":\n• Day 1: 04:00 PM Dhuandhar water spray walk -> Moonlight Bhedaghat cruise (08:00 PM).\n• Day 2: Gond Rani Durgavati museum check -> Madan Mahal Fort scaling.\n• Day 3: Tilwara Ghat bypass cycle tour -> sunset shoreline dinner.`);
+                              setSaasLogs(prev => [`🗺️ Itinerary generated: weekend excursion booked for "${tripLocation}".`, ...prev]);
+                            }}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[10px] tracking-widest px-5 py-2.5 rounded-xl transition-all uppercase shadow active:scale-95"
+                          >
+                            Compile Travel Route
+                          </button>
+                        </div>
+
+                        <div className="md:col-span-5 flex flex-col items-center justify-center border border-white/5 bg-slate-950 p-4 rounded-2xl h-48 overflow-y-auto">
+                          {generatedItinerary ? (
+                            <p className="text-[9px] font-mono text-slate-300 text-left whitespace-pre-line leading-relaxed">{generatedItinerary}</p>
+                          ) : (
+                            <span className="text-[9px] font-mono text-slate-500 text-center">Awaiting Travel Spot coordinates...</span>
+                          )}
                         </div>
                       </div>
-
-                      {/* Performance analytics */}
-                      <div className="bg-slate-950 border border-white/5 p-4 rounded-xl space-y-3">
-                        <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider font-mono">Core Syllabus Heatmap</span>
-                        <div className="space-y-2">
-                          {[
-                            { subject: 'Physics (Electromagnetism)', rating: 91, color: 'bg-emerald-500' },
-                            { subject: 'Chemistry (Organic)', rating: 78, color: 'bg-amber-500' },
-                            { subject: 'Mathematics (Calculus)', rating: 88, color: 'bg-indigo-500' },
-                            { subject: 'Biology (Cell Biology)', rating: 94, color: 'bg-emerald-500' }
-                          ].map((sub, idx) => (
-                            <div key={idx} className="space-y-1 text-[10px]">
-                              <div className="flex justify-between text-slate-300">
-                                <span>{sub.subject}</span>
-                                <span className="font-mono font-bold text-white">{sub.rating}%</span>
-                              </div>
-                              <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                <div style={{ width: `${sub.rating}%` }} className={`h-full ${sub.color}`} />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-              </div>
-            </div>
-
-            {/* ========================================================
-                AI ECOSYSTEM INTEGRATIONS
-                Rank Predictor, Doubt solver, and Study planners
-                ======================================================== */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 border-t border-white/5 pt-12">
-              
-              {/* 1. AI Rank Predictor */}
-              <div className="royal-card p-6 rounded-2xl border border-white/5 space-y-4 relative overflow-hidden bg-white/[0.04] shadow-[0_0_25px_rgba(0,229,255,0.05)]">
-                <div className="absolute top-0 right-0 w-16 h-16 bg-[var(--accent)]/5 rounded-full blur-xl" />
-                <h4 className="font-poppins font-bold text-sm text-white flex items-center gap-1.5 text-glow">
-                  🤖 NextRank AI Rank Predictor
-                </h4>
-                <p className="text-slate-400 text-xs">Enter your simulated JEE Main marks (0-360) to predict target percentiles & ranks instantly.</p>
-                
-                <div className="space-y-2 pt-1">
-                  <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                    <span>Mock Marks Score</span>
-                    <span className="text-white font-bold">{rankMockScore}/360</span>
-                  </div>
-                  <input 
-                    type="range" min="0" max="360"
-                    value={rankMockScore}
-                    onChange={(e) => {
-                      const score = parseInt(e.target.value);
-                      setRankMockScore(score);
-                      
-                      // Calculate mock percentiles
-                      const pct = Math.min(100, Math.max(10, 10 + (score / 360) * 89.99)).toFixed(2);
-                      const rk = Math.max(1, Math.round(1000000 * (1 - pct / 100)));
-                      setPredictedRankPercentile(`${pct}% Percentile`);
-                      setPredictedRank(`Predicted Rank: AIR ${rk}`);
-                    }}
-                    className="w-full accent-[var(--accent)] h-1 rounded-full cursor-pointer bg-white/10" 
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => {
-                        const pct = Math.min(100, Math.max(10, 10 + (rankMockScore / 360) * 89.99)).toFixed(2);
-                        const rk = Math.max(1, Math.round(1000000 * (1 - pct / 100)));
-                        setPredictedRankPercentile(`${pct}% Percentile`);
-                        setPredictedRank(`Predicted Rank: AIR ${rk}`);
-                      }}
-                      className="w-full bg-[var(--accent)] hover:opacity-90 text-slate-950 font-bold text-xs py-2 rounded-lg transition-transform active:scale-95"
-                    >
-                      Calculate AI Projection
-                    </button>
-                  </div>
-                </div>
-
-                {predictedRankPercentile && (
-                  <div className="bg-[var(--accent)]/10 border border-[var(--accent)]/20 p-3 rounded-xl text-center space-y-1 animate-in zoom-in-95 duration-200">
-                    <p className="font-mono text-sm font-black text-[var(--accent)]">{predictedRankPercentile}</p>
-                    <p className="font-poppins text-xs font-semibold text-white">{predictedRank}</p>
-                  </div>
-                )}
-              </div>
-
-              {/* 2. AI Doubt Solver */}
-              <div className="royal-card p-6 rounded-2xl border border-white/5 space-y-4 relative overflow-hidden bg-white/[0.04]">
-                <div className="absolute top-0 right-0 w-16 h-16 bg-purple-500/5 rounded-full blur-xl" />
-                <h4 className="font-poppins font-bold text-sm text-white flex items-center gap-1.5 text-glow">
-                  💡 AI Doubt Solver Assistant
-                </h4>
-                <p className="text-slate-400 text-xs">Write your physics equations or chemistry doubts to receive instant local conceptual explanations.</p>
-                
-                <div className="space-y-2">
-                  <input 
-                    type="text" 
-                    value={aiDoubtPrompt}
-                    onChange={(e) => setAiDoubtPrompt(e.target.value)}
-                    placeholder="e.g. What is Lenz's law?" 
-                    className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2.5 rounded-lg text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/50" 
-                  />
-                  <button 
-                    onClick={() => {
-                      if (!aiDoubtPrompt) return;
-                      setAiDoubtResult('Analyzing equations telemetry...');
-                      setTimeout(() => {
-                        if (aiDoubtPrompt.toLowerCase().includes('lenz')) {
-                          setAiDoubtResult("💡 Lenz's Law: The direction of the induced current is such that it opposes the change in magnetic flux that produced it. Formulated by Emil Lenz in 1834. Equation: E = -dΦ/dt (The negative sign denotes Lenz's law opposing effect).");
-                        } else if (aiDoubtPrompt.toLowerCase().includes('ohm')) {
-                          setAiDoubtResult("💡 Ohm's Law: The current flowing through a conductor is directly proportional to the potential difference across its ends, provided temperature remains constant. Equation: V = IR.");
-                        } else {
-                          setAiDoubtResult(`💡 Analysis response generated for: "${aiDoubtPrompt}". Standard physics laws applied. Induced emf opposes flux change, matching Newton's third law concept bounds.`);
-                        }
-                      }, 1000);
-                    }}
-                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs py-2 rounded-lg"
-                  >
-                    Solve Doubt Instantly
-                  </button>
-                </div>
-
-                {aiDoubtResult && (
-                  <div className="bg-slate-950 border border-white/5 p-3 rounded-xl text-[10px] text-slate-300 leading-relaxed max-h-[120px] overflow-y-auto pr-1">
-                    {aiDoubtResult}
-                  </div>
-                )}
-              </div>
-
-              {/* 3. AI Study Planner */}
-              <div className="royal-card p-6 rounded-2xl border border-white/5 space-y-4 relative overflow-hidden bg-white/[0.04]">
-                <div className="absolute top-0 right-0 w-16 h-16 bg-blue-500/5 rounded-full blur-xl" />
-                <h4 className="font-poppins font-bold text-sm text-white flex items-center gap-1.5 text-glow">
-                  🧠 AI Customized Study Planner
-                </h4>
-                <p className="text-slate-400 text-xs">Set your targeted daily study hours to construct a personalized syllabus timetable instantly.</p>
-                
-                <div className="space-y-2">
-                  <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                    <span>Target Study Hours</span>
-                    <span className="text-white font-bold">{aiStudyPlannerHours} Hrs/Day</span>
-                  </div>
-                  <input 
-                    type="range" min="4" max="16"
-                    value={aiStudyPlannerHours}
-                    onChange={(e) => setAiStudyPlannerHours(parseInt(e.target.value))}
-                    className="w-full accent-indigo-500 h-1 rounded-full cursor-pointer bg-white/10" 
-                  />
-                  <button 
-                    onClick={() => {
-                      const hours = aiStudyPlannerHours;
-                      setAiStudyPlan({
-                        slot1: `📚 Physics Core: ${Math.round(hours * 0.4)} hrs (Electromagnetism MCQ revisions)`,
-                        slot2: `🔬 Chemistry Organic: ${Math.round(hours * 0.3)} hrs (Benzene rings synthesis practice)`,
-                        slot3: `📐 Mathematics Calculus: ${Math.round(hours * 0.3)} hrs (Differential equations exercises)`
-                      });
-                    }}
-                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs py-2 rounded-lg"
-                  >
-                    Generate AI Timetable
-                  </button>
-                </div>
-
-                {aiStudyPlan && (
-                  <div className="bg-slate-950 border border-white/5 p-3 rounded-xl space-y-1.5 text-[9px] text-slate-300 font-mono leading-tight">
-                    <p className="text-emerald-400 font-bold border-b border-white/5 pb-1">TIMETABLE GENERATED:</p>
-                    <p>{aiStudyPlan.slot1}</p>
-                    <p>{aiStudyPlan.slot2}</p>
-                    <p>{aiStudyPlan.slot3}</p>
-                  </div>
-                )}
-              </div>
-
-            </div>
-
-          </div>
-        )}
-
-        {/* 2. Libaas (E-Commerce) */}
-        {businessType === 'ecommerce' && (
-          <div className="space-y-8">
-            <div className="flex items-center justify-between flex-wrap gap-4 border-b border-white/5 pb-4">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <ShoppingBag className="w-5 h-5 text-[var(--primary)]" />
-                Luxury Liquid Couture Catalog
-              </h3>
-
-              <div className="flex items-center gap-3">
-                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">AI RECOMMENDATIONS:</span>
-                <select 
-                  value={aiSuggestSelection} 
-                  onChange={(e) => setAiSuggestSelection(e.target.value)}
-                  className="bg-slate-900 border border-white/10 text-xs p-2 rounded-lg text-white font-semibold"
-                >
-                  <option value="Traditional">Royal Traditional Feasts</option>
-                  <option value="Modern">Contemporary Silk Duplex</option>
-                  <option value="Fusion">Indo-Western Liquid Gold</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {[
-                { id: 1, name: 'Royal Silk Sherwani', category: 'Traditional', price: '₹45,000', img: 'https://images.unsplash.com/photo-1597983073492-bc24058bf377?q=80&w=400' },
-                { id: 2, name: 'Linen Saffron Kurta', category: 'Traditional', price: '₹12,500', img: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=400' },
-                { id: 3, name: 'Liquid Sateen Tuxedo', category: 'Modern', price: '₹65,000', img: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=400' },
-                { id: 4, name: 'Organza Gold Lehenga', category: 'Fusion', price: '₹85,000', img: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=400' }
-              ].map((prod) => {
-                const isSuggested = prod.category === aiSuggestSelection;
-                const inWish = wishlist.includes(prod.id);
-
-                return (
-                  <div 
-                    key={prod.id} 
-                    style={{ borderColor: isSuggested ? `${theme.primary}50` : 'rgba(255,255,255,0.05)' }}
-                    className="glass-card rounded-2xl overflow-hidden border relative group shadow-lg"
-                  >
-                    {isSuggested && (
-                      <span className="absolute top-3 left-3 z-10 bg-[var(--primary)] text-white text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                        <Sparkles className="w-2.5 h-2.5" />
-                        AI RECOMMENDED STYLE
-                      </span>
                     )}
 
-                    <button 
-                      onClick={() => {
-                        playClickSound();
-                        setWishlist(prev => inWish ? prev.filter(id => id !== prod.id) : [...prev, prod.id]);
-                      }}
-                      className="absolute top-3 right-3 z-10 p-2 rounded-full bg-slate-950/60 border border-white/5 text-white hover:scale-110 active:scale-95 transition-transform"
-                    >
-                      <Heart className={`w-3.5 h-3.5 ${inWish ? 'text-rose-500 fill-rose-500' : 'text-slate-400'}`} />
-                    </button>
+                    {/* H. cybersecurity (THREATZERO DDOS SIMULATOR) */}
+                    {businessType === 'cybersecurity' && (
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start border-t border-white/5 pt-4">
+                        <div className="md:col-span-7 space-y-4 text-xs text-left">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-[9px] text-slate-400 font-bold uppercase block mb-1">Target Attack IP</label>
+                              <input type="text" value={simDdosIp} onChange={(e) => setSimDdosIp(e.target.value)} className="w-full bg-slate-950 border border-white/10 p-2 rounded-lg text-white font-mono" />
+                            </div>
+                            <div>
+                              <label className="text-[9px] text-slate-400 font-bold uppercase block mb-1">Intensity Ratio: {simIntensity}%</label>
+                              <input type="range" min="10" max="100" value={simIntensity} onChange={(e) => setSimIntensity(parseInt(e.target.value))} className="w-full accent-[var(--primary)]" />
+                            </div>
+                          </div>
 
-                    <div className="h-56 overflow-hidden relative">
-                      <img src={prod.img} alt={prod.name} className="w-full h-full object-cover group-hover:scale-115 transition-transform duration-500" />
-                    </div>
-
-                    <div className="p-5 space-y-3">
-                      <h4 className="font-bold text-xs text-slate-100">{prod.name}</h4>
-                      
-                      <div className="flex gap-1.5">
-                        {['S', 'M', 'L'].map(size => (
                           <button 
-                            key={size} 
-                            onClick={() => setSelectedSize(size)}
-                            className={`w-6 h-6 border rounded-lg text-[9px] font-bold ${
-                              selectedSize === size ? 'border-indigo-500 bg-indigo-500/10 text-white' : 'border-white/5 text-slate-400'
-                            }`}
+                            onClick={() => {
+                              playClickSound();
+                              setSimDdosActive(true);
+                              setTimeout(() => {
+                                setSimDdosActive(false);
+                                setSaasLogs(prev => [`🛡️ DDoS Mitigated: blocked ${simIntensity * 5} matrix packets on IP ${simDdosIp}.`, ...prev]);
+                                alert(`🎉 Mitigation grid success! Blocked ${simIntensity * 5} concurrent SQL/DDoS packets on IP ${simDdosIp}.`);
+                              }, 2000);
+                            }}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[10px] tracking-widest px-5 py-2.5 rounded-xl transition-all uppercase shadow active:scale-95"
                           >
-                            {size}
+                            {simDdosActive ? 'Compiling firewall defense...' : 'Launch Matrix DDoS defense'}
                           </button>
-                        ))}
+                        </div>
+
+                        {/* Interactive cybersecurity attack map */}
+                        <div className="md:col-span-5 flex flex-col items-center justify-center border border-white/5 bg-slate-950 p-6 rounded-2xl h-48 text-center space-y-2 relative overflow-hidden">
+                          <div className="absolute inset-0 pointer-events-none opacity-20 matrix-mesh" />
+                          <div className={`w-8 h-8 rounded-full border-2 ${simDdosActive ? 'border-rose-500 bg-rose-500/10 animate-ping' : 'border-emerald-500 bg-emerald-500/10'} flex items-center justify-center text-xs font-bold text-white`}>
+                            {simDdosActive ? '☠' : '🛡'}
+                          </div>
+                          <span className="text-[9px] font-mono text-slate-300 font-bold uppercase block">{simDdosActive ? 'FIREWALL ATTACK ACTIVE' : 'GRID POSTURE SAFE'}</span>
+                          <span className="text-[8px] font-mono text-slate-500">Mitigations: 2,400 logs captured</span>
+                        </div>
                       </div>
+                    )}
 
-                      <div className="flex items-center justify-between pt-2 border-t border-white/5">
-                        <span className="font-mono text-xs font-black text-[var(--primary)]">{prod.price}</span>
-                        
-                        <button
-                          onClick={() => {
-                            setCart(prev => [...prev, prod.id]);
-                            triggerRazorpaySimulation(prod.name, prod.price);
-                          }}
-                          className="bg-white/5 hover:bg-[var(--accent)] border border-white/10 hover:border-transparent text-white px-3 py-1.5 rounded-lg text-[9px] font-bold transition-all"
-                        >
-                          Checkout
-                        </button>
+                    {/* I. career (JOBSPHERE TECHNICAL AI INTERVIEW) */}
+                    {businessType === 'career' && (
+                      <div className="space-y-4 border-t border-white/5 pt-4 text-xs text-left">
+                        <div className="bg-slate-950 border border-white/10 p-4 rounded-xl text-slate-200 font-mono text-[10px] leading-relaxed">
+                          {mockInterviewQIndex === -1 ? 'Q1. Explain the operational differences between client and server components in Next.js?' : 'Q2. How do you implement robust salt algorithms (like factor 10) to secure JWT password registries?'}
+                        </div>
+                        <div className="flex gap-2">
+                          <input 
+                            type="text" 
+                            value={interviewAnswer} 
+                            onChange={(e) => setInterviewAnswer(e.target.value)} 
+                            placeholder="Write your brief technical response..." 
+                            className="flex-1 bg-white/5 border border-white/10 text-xs px-3.5 py-2.5 rounded-xl text-white focus:outline-none" 
+                          />
+                          <button 
+                            onClick={() => {
+                              playClickSound();
+                              if (mockInterviewQIndex === -1) {
+                                setInterviewFeedback('✔ Answer analyzed: standard server-rendering rules evaluated. Next.js server coordinates verified.');
+                                setMockInterviewQIndex(0);
+                                setInterviewAnswer('');
+                              } else {
+                                setInterviewFeedback('🎉 Technical Q&A complete! Performance rating: 92%. Placement telemetry active.');
+                                setMockInterviewQIndex(-1);
+                              }
+                              setSaasLogs(prev => [`🎙️ Technical response parsed: mock interview score compiled.`, ...prev]);
+                            }}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 rounded-xl text-[10px] font-bold"
+                          >
+                            Submit Answer
+                          </button>
+                        </div>
+                        {interviewFeedback && (
+                          <div className="p-3 bg-[var(--primary)]/10 border border-[var(--primary)]/30 rounded-xl text-[10px] text-slate-300 font-mono">
+                            {interviewFeedback}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+                    )}
 
-        {/* 3. AashiyanaX (Real Estate Website) */}
-        {businessType === 'real_estate' && (
-          <div className="space-y-8">
-            <div className="flex items-center justify-between flex-wrap gap-4 border-b border-white/5 pb-4">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-[var(--primary)]" />
-                Luxury Property Glass UI Portal
-              </h3>
+                    {/* J. SmartEngine swarms builder default sandbox */}
+                    {(businessType === 'smartengine' || businessType === 'coaching') && (
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start border-t border-white/5 pt-4">
+                        <div className="md:col-span-7 space-y-4 text-xs text-left">
+                          <div className="space-y-1">
+                            <label className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block mb-1">Scale edge containers</label>
+                            <div className="flex gap-2">
+                              {[1, 2, 4, 8].map(node => (
+                                <button
+                                  key={node}
+                                  onClick={() => {
+                                    playClickSound();
+                                    setSaasLogs(prev => [`⚡ Scaled active swarms cluster: configured ${node} agent cores.`, ...prev]);
+                                    if (window.showToast) window.showToast(`Edge node scaled: ${node} Active swarms`, 'success');
+                                  }}
+                                  className="px-4 py-2 border border-white/5 bg-white/5 hover:bg-[var(--primary)]/10 text-white rounded-lg transition-all"
+                                >
+                                  {node} Agent swarms
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
 
-              {/* Property filters */}
-              <div className="flex gap-2">
-                {['All', 'Villas', 'Plots', 'Duplexes'].map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setPropertyFilter(cat)}
-                    className={`text-[10px] font-semibold px-3 py-1.5 rounded-full transition-all ${
-                      propertyFilter === cat ? 'bg-[var(--primary)] text-white' : 'bg-white/5 text-slate-400 hover:bg-white/10'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {virtualTourActive ? (
-              <div className="w-full h-[320px] rounded-2xl bg-black border border-white/10 relative overflow-hidden animate-in zoom-in-95 duration-500 shadow-2xl flex items-center justify-center">
-                {/* 3D simulated panorama */}
-                <img 
-                  src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200" 
-                  alt="3D Panorama Tour" 
-                  className="absolute inset-0 w-full h-full object-cover opacity-30 animate-pulse blur-[1px]" 
-                />
-                <div className="absolute top-4 right-4 z-10 flex gap-2">
-                  <button 
-                    onClick={() => setVirtualTourActive(false)}
-                    className="bg-slate-900 border border-white/10 hover:bg-slate-800 text-white font-bold text-[10px] px-3.5 py-1.5 rounded-lg"
-                  >
-                    Exit 3D Blueprints
-                  </button>
-                </div>
-                <div className="relative text-center space-y-2 p-6 glass-panel border border-white/10 max-w-sm rounded-2xl animate-float">
-                  <Eye className="w-8 h-8 text-[var(--accent)] mx-auto animate-pulse" />
-                  <h4 className="text-white font-bold text-xs">Simulated 3D Spatial Blueprints</h4>
-                  <p className="text-slate-400 text-[10px]">Use key-drag elements to interact with the interior structures of the Villa. Multi-channel lighting parameters active.</p>
-                </div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                  { title: 'The Aashiyana Duplex', type: 'Duplexes', location: 'Vijay Nagar Prime', price: '₹1.8 Crores', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=600' },
-                  { title: 'Riverfront Crest Villa', type: 'Villas', location: 'Tilwara Ghat Road', price: '₹2.6 Crores', img: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=600' },
-                  { title: 'Glass Canopy Plots', type: 'Plots', location: 'Bhedaghat Bypass', price: '₹95 Lakhs', img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=600' }
-                ].filter(p => propertyFilter === 'All' || p.type === propertyFilter).map((prop, idx) => (
-                  <div key={idx} className="glass-card rounded-2xl overflow-hidden border border-white/5 hover:border-[var(--primary)]/30 group">
-                    <div className="h-44 overflow-hidden relative">
-                      <img src={prop.img} alt={prop.title} className="w-full h-full object-cover group-hover:scale-115 transition-transform duration-500" />
-                      <span className="absolute top-3 left-3 bg-[var(--accent)] text-white text-[8px] font-bold px-2 py-0.5 rounded-full uppercase">
-                        {prop.type}
-                      </span>
-                    </div>
-                    <div className="p-5 space-y-3">
-                      <h4 className="font-bold text-xs text-white">{prop.title}</h4>
-                      <p className="text-slate-400 text-[10px] flex items-center gap-1">
-                        <MapPin className="w-3.5 h-3.5 text-slate-500" />
-                        {prop.location}
-                      </p>
-                      
-                      <div className="flex gap-2">
-                        <button 
-                          onClick={() => { playClickSound(); setVirtualTourActive(true); }}
-                          className="bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 text-[9px] font-bold py-1.5 px-3 rounded-lg flex items-center gap-1"
-                        >
-                          <Eye className="w-3 h-3 text-indigo-400" />
-                          Launch 3D Tour
-                        </button>
+                        <div className="md:col-span-5 flex flex-col items-center justify-center border border-white/5 bg-slate-950 p-6 rounded-2xl h-36 text-center space-y-1">
+                          <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping" />
+                          <span className="text-[10px] font-mono text-slate-300 font-bold uppercase block">Edge Swarms Telemetry</span>
+                          <span className="text-[9px] font-mono text-slate-500">Latency Coordinates: 18ms</span>
+                        </div>
                       </div>
+                    )}
 
-                      <div className="flex items-center justify-between pt-2 border-t border-white/5">
-                        <span className="font-mono text-xs font-black text-[var(--primary)]">{prop.price}</span>
-                        <button 
-                          onClick={() => triggerRazorpaySimulation(prop.title, prop.price)}
-                          className="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1.5 rounded-lg text-[9px] font-bold transition-all"
-                        >
-                          Book Agent
-                        </button>
+                    {/* Render visual prompt feedback report if present */}
+                    {outfitPreviewReport && saasTab === 'sandbox' && businessType === 'ecommerce' && (
+                      <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-300 text-[10px] font-mono text-left animate-pulse">
+                        {outfitPreviewReport}
                       </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* 4. AarogyaCare (Hospital & Clinic Website) */}
-        {businessType === 'hospital' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-7 space-y-6">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <Heart className="w-5 h-5 text-[var(--primary)]" />
-                Active Diagnostic Specialist Profiles
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  { name: 'Dr. Alok Mishra (MD)', dept: 'Cardiology Support', wait: '15 min', status: 'AVAILABLE' },
-                  { name: 'Dr. Ritu Verma (DM)', dept: 'Brain Neuro-Sciences', wait: '10 min', status: 'AVAILABLE' }
-                ].map((doc, idx) => (
-                  <div key={idx} className="glass-card rounded-xl p-4 border border-white/5 flex items-center justify-between">
-                    <div>
-                      <h4 className="font-bold text-xs text-white">{doc.name}</h4>
-                      <p className="text-[10px] text-slate-400 mt-0.5">{doc.dept}</p>
-                      <span className="text-[8px] bg-slate-800 text-slate-400 font-bold px-2 py-0.5 rounded-full mt-1.5 inline-block">
-                        WAIT TIME: {doc.wait}
-                      </span>
-                    </div>
-                    <span className="text-[8px] font-bold px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-400">
-                      {doc.status}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Health reports section */}
-              <div className="glass-card rounded-2xl p-6 border border-white/5 space-y-3">
-                <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
-                  <FileText className="w-4.5 h-4.5 text-[var(--accent)]" />
-                  AarogyaCare Patient Health Reports Vault
-                </h4>
-                <p className="text-slate-400 text-xs">Access secure clinical test diagnostics and blood telemetry sheets directly.</p>
-                <div className="flex gap-2">
-                  <button 
-                    onClick={() => triggerRazorpaySimulation('Blood Diagnostics Report Download', 200)}
-                    className="bg-white/5 hover:bg-slate-800 border border-white/10 text-slate-200 text-[10px] font-bold px-4 py-2 rounded-xl transition-all"
-                  >
-                    Download Blood Report (₹200)
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="lg:col-span-5 glass-card rounded-2xl p-6 border border-white/5 space-y-4">
-              <div className="flex items-center justify-between">
-                <h4 className="font-bold text-sm text-white">Book Clinic Consultation</h4>
-                <button 
-                  onClick={() => { playClickSound(); setActiveSupportSiren(true); }}
-                  className="bg-rose-500/10 hover:bg-rose-500/25 border border-rose-500/30 text-rose-400 font-bold text-[8px] px-2 py-1 rounded-lg uppercase tracking-wider"
-                >
-                  Emergency Support
-                </button>
-              </div>
-
-              <form onSubmit={(e) => triggerMockSubmit(e, 'AarogyaCare appointment confirmed! Clinic seat token has been issued.')} className="space-y-4">
-                <div>
-                  <label className="text-[10px] text-slate-400 font-semibold block mb-1">Patient Full Name</label>
-                  <input 
-                    type="text" required 
-                    value={patientName}
-                    onChange={(e) => setPatientName(e.target.value)}
-                    placeholder="e.g. Anjali Verma" 
-                    className="w-full bg-white/5 border border-white/10 text-xs p-3 rounded-lg text-white placeholder-slate-600 focus:outline-none" 
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] text-slate-400 font-semibold block mb-1">Clinic Department</label>
-                  <select 
-                    value={bookingDept} 
-                    onChange={(e) => setBookingDept(e.target.value)}
-                    className="w-full bg-slate-900 border border-white/10 text-xs p-3 rounded-lg text-white"
-                  >
-                    <option>Cardiology (Heart Care)</option>
-                    <option>Neuro-Sciences (Brain/Stroke)</option>
-                    <option>Emergency Diagnostics</option>
-                  </select>
-                </div>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  style={{ background: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}
-                  className="w-full text-xs font-semibold py-3 rounded-lg text-white shadow-lg transition-transform active:scale-95"
-                >
-                  {submitting ? 'Connecting Clinic...' : 'Book Consult Seat'}
-                </button>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* 5. Cafe Aura (Cafe & Restaurant) */}
-        {businessType === 'cafe' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-7 space-y-6">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <Utensils className="w-5 h-5 text-[var(--primary)]" />
-                Cafe Aura Coffee Glass Lounge Menu
-              </h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  { id: 1, name: 'Aura Espresso Roast', price: '₹180', desc: 'Micro-roasted single-origin dark coffee brew.', category: 'Coffee' },
-                  { name: 'Saffron Cream Frappe', price: '₹260', desc: 'Blended cold frappe with organic honey saffron.', category: 'Special' },
-                  { name: 'Warm Marble Brownie', price: '₹220', desc: 'Chocolaty soft brownie baked inside cream white shell.', category: 'Dessert' }
-                ].map((item, idx) => (
-                  <div key={idx} className="glass-card rounded-xl p-4 border border-white/5 flex items-start justify-between gap-4">
-                    <div className="space-y-1">
-                      <span className="text-[8px] bg-amber-500/10 text-amber-400 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider block w-fit mb-1">{item.category}</span>
-                      <h4 className="font-bold text-xs text-white">{item.name}</h4>
-                      <p className="text-[10px] text-slate-400 leading-normal">{item.desc}</p>
-                    </div>
-                    <div className="flex flex-col gap-2 items-end shrink-0">
-                      <span className="font-mono text-xs font-bold text-[var(--primary)]">{item.price}</span>
-                      <button 
-                        onClick={() => {
-                          setOrderCart(prev => [...prev, item.name]);
-                          triggerRazorpaySimulation(item.name, item.price);
-                        }}
-                        className="bg-white/5 hover:bg-[var(--accent)] border border-white/10 hover:border-transparent text-white px-2 py-1 rounded-lg text-[9px] transition-all"
-                      >
-                        Order
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Live music schedules calendar */}
-              <div className="glass-card rounded-2xl p-6 border border-white/5 space-y-2">
-                <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
-                  <Volume2 className="w-4.5 h-4.5 text-[var(--accent)]" />
-                  Cafe Aura Unplugged Live Music Schedules
-                </h4>
-                <p className="text-slate-400 text-xs">Join our coffee lounge unplugged sessions every weekend featuring local Sanskardhani acoustic singer bands.</p>
-                <div className="bg-slate-900 border border-white/5 px-3 py-2 rounded-xl text-[10px] font-mono text-slate-300">
-                  ⚡ NEXT EVENT: Friday 8:00 PM | Local Acoustic Fusion Band | Reserved Seats Available
-                </div>
-              </div>
-            </div>
-
-            <div className="lg:col-span-5 glass-card rounded-2xl p-6 border border-white/5">
-              <h4 className="font-bold text-sm mb-4 text-white">Reserve Lounge Coffee Table</h4>
-              <form onSubmit={(e) => triggerMockSubmit(e, `Lounge table reserved on ${tableDate} for ${tableSeats} guests!`)} className="space-y-4">
-                <div>
-                  <label className="text-[10px] text-slate-400 font-semibold block mb-1">Number of Seats</label>
-                  <select 
-                    value={tableSeats} 
-                    onChange={(e) => setTableSeats(parseInt(e.target.value))}
-                    className="w-full bg-slate-900 border border-white/10 text-xs p-3 rounded-lg text-white font-semibold"
-                  >
-                    <option value="1">1 Lounge Seat</option>
-                    <option value="2">2 Seats (Date Corner)</option>
-                    <option value="4">4 Seats (Group Lounge)</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-[10px] text-slate-400 font-semibold block mb-1">Select Coffee Date</label>
-                  <input 
-                    type="date" 
-                    value={tableDate} 
-                    onChange={(e) => setTableDate(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 text-xs p-3 rounded-lg text-white" 
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  style={{ background: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}
-                  className="w-full text-xs font-semibold py-3 rounded-lg text-white shadow-lg transition-transform active:scale-95"
-                >
-                  {submitting ? 'Confirming reservation...' : 'Reserve Lounge Table'}
-                </button>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* 6. NexaTech Hub (Tech Hub / Startup Website) */}
-        {businessType === 'startup' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-7 space-y-6">
-              {/* Interactive AI sandbox console */}
-              <div id="ai-console" className="glass-card rounded-2xl p-6 border border-white/5 space-y-4">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <Cpu className="w-5 h-5 text-[var(--primary)]" />
-                  NexaTech Hub Interactive AI Integrations Sandbox
-                </h3>
-                <p className="text-slate-400 text-xs">Run mock AI compile scripts to see the Future Tech Glass model in execution.</p>
-                <div className="flex gap-2">
-                  <input 
-                    type="text" 
-                    value={aiSandboxPrompt}
-                    onChange={(e) => setAiSandboxPrompt(e.target.value)}
-                    className="flex-1 bg-white/5 border border-white/10 text-xs px-3 rounded-xl text-white placeholder-slate-600 focus:outline-none" 
-                  />
-                  <button 
-                    onClick={() => {
-                      playClickSound();
-                      setAiSandboxOutput(`// NexaTech AI compiling prompt: "${aiSandboxPrompt}"...\n[SUCCESS] Response parsed: suggested HSL styling variables compiled successfully.\nContainer node speed: 18ms`);
-                    }}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4.5 py-2 rounded-xl transition-all"
-                  >
-                    Compile AI Script
-                  </button>
-                </div>
-
-                {aiSandboxOutput && (
-                  <pre className="bg-black border border-white/5 p-4 rounded-xl font-mono text-[9px] text-emerald-400 overflow-x-auto">
-                    {aiSandboxOutput}
-                  </pre>
-                )}
-              </div>
-
-              {/* Team Showcase */}
-              <div className="glass-card rounded-2xl p-6 border border-white/5 space-y-3">
-                <h4 className="text-xs font-bold text-white">NexaTech Core Research Team</h4>
-                <div className="grid grid-cols-3 gap-4">
-                  {[
-                    { name: 'Karan Sen', role: 'AI Operator', campus: 'Ex-IIT' },
-                    { name: 'Ritu Verma', role: 'Security Architect', campus: 'Ex-IISc' },
-                    { name: 'Alok Mishra', role: 'Full Stack Dev', campus: 'Sanskardhani' }
-                  ].map((member, idx) => (
-                    <div key={idx} className="bg-slate-900 border border-white/5 p-3 rounded-xl text-center">
-                      <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center mx-auto text-xs font-bold text-white mb-2">
-                        {member.name.substring(0,1)}
+                    )}
+                    {bpPreviewReport && saasTab === 'sandbox' && businessType === 'real_estate' && (
+                      <div className="p-3 bg-indigo-500/10 border border-indigo-500/30 rounded-xl text-slate-300 text-[10px] font-mono text-left animate-pulse">
+                        {bpPreviewReport}
                       </div>
-                      <h5 className="font-bold text-[10px] text-slate-200">{member.name}</h5>
-                      <p className="text-[8px] text-slate-500 mt-0.5">{member.role}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Live stats and products */}
-            <div className="lg:col-span-5 space-y-6">
-              <div className="glass-card rounded-2xl p-6 border border-white/5 space-y-4">
-                <h4 className="font-bold text-xs text-white">Live Server Statistics (Green Hydropower Grid)</h4>
-                <div className="space-y-3 text-xs">
-                  <div>
-                    <div className="flex justify-between font-mono text-[10px] text-slate-400 mb-1">
-                      <span>Server Capacity load ratio</span>
-                      <span className="text-[var(--primary)] font-bold">{cpuUsage}%</span>
-                    </div>
-                    <div className="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
-                      <div style={{ width: `${cpuUsage}%`, backgroundColor: theme.primary }} className="h-full rounded-full transition-all duration-1000" />
-                    </div>
-                  </div>
-                  <div className="bg-slate-900 border border-white/5 px-3 py-2 rounded-xl text-[10px] leading-relaxed text-slate-400">
-                    ⚡ Bargi Dam Hydro Edge nodes: <strong className="text-emerald-400">ONLINE (Excellent AQI)</strong>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* 7. FlexArena (Gym & Fitness Website) */}
-        {businessType === 'gym' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-7 space-y-6">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <Dumbbell className="w-5 h-5 text-[var(--primary)]" />
-                FlexArena Power Glass Fitness Memberships
-              </h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {[
-                  { name: 'Alpha Sprint Gym Pass', price: '₹2,500', duration: '1 Month' },
-                  { name: 'Iron Hulk Program', price: '₹11,000', duration: '6 Months' },
-                  { name: 'Gladiator Elite Pack', price: '₹18,000', duration: '12 Months' }
-                ].map((pack, idx) => (
-                  <div key={idx} className="glass-card rounded-2xl p-5 border border-white/5 flex flex-col justify-between h-44 hover:border-[var(--primary)]/30">
-                    <div>
-                      <h4 className="font-bold text-xs text-white leading-tight">{pack.name}</h4>
-                      <p className="text-[10px] text-slate-500 mt-1">{pack.duration} access</p>
-                    </div>
-                    <div className="pt-3 border-t border-white/5 flex flex-col gap-2">
-                      <span className="font-mono text-xs font-black text-[var(--primary)]">{pack.price}</span>
-                      <button 
-                        onClick={() => triggerRazorpaySimulation(pack.name, pack.price)}
-                        className="bg-white/5 hover:bg-[var(--accent)] border border-white/10 hover:border-transparent text-white py-1.5 rounded-lg text-[9px] font-bold transition-all text-center"
-                      >
-                        Enlist Now
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Targeted Workout Plans */}
-              <div className="glass-card rounded-2xl p-6 border border-white/5 space-y-3">
-                <h4 className="text-xs font-bold text-white">Targeted Workout Plans Showcase</h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-slate-900 border border-white/5 p-3.5 rounded-xl space-y-1">
-                    <h5 className="font-bold text-xs text-white">Hypertrophy Power Pack</h5>
-                    <p className="text-[10px] text-slate-400">4 days/wk barbell lift focuses + biometric telemetry logging.</p>
-                  </div>
-                  <div className="bg-slate-900 border border-white/5 p-3.5 rounded-xl space-y-1">
-                    <h5 className="font-bold text-xs text-white">Conditioning fat-burn Sprint</h5>
-                    <p className="text-[10px] text-slate-400">High-density HIIT runs adjusting telemetry deck speeds automatically.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right: BMI Tracker */}
-            <div className="lg:col-span-5 glass-card rounded-2xl p-6 border border-white/5 space-y-4">
-              <h4 id="bmi-planner" className="font-bold text-sm text-white">Interactive BMI & Calorie Target Tracker</h4>
-              <div className="space-y-3 text-xs">
-                <div>
-                  <label className="text-[10px] text-slate-400 block mb-1">Body Weight (kg)</label>
-                  <input 
-                    type="number" 
-                    value={bmiWeight}
-                    onChange={(e) => setBmiWeight(parseFloat(e.target.value))}
-                    className="w-full bg-white/5 border border-white/10 p-2.5 rounded-lg text-white text-xs focus:outline-none" 
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] text-slate-400 block mb-1">Body Height (cm)</label>
-                  <input 
-                    type="number" 
-                    value={bmiHeight}
-                    onChange={(e) => setBmiHeight(parseFloat(e.target.value))}
-                    className="w-full bg-white/5 border border-white/10 p-2.5 rounded-lg text-white text-xs focus:outline-none" 
-                  />
-                </div>
-                <button 
-                  onClick={() => {
-                    playClickSound();
-                    const heightM = bmiHeight / 100;
-                    const bVal = bmiWeight / (heightM * heightM);
-                    setBmiResult(bVal.toFixed(1));
-                  }}
-                  style={{ background: theme.primary }}
-                  className="w-full text-xs font-semibold py-2.5 rounded-lg text-white transition-transform active:scale-95"
-                >
-                  Calculate BMI Parameters
-                </button>
-
-                {bmiResult && (
-                  <div className="bg-slate-900 border border-white/5 rounded-xl p-3.5 flex justify-between items-center animate-in fade-in duration-300">
-                    <div>
-                      <p className="text-[9px] text-slate-500 font-bold uppercase">Computed BMI Score</p>
-                      <p className="font-mono text-sm font-black text-white">{bmiResult}</p>
-                    </div>
-                    <div>
-                      <p className="text-[9px] text-slate-500 font-bold uppercase">Daily Target Calorie</p>
-                      <p className="font-mono text-sm font-black text-[var(--accent)]">{Math.round(bmiWeight * 22 * 1.5)} Kcal</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* 8. ExploreAura (Travel & Trip Planner Website) */}
-        {businessType === 'tourism' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-7 space-y-6">
-              {/* Dynamic AI travel Itinerary */}
-              <div id="itinerary" className="glass-card rounded-2xl p-6 border border-white/5 space-y-4">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <Star className="w-5 h-5 text-[var(--primary)]" />
-                  ExploreAura Smart AI Itinerary Generator
-                </h3>
-                <p className="text-slate-400 text-xs">Enter your target tourist spot in Jabalpur and generate an optimized digital travel timeline.</p>
-                <div className="flex gap-2">
-                  <input 
-                    type="text" 
-                    value={tripLocation}
-                    onChange={(e) => setTripLocation(e.target.value)}
-                    placeholder="e.g. Bhedaghat Marble Rocks" 
-                    className="flex-1 bg-white/5 border border-white/10 text-xs px-3 rounded-xl text-white placeholder-slate-600 focus:outline-none" 
-                  />
-                  <button 
-                    onClick={() => {
-                      playClickSound();
-                      setGeneratedItinerary(`🗺️ Dynamic 3-Day Plan for "${tripLocation}":\n• Day 1: 04:00 PM Dhuandhar water spray walk -> Moonlight Bhedaghat cruise (08:00 PM).\n• Day 2: Gond Rani Durgavati museum check -> Madan Mahal Fort scaling.\n• Day 3: Tilwara Ghat bypass cycle tour -> sunset riverside dinner.`);
-                    }}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4.5 py-2 rounded-xl transition-all"
-                  >
-                    Generate Travel Timeline
-                  </button>
-                </div>
-
-                {generatedItinerary && (
-                  <pre className="bg-slate-950 border border-white/5 p-4 rounded-xl font-mono text-[9px] text-indigo-400 overflow-x-auto whitespace-pre-line leading-relaxed">
-                    {generatedItinerary}
-                  </pre>
-                )}
-              </div>
-
-              {/* Hotel booking cards */}
-              <div className="glass-card rounded-2xl p-6 border border-white/5 space-y-3">
-                <h4 className="text-xs font-bold text-white">Premium Stays Booking Engine</h4>
-                <div className="grid grid-cols-2 gap-4">
-                  {[
-                    { name: 'Narmada Gorges Eco-Resort', rate: '₹4,500/night', loc: 'Bhedaghat view' },
-                    { name: 'Tilwara Riverfront Cottages', rate: '₹3,200/night', loc: 'Tilwara shoreline' }
-                  ].map((hotel, idx) => (
-                    <div key={idx} className="bg-slate-900 border border-white/5 p-3.5 rounded-xl flex flex-col justify-between h-28">
-                      <div>
-                        <h5 className="font-bold text-[10px] text-white leading-tight">{hotel.name}</h5>
-                        <p className="text-[8px] text-slate-500 mt-1">{hotel.loc}</p>
+                    )}
+                    {diagReport && saasTab === 'sandbox' && businessType === 'hospital' && (
+                      <div className="p-3 bg-[var(--primary)]/10 border border-[var(--primary)]/30 rounded-xl text-slate-300 text-[10px] font-mono text-left animate-pulse">
+                        {diagReport}
                       </div>
-                      <div className="flex justify-between items-center pt-2 border-t border-white/5">
-                        <span className="font-mono text-[10px] text-[var(--accent)] font-semibold">{hotel.rate}</span>
-                        <button 
-                          onClick={() => triggerRazorpaySimulation(hotel.name, hotel.rate)}
-                          className="bg-white/5 hover:bg-[var(--primary)] text-white font-bold text-[8px] px-2 py-1 rounded-lg"
-                        >
-                          Book Stay
-                        </button>
+                    )}
+                    {roastReport && saasTab === 'sandbox' && businessType === 'cafe' && (
+                      <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-300 text-[10px] font-mono text-left animate-pulse">
+                        {roastReport}
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+                    )}
 
-            {/* Right: Travel Budget calculator */}
-            <div className="lg:col-span-5 glass-card rounded-2xl p-6 border border-white/5 space-y-4">
-              <h4 className="font-bold text-sm text-white">SkyGlass Travel Budget Planner</h4>
-              <div className="space-y-3 text-xs">
-                <div>
-                  <div className="flex justify-between font-mono text-[10px] text-slate-400 mb-1">
-                    <span>Expected Stay Duration</span>
-                    <span className="text-[var(--accent)] font-bold">{budgetDays} Days</span>
-                  </div>
-                  <input 
-                    type="range" min="1" max="7" 
-                    value={budgetDays} 
-                    onChange={(e) => setBudgetDays(parseInt(e.target.value))}
-                    className="w-full accent-[var(--primary)]" 
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] text-slate-400 block mb-1">Transit Preference</label>
-                  <select 
-                    value={budgetTransit} 
-                    onChange={(e) => setBudgetTransit(parseInt(e.target.value))}
-                    className="w-full bg-slate-900 border border-white/10 p-2 rounded-lg text-white text-xs font-semibold"
-                  >
-                    <option value="1200">Municipal Electric Shuttle (₹1,200 total)</option>
-                    <option value="3500">Private SUV Guided Rental (₹3,500 total)</option>
-                  </select>
-                </div>
-                <div className="bg-white/2 border border-white/5 rounded-xl p-3 flex justify-between items-center mt-2">
-                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Estimated Total Budget</span>
-                  <span className="font-mono text-sm font-bold text-[var(--primary)]">
-                    ₹{(budgetDays * 4500 + budgetTransit).toLocaleString('en-IN')}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* 9. ThreatZero (Cyber Security Awareness Website) */}
-        {businessType === 'cybersecurity' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Live threat monitor attacks */}
-            <div className="lg:col-span-7 space-y-6">
-              <div id="security-hub" className="glass-card rounded-2xl p-6 border border-white/5 space-y-3">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-[var(--primary)]" />
-                  ThreatZero Live Simulated Network Attack Monitor
-                </h3>
-                <p className="text-slate-400 text-xs">Simulating live firewall detections caught across central India edge-nodes. Ticking in real-time:</p>
-                
-                <div className="bg-black border border-white/5 p-4 rounded-xl font-mono text-[9px] text-emerald-400 overflow-x-auto space-y-2 h-[180px] shadow-inner">
-                  {simulatedAttackLogs.map((log, idx) => (
-                    <div key={idx} className="flex justify-between items-center gap-2 hover:bg-white/2 p-1 rounded">
-                      <span className="text-slate-500 shrink-0">[{log.time}]</span>
-                      <span className="text-amber-400 font-bold shrink-0">{log.source}</span>
-                      <span className="text-slate-300 truncate flex-1">{log.payload}</span>
-                      <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded ${
-                        log.action === 'BLOCK' ? 'bg-rose-500/10 text-rose-400' : 'bg-emerald-500/10 text-emerald-400'
-                      }`}>
-                        {log.action}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Actionable security tips */}
-              <div className="glass-card rounded-2xl p-6 border border-white/5 space-y-2">
-                <h4 className="text-xs font-bold text-white">Crucial Cyber Security Matrix Tips</h4>
-                <ul className="text-[10px] text-slate-300 space-y-2 leading-relaxed">
-                  <li className="flex items-start gap-1"><span className="text-emerald-500 shrink-0">•</span> <strong>MFA Enforcement:</strong> Enforce multi-factor verification on all developer pipelines to reject brute force scanning.</li>
-                  <li className="flex items-start gap-1"><span className="text-emerald-500 shrink-0">•</span> <strong>Hash Salts:</strong> Always store passwords using secure hashing algorithms (like `bcrypt`) with a minimum factor of 10.</li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Right: Security quiz */}
-            <div className="lg:col-span-5 glass-card rounded-2xl p-6 border border-white/5 space-y-4">
-              <h4 className="font-bold text-sm text-white">Interactive Cyber Quiz Sandbox</h4>
-              
-              {!secQuizFinished ? (
-                <div className="space-y-4 text-xs">
-                  {secQuizIndex === 0 && (
-                    <div className="space-y-3">
-                      <p className="font-semibold text-slate-200">Q1. What denotes a Zero-Trust security network?</p>
-                      {['Trust but verify everything', 'Never trust, always verify', 'Firewall blocks all traffic'].map((opt) => (
-                        <button 
-                          key={opt}
-                          onClick={() => {
-                            playClickSound();
-                            if (opt === 'Never trust, always verify') setSecQuizScore(prev => prev + 1);
-                            setSecQuizIndex(1);
-                          }}
-                          className="w-full text-left bg-slate-900 border border-white/5 hover:bg-slate-800 text-slate-300 p-3 rounded-xl transition-all"
-                        >
-                          {opt}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                  {secQuizIndex === 1 && (
-                    <div className="space-y-3">
-                      <p className="font-semibold text-slate-200">Q2. Which hashing parameter represents secure salts?</p>
-                      {['MD5', 'SHA-1', 'Bcrypt'].map((opt) => (
-                        <button 
-                          key={opt}
-                          onClick={() => {
-                            playClickSound();
-                            if (opt === 'Bcrypt') setSecQuizScore(prev => prev + 1);
-                            setSecQuizFinished(true);
-                          }}
-                          className="w-full text-left bg-slate-900 border border-white/5 hover:bg-slate-800 text-slate-300 p-3 rounded-xl transition-all"
-                        >
-                          {opt}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="space-y-3 text-center py-4">
-                  <ShieldCheck className="w-10 h-10 text-emerald-400 mx-auto animate-pulse" />
-                  <h5 className="font-bold text-xs text-white">Cyber Assessment Completed</h5>
-                  <p className="text-slate-400 text-[10px]">Your Firewall understanding score is logged: <strong>{secQuizScore}/2</strong></p>
-                  <button 
-                    onClick={() => { setSecQuizIndex(0); setSecQuizScore(0); setSecQuizFinished(false); }}
-                    style={{ background: theme.primary }}
-                    className="text-xs font-semibold px-4 py-2 rounded-lg text-white transition-transform active:scale-95"
-                  >
-                    Retake Quiz Sandbox
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* 10. JobSphere (Career & Job Portal) */}
-        {businessType === 'career' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-7 space-y-6">
-              {/* Smart Resume analyzer */}
-              <div id="career-sandbox" className="glass-card rounded-2xl p-6 border border-white/5 space-y-4">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <Briefcase className="w-5 h-5 text-[var(--primary)]" />
-                  JobSphere Smart Resume Parser & Rating Analyzer
-                </h3>
-                <p className="text-slate-400 text-xs">Paste or write your resume bio text below. The AI will output an optimization rating scoring and detailed keyword analytics.</p>
-                <div className="space-y-3">
-                  <textarea 
-                    value={resumeTextInput}
-                    onChange={(e) => setResumeTextInput(e.target.value)}
-                    placeholder="e.g. Coder with ex-IIT mentoring credentials, specialized in Next.js web application structures and HSL styles..." 
-                    className="w-full bg-white/5 border border-white/10 text-xs p-3 rounded-xl text-white h-20 placeholder-slate-600 focus:outline-none" 
-                  />
-                  <button 
-                    onClick={() => {
-                      playClickSound();
-                      if (!resumeTextInput) return;
-                      const hasIIT = resumeTextInput.toLowerCase().includes('iit');
-                      const hasNext = resumeTextInput.toLowerCase().includes('next');
-                      let score = 55;
-                      if (hasIIT) score += 25;
-                      if (hasNext) score += 15;
-                      setResumeRating({
-                        score,
-                        feedback: score > 80 ? 'Excellent startup posture! Optimized keyword density verified.' : 'Suboptimal keyword density. Include tags like Next.js, MERN stack, or developer credentials.'
-                      });
-                    }}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4.5 py-2.5 rounded-xl transition-all"
-                  >
-                    Analyze Resume Profile
-                  </button>
-                </div>
-
-                {resumeRating && (
-                  <div className="bg-slate-900 border border-white/5 p-4 rounded-xl text-xs space-y-2 animate-in slide-in-from-bottom-2 duration-300">
-                    <div className="flex justify-between items-center">
-                      <span className="font-bold text-slate-400">Resume Quality Score</span>
-                      <span className="font-mono text-sm font-black text-[var(--primary)]">{resumeRating.score}/100</span>
-                    </div>
-                    <p className="text-slate-300 text-[10px] leading-relaxed">{resumeRating.feedback}</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Internship finder search bar */}
-              <div className="glass-card rounded-2xl p-6 border border-white/5 space-y-3">
-                <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
-                  <Search className="w-4.5 h-4.5 text-[var(--accent)]" />
-                  JobSphere Regional Internship Finder
-                </h4>
-                <div className="flex gap-2">
-                  <input type="text" placeholder="e.g. MERN Developer" className="flex-1 bg-white/5 border border-white/10 text-xs px-3.5 py-2.5 rounded-xl text-white focus:outline-none" />
-                  <button className="bg-white/5 hover:bg-slate-800 text-white text-xs px-4 py-2.5 rounded-xl border border-white/10">Search</button>
-                </div>
-                <div className="bg-slate-900 border border-white/5 px-3 py-2 rounded-xl text-[10px] leading-normal text-slate-400">
-                  ✔ 3 Active remote startup internships logged for central India coders. Apply direct.
-                </div>
-              </div>
-            </div>
-
-            {/* Right: AI Mock Interview Q&A console */}
-            <div className="lg:col-span-5 glass-card rounded-2xl p-6 border border-white/5 space-y-4">
-              <h4 className="font-bold text-sm text-white">AI FutureHire Conversational Mock Interview</h4>
-              {mockInterviewQIndex === -1 ? (
-                <div className="space-y-3">
-                  <p className="text-slate-400 text-xs">Simulate a high-premium startup technical interview. Receive instant feedback scores.</p>
-                  <button 
-                    onClick={() => { setMockInterviewQIndex(0); setInterviewFeedback(''); setInterviewAnswer(''); }}
-                    style={{ background: theme.primary }}
-                    className="w-full text-xs font-semibold py-2.5 rounded-lg text-white transition-transform active:scale-95"
-                  >
-                    Start AI Mock Interview
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-4 text-xs">
-                  <div className="bg-slate-900 border border-white/5 p-3.5 rounded-xl text-slate-300 leading-relaxed font-mono text-[10px]">
-                    {mockInterviewQIndex === 0 ? 'Q1. Explain the difference between Server Components and Client Components in Next.js?' : 'Q2. How does standard JWT auth structure encrypt user data payload safely?'}
-                  </div>
-                  <input 
-                    type="text" 
-                    value={interviewAnswer}
-                    onChange={(e) => setInterviewAnswer(e.target.value)}
-                    placeholder="Write your brief technical response..."
-                    className="w-full bg-white/5 border border-white/10 p-2.5 rounded-lg text-white text-xs focus:outline-none" 
-                  />
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={() => {
-                        playClickSound();
-                        if (mockInterviewQIndex === 0) {
-                          setInterviewFeedback('✔ Feedback: Perfect response outlining that server components render on the host, saving client-side asset sizes. Proceed.');
-                          setMockInterviewQIndex(1);
-                          setInterviewAnswer('');
-                        } else {
-                          setInterviewFeedback('🎉 Interview Completed! Performance rating: 92%. Resume parameters optimized.');
-                          setMockInterviewQIndex(-1);
-                        }
-                      }}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-4 py-2 rounded-lg"
-                    >
-                      Submit Response
-                    </button>
                   </div>
                 </div>
               )}
 
-              {interviewFeedback && (
-                <p className="bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 p-3.5 rounded-xl text-[10px] font-mono leading-relaxed">{interviewFeedback}</p>
-              )}
-            </div>
-          </div>
-        )}
+              {/* TAB 2.5: AI WORKFLOWS */}
+              {saasTab === 'workflows' && (
+                <div className="space-y-6 animate-in fade-in duration-300">
+                  <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-4">
+                    <h4 className="text-xs font-bold text-white font-mono uppercase tracking-wider text-left">Automated Processing Workflow</h4>
+                    <p className="text-slate-400 text-xs leading-normal text-left">Orchestrate the streaming sequence of embeddings generation, storage indexing, and client-side agent triggers.</p>
+                    
+                    {/* Flowchart elements */}
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-center pt-2">
+                      <div className="bg-slate-900 border border-white/10 p-3.5 rounded-xl text-center">
+                        <span className="text-lg block">📥</span>
+                        <span className="text-[10px] font-bold text-white block mt-1">Data Feed</span>
+                        <span className="text-[8px] text-slate-500 block">Raw ingest</span>
+                      </div>
+                      <div className="text-center text-slate-600 font-mono text-sm hidden md:block">➔</div>
+                      <div className="bg-slate-900 border border-white/10 p-3.5 rounded-xl text-center">
+                        <span className="text-lg block">🔮</span>
+                        <span className="text-[10px] font-bold text-white block mt-1">Vector Index</span>
+                        <span className="text-[8px] text-slate-500 block">Embedding compute</span>
+                      </div>
+                      <div className="text-center text-slate-600 font-mono text-sm hidden md:block">➔</div>
+                      <div className="bg-slate-900 border border-white/10 p-3.5 rounded-xl text-center glow-outline">
+                        <span className="text-lg block">🤖</span>
+                        <span className="text-[10px] font-bold text-indigo-400 block mt-1">Agent Action</span>
+                        <span className="text-[8px] text-slate-500 block">Self-healing route</span>
+                      </div>
+                    </div>
 
-        {/* 11. SmartEngine (Futuristic AI SaaS Platform) Dashboard */}
-        {businessType === 'smartengine' && (
-          <div className="space-y-8 animate-in fade-in duration-1000 font-sans text-left">
-            {/* Command Palette Overlay Trigger */}
-            {searchPaletteOpen && (
-              <div className="fixed inset-0 z-50 flex items-start justify-center bg-slate-950/80 backdrop-blur-sm p-4 pt-[10vh] animate-in fade-in duration-200">
-                <div className="max-w-lg w-full bg-[#0a081a] border border-indigo-500/30 rounded-2xl shadow-2xl p-4 space-y-4">
-                  <div className="flex items-center gap-2 border-b border-indigo-500/20 pb-3">
-                    <Search className="w-4 h-4 text-indigo-400" />
-                    <input 
-                      type="text" 
-                      placeholder="Search commands everywhere (e.g. scale, salts, prompt)..." 
-                      value={paletteQuery}
-                      onChange={(e) => setPaletteQuery(e.target.value)}
-                      className="w-full bg-transparent text-xs text-white focus:outline-none placeholder-slate-600"
-                      autoFocus
-                    />
-                    <button 
-                      onClick={() => setSearchPaletteOpen(false)}
-                      className="text-[9px] bg-white/5 border border-white/10 px-2 py-1 rounded text-slate-400 hover:text-white"
-                    >
-                      ESC
-                    </button>
-                  </div>
-
-                  <div className="space-y-1.5 max-h-[220px] overflow-y-auto pr-1">
-                    {[
-                      { cmd: 'Scale container node A3', desc: 'Accelerate processor speed bounds', keywords: 'scale container' },
-                      { cmd: 'Audit password encryption salts', desc: 'Secure MERN hash structures', keywords: 'salts hash secure' },
-                      { cmd: 'Execute agent workflow compile', desc: 'Run distributed LLM processes', keywords: 'execute agent workflow' },
-                      { cmd: 'Upload new model weights bin', desc: 'Push weights file to vector vault', keywords: 'upload file weights' }
-                    ].filter(item => !paletteQuery || item.cmd.toLowerCase().includes(paletteQuery.toLowerCase()) || item.keywords.toLowerCase().includes(paletteQuery.toLowerCase())).map((item, idx) => (
+                    <div className="flex gap-4 pt-2">
                       <button
-                        key={idx}
                         onClick={() => {
                           playClickSound();
-                          setSearchPaletteOpen(false);
-                          setSaasLogs(prev => [`⚡ Command executed: "${item.cmd}" successfully dispatched.`, ...prev]);
-                          if (window.showToast) window.showToast(`Executed: ${item.cmd}`, 'success');
+                          setSaasLogs(prev => [
+                            `🚀 Workflow executed at ${new Date().toLocaleTimeString()}: Ingestion node parsed 142 vectors. Execution latency: 12ms.`,
+                            ...prev
+                          ]);
+                          if (window.showToast) window.showToast('Workflow Run Complete', 'success');
                         }}
-                        className="w-full flex items-center justify-between text-left p-3 rounded-xl bg-white/2 hover:bg-indigo-500/10 border border-white/5 hover:border-indigo-500/30 transition-all"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer"
                       >
-                        <div>
-                          <p className="text-xs font-semibold text-white">{item.cmd}</p>
-                          <p className="text-[9px] text-slate-500">{item.desc}</p>
-                        </div>
-                        <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+                        Execute Workflow Run
                       </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 2.6: INSIGHTS & RECOMMENDATIONS */}
+              {saasTab === 'recommendations' && (
+                <div className="space-y-4 animate-in fade-in duration-300">
+                  <h4 className="text-xs font-bold text-white font-mono uppercase tracking-wider text-left">AI Platform Recommendations</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {[
+                      { title: 'Scale container node A3', desc: 'Latency spikes observed near Tilwara. Scale processors by 1.5x.', act: 'Scale Node', done: 'Node scaled and verified.' },
+                      { title: 'Enforce password encryption salts', desc: 'Standard security evaluation recommends salt hashing.', act: 'Audit Salt', done: 'Secure password salts audited.' }
+                    ].map((item, idx) => (
+                      <div key={idx} className="saas-card p-5 rounded-2xl border border-white/5 space-y-3 relative overflow-hidden text-left">
+                        <span className="text-[8px] bg-indigo-500/10 text-indigo-300 font-bold px-2 py-0.5 rounded-full block w-fit font-mono">CRITICAL INSIGHT</span>
+                        <h5 className="font-bold text-xs text-white mt-1">{item.title}</h5>
+                        <p className="text-[10px] text-slate-400 leading-normal">{item.desc}</p>
+                        <button
+                          onClick={() => {
+                            playClickSound();
+                            setSaasLogs(prev => [`🛡️ Optimization logged: "${item.done}" applied successfully.`, ...prev]);
+                            if (window.showToast) window.showToast(item.done, 'success');
+                          }}
+                          className="bg-white/5 hover:bg-indigo-600 border border-white/10 hover:border-transparent text-slate-200 hover:text-white text-[9px] font-bold py-1.5 px-3 rounded-lg transition-all cursor-pointer"
+                        >
+                          {item.act}
+                        </button>
+                      </div>
                     ))}
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Top Dashboard Telemetry Header */}
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-white/5 pb-6">
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping" />
-                  <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-wider">ACTIVE INSTANCE SECURED</span>
-                </div>
-                <h3 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-                  <Cpu className="w-6 h-6 text-indigo-400 animate-pulse" />
-                  SmartEngine AI Console Workspace
-                </h3>
-                <p className="text-xs text-slate-400">Deploy self-managing LLM agents, run predictive vector routes, and evaluate server grids.</p>
-              </div>
-
-              {/* Command Palette Button */}
-              <button
-                onClick={() => { playClickSound(); setSearchPaletteOpen(true); }}
-                className="flex items-center gap-2 bg-indigo-950/40 hover:bg-indigo-900/40 text-slate-200 border border-indigo-500/30 hover:border-indigo-500/50 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all active:scale-95 shadow-lg"
-              >
-                <Search className="w-4 h-4 text-indigo-400" />
-                <span>Search Commands</span>
-                <span className="text-[9px] bg-indigo-500/20 border border-indigo-500/30 px-1.5 py-0.5 rounded text-indigo-300 font-mono">⌘K</span>
-              </button>
-            </div>
-
-            {/* Dashboard Workspace Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              
-              {/* Left Column: Module tabs and forms (8 columns) */}
-              <div className="lg:col-span-8 space-y-6">
-                
-                {/* Dynamic Tab Selector (Vercel Style glass line) */}
-                <div className="flex border-b border-white/5 pb-2 gap-3 overflow-x-auto whitespace-nowrap scrollbar-none font-mono text-[10px] font-bold uppercase tracking-wider">
-                  {[
-                    { id: 'analytics', label: 'Telemetry', icon: BarChart2 },
-                    { id: 'workflows', label: 'AI Workflows', icon: Layers },
-                    { id: 'recommendations', label: 'Insights', icon: Sparkles },
-                    { id: 'files', label: 'Vector Vault', icon: UploadCloud },
-                    { id: 'team', label: 'Core Team', icon: Users }
-                  ].map(tab => {
-                    const Icon = tab.icon;
-                    return (
-                      <button
-                        key={tab.id}
-                        onClick={() => { playClickSound(); setSaasTab(tab.id); }}
-                        className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all border cursor-pointer ${
-                          saasTab === tab.id
-                            ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/40 shadow-inner font-black'
-                            : 'text-slate-400 border-transparent hover:text-slate-200'
-                        }`}
-                      >
-                        <Icon className="w-4 h-4" />
-                        {tab.label}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* TAB 1: TELEMETRY & ANALYTICS WIDGETS */}
-                {saasTab === 'analytics' && (
-                  <div className="space-y-6 animate-in fade-in duration-300">
+              {/* TAB 3: FILE VAULT CATALOG */}
+              {saasTab === 'files' && (
+                <div className="space-y-6 animate-in fade-in duration-300">
+                  <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-4">
                     
-                    {/* Simulated Drag & Drop widgets (clickable layout shuffle simulation) */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {draggedWidgets.map((widget, wIdx) => (
-                        <div 
-                          key={widget.id}
-                          onClick={() => {
-                            playClickSound();
-                            // Shift widgets order circularly to simulate drag-drop layout swap
-                            const updated = [...draggedWidgets];
-                            const shifted = updated.shift();
-                            updated.push(shifted);
-                            setDraggedWidgets(updated);
-                          }}
-                          className="saas-card p-5 rounded-2xl border relative overflow-hidden group shadow-lg cursor-pointer hover:border-indigo-500/40"
-                        >
-                          <div className="absolute top-0 right-0 w-12 h-12 bg-indigo-500/5 rounded-full blur-lg" />
-                          <span className="text-[8px] text-slate-500 uppercase font-bold tracking-wider font-mono block">
-                            {widget.title} (Click to Drag-Swap)
-                          </span>
-                          <h4 className="text-2xl font-mono font-black text-white mt-1 group-hover:text-indigo-400 transition-colors">
-                            {widget.id === 'w_latency' ? `${latencyMeter}ms` : widget.id === 'w_tokens' ? `${(tokensTicked / 1000).toFixed(1)}K` : widget.value}
-                          </h4>
-                          <p className="text-[10px] text-slate-400 leading-normal mt-1">
-                            {widget.desc}
-                          </p>
-                        </div>
-                      ))}
+                    {/* Drag and drop mock file catalog upload grid */}
+                    <div className="border-2 border-dashed border-white/10 p-8 rounded-2xl text-center space-y-3 relative group hover:border-[var(--primary)]/30 transition-all cursor-pointer">
+                      <UploadCloud className="w-10 h-10 text-[var(--primary)] mx-auto group-hover:scale-110 transition-transform" />
+                      <div>
+                        <p className="text-xs font-bold text-white">Drag & drop model datasets / vectors / documents here</p>
+                        <p className="text-[9px] text-slate-500">Supports .dwg, .bin, .pdf, .json, and .png vectors maps (Max 5GB)</p>
+                      </div>
+                      <input 
+                        type="file" 
+                        onChange={(e) => {
+                          playClickSound();
+                          const file = e.target.files[0];
+                          if (file) {
+                            setSaasFiles(prev => [...prev, { name: file.name, size: `${(file.size / 1024).toFixed(1)} KB`, type: file.name.split('.').pop().toUpperCase() }]);
+                            setSaasLogs(prev => [`📥 File loaded to vector vault: "${file.name}" indexed.`, ...prev]);
+                            if (window.showToast) window.showToast(`Uploaded: ${file.name}`, 'success');
+                          }
+                        }}
+                        className="absolute inset-0 opacity-0 cursor-pointer" 
+                      />
                     </div>
 
-                    {/* Highly Polished Interactive CSS Chart (API Load telemetries) */}
-                    <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="text-xs font-bold text-white font-mono uppercase tracking-wider">Active Token Consumption Ratio</h4>
-                          <p className="text-[10px] text-slate-500">Live compute loads allocated across Bhedaghat server nodes</p>
-                        </div>
-                        <span className="text-[10px] font-mono bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 px-2 py-0.5 rounded font-bold">
-                          {(tokensTicked).toLocaleString()} Total Tokens
-                        </span>
-                      </div>
-
-                      {/* Custom bar chart using styled divs */}
-                      <div className="h-44 flex items-end gap-3.5 pt-4 border-b border-white/5 font-mono text-[9px] text-slate-500">
-                        {[
-                          { hour: '10:00', height: 'h-[30%]', load: '30%', color: 'bg-indigo-500/60' },
-                          { hour: '11:00', height: 'h-[55%]', load: '55%', color: 'bg-indigo-500/70' },
-                          { hour: '12:00', height: 'h-[85%]', load: '85%', color: 'bg-purple-500/70' },
-                          { hour: '13:00', height: `h-[${Math.round((latencyMeter/35)*100)}%]`, load: `${Math.round((latencyMeter/35)*100)}%`, color: 'bg-indigo-500 animate-pulse' }
-                        ].map((bar, idx) => (
-                          <div key={idx} className="flex-1 flex flex-col justify-end items-center h-full group relative">
-                            <div className="absolute top-[-25px] opacity-0 group-hover:opacity-100 transition-opacity bg-indigo-950 border border-indigo-500/30 px-1.5 py-0.5 rounded text-[8px] text-white">
-                              {bar.load} Load
+                    {/* Directory Listings */}
+                    <div className="space-y-2">
+                      <span className="text-[8px] text-slate-500 uppercase font-bold tracking-wider font-mono block">Indexed Files Catalog</span>
+                      <div className="space-y-2">
+                        {saasFiles.map((file, idx) => (
+                          <div key={idx} className="bg-slate-900 border border-white/5 p-3.5 rounded-xl flex items-center justify-between">
+                            <div className="text-left">
+                              <h5 className="font-bold text-xs text-white">📂 {file.name}</h5>
+                              <span className="text-[8px] text-slate-500 font-mono mt-0.5 block">{file.size} • Type: {file.type}</span>
                             </div>
-                            <div className={`w-full rounded-t-lg transition-all duration-1000 shadow-lg ${bar.height} ${bar.color} hover:bg-cyan-400`} />
-                            <span className="mt-2 block shrink-0">{bar.hour}</span>
+                            <button 
+                              onClick={() => {
+                                playClickSound();
+                                setSaasFiles(prev => prev.filter(f => f.name !== file.name));
+                                setSaasLogs(prev => [`Purged catalog: "${file.name}" removed.`, ...prev]);
+                                if (window.showToast) window.showToast(`Deleted: ${file.name}`, 'error');
+                              }}
+                              className="p-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-400 rounded-lg transition-transform active:scale-95 cursor-pointer"
+                            >
+                              <Trash className="w-3.5 h-3.5" />
+                            </button>
                           </div>
                         ))}
                       </div>
                     </div>
+
                   </div>
-                )}
+                </div>
+              )}
 
-                {/* TAB 2: AI WORKFLOWS */}
-                {saasTab === 'workflows' && (
-                  <div className="space-y-6 animate-in fade-in duration-300">
-                    <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-4">
-                      <h4 className="text-xs font-bold text-white font-mono uppercase tracking-wider">Automated Processing Workflow</h4>
-                      <p className="text-slate-400 text-xs leading-normal">Orchestrate the streaming sequence of embeddings generation, storage indexing, and client-side agent triggers.</p>
-                      
-                      {/* Flowchart elements */}
-                      <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-center pt-2">
-                        <div className="bg-slate-900 border border-white/10 p-3.5 rounded-xl text-center">
-                          <span className="text-lg block">📥</span>
-                          <span className="text-[10px] font-bold text-white block mt-1">Data Feed</span>
-                          <span className="text-[8px] text-slate-500 block">Raw ingest</span>
-                        </div>
-                        <div className="text-center text-slate-600 font-mono text-sm hidden md:block">➔</div>
-                        <div className="bg-slate-900 border border-white/10 p-3.5 rounded-xl text-center">
-                          <span className="text-lg block">🔮</span>
-                          <span className="text-[10px] font-bold text-white block mt-1">Vector Index</span>
-                          <span className="text-[8px] text-slate-500 block">Embedding compute</span>
-                        </div>
-                        <div className="text-center text-slate-600 font-mono text-sm hidden md:block">➔</div>
-                        <div className="bg-slate-900 border border-white/10 p-3.5 rounded-xl text-center glow-outline">
-                          <span className="text-lg block">🤖</span>
-                          <span className="text-[10px] font-bold text-indigo-400 block mt-1">Agent Action</span>
-                          <span className="text-[8px] text-slate-500 block">Self-healing route</span>
-                        </div>
-                      </div>
-
-                      <div className="flex gap-4 pt-2">
-                        <button
-                          onClick={() => {
-                            playClickSound();
-                            setSaasLogs(prev => [
-                              `🚀 Workflow executed at ${new Date().toLocaleTimeString()}: Ingestion node parsed 142 vectors. Execution latency: 12ms.`,
-                              ...prev
-                            ]);
-                            if (window.showToast) window.showToast('Workflow Run Complete', 'success');
-                          }}
-                          className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer"
-                        >
-                          Execute Workflow Run
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* TAB 3: INSIGHTS & RECOMMENDATIONS */}
-                {saasTab === 'recommendations' && (
-                  <div className="space-y-4 animate-in fade-in duration-300">
-                    <h4 className="text-xs font-bold text-white font-mono uppercase tracking-wider">AI Platform Recommendations</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {[
-                        { title: 'Scale container node A3', desc: 'Latency spikes observed near Tilwara. Scale processors by 1.5x.', act: 'Scale Node', done: 'Node scaled and verified.' },
-                        { title: 'Enforce password encryption salts', desc: 'Standard security evaluation recommends salt hashing.', act: 'Audit Salt', done: 'Secure password salts audited.' }
-                      ].map((item, idx) => (
-                        <div key={idx} className="saas-card p-5 rounded-2xl border border-white/5 space-y-3 relative overflow-hidden">
-                          <span className="text-[8px] bg-indigo-500/10 text-indigo-300 font-bold px-2 py-0.5 rounded-full block w-fit font-mono">CRITICAL INSIGHT</span>
-                          <h5 className="font-bold text-xs text-white mt-1">{item.title}</h5>
-                          <p className="text-[10px] text-slate-400 leading-normal">{item.desc}</p>
-                          <button
-                            onClick={() => {
-                              playClickSound();
-                              setSaasLogs(prev => [`🛡️ Optimization logged: "${item.done}" applied successfully.`, ...prev]);
-                              if (window.showToast) window.showToast(item.done, 'success');
-                            }}
-                            className="bg-white/5 hover:bg-indigo-600 border border-white/10 hover:border-transparent text-slate-200 hover:text-white text-[9px] font-bold py-1.5 px-3 rounded-lg transition-all cursor-pointer"
-                          >
-                            {item.act}
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* TAB 4: FILE VAULT */}
-                {saasTab === 'files' && (
-                  <div className="space-y-6 animate-in fade-in duration-300">
-                    <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-4">
-                      <div className="border-2 border-dashed border-white/10 p-8 rounded-2xl text-center space-y-3 relative group hover:border-indigo-500/30 transition-all cursor-pointer">
-                        <UploadCloud className="w-10 h-10 text-indigo-400 mx-auto group-hover:scale-110 transition-transform" />
-                        <div>
-                          <p className="text-xs font-bold text-white">Drag & drop model datasets here</p>
-                          <p className="text-[9px] text-slate-500">Supports .bin, .json, and .onnx vectors maps (Max 5GB)</p>
-                        </div>
+              {/* TAB 4: COLLABORATORS ROSTER BOARD */}
+              {saasTab === 'team' && (
+                <div className="space-y-6 animate-in fade-in duration-300">
+                  <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-4">
+                    <h4 className="text-xs font-bold text-white font-mono uppercase tracking-wider text-left">Invite Workspace Collaborators</h4>
+                    <form onSubmit={(e) => {
+                      e.preventDefault();
+                      if (!saasNewMemberEmail) return;
+                      setSaasTeam(prev => [...prev, { name: saasNewMemberEmail.split('@')[0], role: saasNewMemberRole, email: saasNewMemberEmail, status: 'ON_STANDBY' }]);
+                      setSaasLogs(prev => [`👤 Collaborator invite generated: "${saasNewMemberEmail}" added.`, ...prev]);
+                      setSaasNewMemberEmail('');
+                    }} className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end text-left">
+                      <div className="space-y-1">
+                        <label className="text-[9px] text-slate-500 uppercase font-bold tracking-wider font-mono">Email Address</label>
                         <input 
-                          type="file" 
-                          onChange={(e) => {
-                            playClickSound();
-                            const file = e.target.files[0];
-                            if (file) {
-                              setSaasFiles(prev => [...prev, { name: file.name, size: `${(file.size / 1024).toFixed(1)} KB`, type: file.name.split('.').pop().toUpperCase() }]);
-                              setSaasLogs(prev => [`📥 File loaded to vector vault: "${file.name}" indexed.`, ...prev]);
-                            }
-                          }}
-                          className="absolute inset-0 opacity-0 cursor-pointer" 
+                          type="email" required 
+                          value={saasNewMemberEmail}
+                          onChange={(e) => setSaasNewMemberEmail(e.target.value)}
+                          placeholder="collaborator@domain.com"
+                          className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2.5 rounded-lg text-white placeholder-slate-700 focus:outline-none" 
                         />
                       </div>
-
-                      {/* File Listings */}
-                      <div className="space-y-2">
-                        <span className="text-[8px] text-slate-500 uppercase font-bold tracking-wider font-mono block">Indexed Files Catalog</span>
-                        <div className="space-y-2">
-                          {saasFiles.map((file, idx) => (
-                            <div key={idx} className="bg-slate-900 border border-white/5 p-3 rounded-xl flex items-center justify-between">
-                              <div>
-                                <h5 className="font-bold text-xs text-white">{file.name}</h5>
-                                <span className="text-[8px] text-slate-500 font-mono mt-0.5 block">{file.size} • Type: {file.type}</span>
-                              </div>
-                              <button 
-                                onClick={() => {
-                                  playClickSound();
-                                  setSaasFiles(prev => prev.filter(f => f.name !== file.name));
-                                  setSaasLogs(prev => [`🗑️ File purged: "${file.name}" removed from storage index.`, ...prev]);
-                                }}
-                                className="p-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-400 rounded-lg transition-transform active:scale-95 cursor-pointer"
-                              >
-                                <Trash className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* TAB 5: TEAM COLLABORATORS */}
-                {saasTab === 'team' && (
-                  <div className="space-y-6 animate-in fade-in duration-300">
-                    <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-4">
-                      <h4 className="text-xs font-bold text-white font-mono uppercase tracking-wider">Invite Workspace Collaborators</h4>
-                      <form onSubmit={(e) => {
-                        e.preventDefault();
-                        if (!saasNewMemberEmail) return;
-                        setSaasTeam(prev => [...prev, { name: saasNewMemberEmail.split('@')[0], role: saasNewMemberRole, email: saasNewMemberEmail, status: 'ON_STANDBY' }]);
-                        setSaasLogs(prev => [`👤 Collaborator invite generated: "${saasNewMemberEmail}" added.`, ...prev]);
-                        setSaasNewMemberEmail('');
-                      }} className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
-                        <div className="space-y-1">
-                          <label className="text-[9px] text-slate-500 uppercase font-bold tracking-wider font-mono">Email Address</label>
-                          <input 
-                            type="email" required 
-                            value={saasNewMemberEmail}
-                            onChange={(e) => setSaasNewMemberEmail(e.target.value)}
-                            placeholder="collaborator@domain.com"
-                            className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2.5 rounded-lg text-white placeholder-slate-700 focus:outline-none" 
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <label className="text-[9px] text-slate-500 uppercase font-bold tracking-wider font-mono">Role Level</label>
-                          <select 
-                            value={saasNewMemberRole}
-                            onChange={(e) => setSaasNewMemberRole(e.target.value)}
-                            className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2.5 rounded-lg text-white"
-                          >
-                            <option>Operator</option>
-                            <option>Scientist</option>
-                            <option>Security Lead</option>
-                          </select>
-                        </div>
-                        <button 
-                          type="submit"
-                          className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs py-2.5 rounded-lg font-bold transition-all cursor-pointer"
+                      <div className="space-y-1">
+                        <label className="text-[9px] text-slate-500 uppercase font-bold tracking-wider font-mono">Role Level</label>
+                        <select 
+                          value={saasNewMemberRole}
+                          onChange={(e) => setSaasNewMemberRole(e.target.value)}
+                          className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2.5 rounded-lg text-white"
                         >
-                          Invite Member
-                        </button>
-                      </form>
-
-                      {/* Team Listing */}
-                      <div className="space-y-2 pt-2">
-                        <span className="text-[8px] text-slate-500 uppercase font-bold tracking-wider font-mono block">Core Collaborators Roster</span>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {saasTeam.map((member, idx) => (
-                            <div key={idx} className="bg-slate-900 border border-white/5 p-4 rounded-xl flex items-center justify-between gap-4">
-                              <div>
-                                <h5 className="font-bold text-xs text-white capitalize">{member.name}</h5>
-                                <p className="text-[9px] text-slate-400 font-mono mt-0.5">{member.email}</p>
-                                <span className="text-[8px] bg-white/5 text-slate-400 font-bold px-2 py-0.5 rounded-full mt-1.5 inline-block">{member.role}</span>
-                              </div>
-                              <span className={`text-[8px] font-bold font-mono px-2 py-1 rounded ${
-                                member.status === 'ACTIVE' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'
-                              }`}>
-                                {member.status}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
+                          <option>Operator</option>
+                          <option>Scientist</option>
+                          <option>Security Lead</option>
+                        </select>
                       </div>
-                    </div>
-                  </div>
-                )}
-
-              </div>
-
-              {/* Right Column: AI Assistant Chat sidebar (4 columns) */}
-              <div className="lg:col-span-4 space-y-6">
-                
-                {/* AI Chat Console Panel */}
-                <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-4 flex flex-col min-h-[360px] justify-between">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between border-b border-white/5 pb-3">
-                      <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
-                        <Bot className="w-4 h-4 text-indigo-400" />
-                        AI Agent Chat Assistant
-                      </h4>
-                      
-                      {/* Voice telemetry trigger */}
-                      <button 
-                        onClick={() => { playClickSound(); setVoiceTelemetryActive(!voiceTelemetryActive); }}
-                        className={`p-1.5 rounded-lg border transition-all ${
-                          voiceTelemetryActive ? 'border-cyan-500/40 text-cyan-400 bg-cyan-500/5 animate-pulse' : 'border-white/10 text-slate-400'
-                        }`}
-                        title="Voice Telemetry Stream"
-                      >
-                        <Volume2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-
-                    {/* Prompt suggestions chips */}
-                    <div className="flex flex-wrap gap-1.5">
-                      {[
-                        { label: 'Audit security salts', prompt: 'Audit secure salts encryption protocols' },
-                        { label: 'Check edge latency', prompt: 'List active container latency rates' }
-                      ].map((chip, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => { playClickSound(); setPromptInput(chip.prompt); }}
-                          className="bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-2.5 py-1 text-[8px] font-mono text-slate-300 transition-all cursor-pointer"
-                        >
-                          {chip.label}
-                        </button>
-                      ))}
-                    </div>
-
-                    {/* Live active chat prompt logs */}
-                    <div className="space-y-2 h-[160px] overflow-y-auto pr-1 text-[9px] font-mono leading-relaxed max-h-[160px]">
-                      {promptLogs.length === 0 ? (
-                        <p className="text-slate-600 text-center py-8">No prompt parameters entered yet.</p>
-                      ) : (
-                        promptLogs.map((log, idx) => (
-                          <div key={idx} className={`p-2.5 rounded-xl border ${
-                            log.sender === 'user'
-                              ? 'bg-slate-900 border-white/5 text-right ml-4 text-slate-300'
-                              : 'bg-indigo-950/20 border-indigo-500/20 text-left mr-4 text-indigo-300'
-                          }`}>
-                            <span className="text-[7px] text-slate-500 block uppercase mb-1">{log.sender === 'user' ? 'USER PROMPT' : 'AGENT ANSWER'}</span>
-                            <p>{log.text}</p>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Form submit input */}
-                  <div className="space-y-3 border-t border-white/5 pt-3">
-                    {/* Simulated Voice Telemetry Waves */}
-                    {voiceTelemetryActive && (
-                      <div className="h-6 flex items-end justify-center gap-1 bg-black/40 border border-cyan-500/20 rounded-lg py-1 px-3">
-                        {voiceWaves.map((h, idx) => (
-                          <div key={idx} style={{ height: `${h}%` }} className="w-1 bg-cyan-400 rounded-full transition-all duration-300" />
-                        ))}
-                      </div>
-                    )}
-
-                    <form 
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        if (!promptInput) return;
-                        playClickSound();
-                        const pText = promptInput;
-                        setPromptLogs(prev => [...prev, { sender: 'user', text: pText }]);
-                        setPromptInput('');
-                        
-                        setTimeout(() => {
-                          let response = `AI parsed response generated: completed analysis loop for prompt "${pText}". Execution speed: 12ms.`;
-                          if (pText.toLowerCase().includes('salt')) {
-                            response = `🛡️ Security salt validation success. Enforced Cryptographic SHA-256 password hash protocols (factor 10 salts verified).`;
-                          } else if (pText.toLowerCase().includes('latency')) {
-                            response = `⚡ Average processor edge latency: ${latencyMeter}ms. Bargi dam nodes operating inside green thresholds.`;
-                          }
-                          setPromptLogs(prev => [...prev, { sender: 'agent', text: response }]);
-                          setSaasLogs(prev => [`🤖 AI Agent feedback: "${response.substring(0, 45)}..." logged.`, ...prev]);
-                        }, 800);
-                      }}
-                      className="flex gap-2"
-                    >
-                      <input 
-                        type="text" 
-                        value={promptInput}
-                        onChange={(e) => setPromptInput(e.target.value)}
-                        placeholder={voiceTelemetryActive ? "Listening for voice prompts..." : "Ask SaaS Assistant..."}
-                        className="flex-1 bg-slate-950 border border-white/10 text-xs px-3 py-2 rounded-xl text-white placeholder-slate-700 focus:outline-none" 
-                      />
                       <button 
                         type="submit"
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-3 py-2 flex items-center justify-center transition-transform active:scale-95 cursor-pointer"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs py-2.5 rounded-lg font-bold transition-all cursor-pointer"
                       >
-                        <Send className="w-3.5 h-3.5" />
+                        Invite Member
                       </button>
                     </form>
+
+                    {/* Team Listing */}
+                    <div className="space-y-2 pt-2 text-left">
+                      <span className="text-[8px] text-slate-500 uppercase font-bold tracking-wider font-mono block">Core Collaborators Roster</span>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {saasTeam.map((member, idx) => (
+                          <div key={idx} className="bg-slate-900 border border-white/5 p-4 rounded-xl flex items-center justify-between gap-4">
+                            <div>
+                              <h5 className="font-bold text-xs text-white capitalize">{member.name}</h5>
+                              <p className="text-[9px] text-slate-400 font-mono mt-0.5">{member.email}</p>
+                              <span className="text-[8px] bg-white/5 text-slate-400 font-bold px-2 py-0.5 rounded-full mt-1.5 inline-block">{member.role}</span>
+                            </div>
+                            <span className={`text-[8px] font-bold font-mono px-2 py-1 rounded ${
+                              member.status === 'ACTIVE' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'
+                            }`}>
+                              {member.status}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            </div>
+
+            {/* Right 4-Columns: Chat assistant and auto updating server scroll logs */}
+            <div className="lg:col-span-4 space-y-6">
+              
+              {/* Dashboard Chat Sidebar */}
+              <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-4 flex flex-col justify-between min-h-[380px]">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between border-b border-white/5 pb-3">
+                    <h4 className="text-xs font-bold text-white flex items-center gap-1.5 text-left">
+                      <Bot className="w-4 h-4 text-[var(--primary)]" />
+                      AI Agent Chat Assistant
+                    </h4>
+                    
+                    {/* Voice telemetry trigger */}
+                    <button 
+                      onClick={() => { playClickSound(); setVoiceTelemetryActive(!voiceTelemetryActive); }}
+                      className={`p-1.5 rounded-lg border transition-all ${
+                        voiceTelemetryActive ? 'border-cyan-500/40 text-cyan-400 bg-cyan-500/5 animate-pulse' : 'border-white/10 text-slate-400'
+                      }`}
+                      title="Voice Telemetry Stream"
+                    >
+                      <Volume2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Suggestion Prompt Chips */}
+                  <div className="flex flex-wrap gap-1">
+                    {(businessType === 'coaching' ? ['Fee structures details?', 'notes upload link'] : 
+                      businessType === 'ecommerce' ? ['Traditional clothes price?', 'checkout simulation'] :
+                      businessType === 'real_estate' ? ['virtual 3D tours info', 'agent booking slot'] :
+                      ['System specs latency', 'security salts audit']
+                    ).map((chip, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => { playClickSound(); setPromptInput(chip); }}
+                        className="bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-2 py-0.5 text-[8px] font-mono text-slate-300 transition-all cursor-pointer"
+                      >
+                        {chip}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Scrolling Chat logs */}
+                  <div className="space-y-2 h-[160px] overflow-y-auto pr-1 text-[9px] font-mono leading-relaxed text-left">
+                    {promptLogs.length === 0 ? (
+                      <p className="text-slate-600 text-center py-10 font-sans">Awaiting queries prompt nodes...</p>
+                    ) : (
+                      promptLogs.map((log, idx) => (
+                        <div key={idx} className={`p-2.5 rounded-xl border ${
+                          log.sender === 'user'
+                            ? 'bg-slate-900 border-white/5 text-right ml-4 text-slate-300'
+                            : 'bg-indigo-950/20 border-indigo-500/20 text-left mr-4 text-indigo-300'
+                        }`}>
+                          <span className="text-[7px] text-slate-500 block uppercase mb-1">{log.sender === 'user' ? 'USER PROMPT' : 'AGENT ANSWER'}</span>
+                          <p>{log.text}</p>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
 
-                {/* Real-time System Log Console */}
-                <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-3">
+                {/* Input form */}
+                <div className="space-y-2 border-t border-white/5 pt-3">
+                  {voiceTelemetryActive && (
+                    <div className="h-6 flex items-end justify-center gap-1 bg-black/40 border border-cyan-500/20 rounded-lg py-1 px-3 mb-2">
+                      {voiceWaves.map((h, idx) => (
+                        <div key={idx} style={{ height: `${h}%` }} className="w-1 bg-cyan-400 rounded-full transition-all duration-300" />
+                      ))}
+                    </div>
+                  )}
+
+                  <form 
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (!promptInput) return;
+                      playClickSound();
+                      const pText = promptInput;
+                      setPromptLogs(prev => [...prev, { sender: 'user', text: pText }]);
+                      setPromptInput('');
+                      
+                      setTimeout(() => {
+                        let response = `AI analysis response parsed successfully for query "${pText}". Conceptual pipelines STABLE. Speed: 12ms.`;
+                        if (pText.toLowerCase().includes('salt')) {
+                          response = `🛡️ Cryptographic audit success. Password vaults protected with factor-10 security salts verified.`;
+                        } else if (pText.toLowerCase().includes('fee') || pText.toLowerCase().includes('price')) {
+                          response = `💳 Tuition fees compiled: IIT-JEE advanced preparation ₹85,000/yr. Dynamic invoices appended to registry.`;
+                        } else if (pText.toLowerCase().includes('tour') || pText.toLowerCase().includes('3d')) {
+                          response = `🏡 Spatial tour active: duplex blueprints processed on screen. Seating allocations booked.`;
+                        }
+                        setPromptLogs(prev => [...prev, { sender: 'agent', text: response }]);
+                        setSaasLogs(prev => [`🤖 AI chatbot assistant: parsed prompt response successfully.`, ...prev]);
+                      }, 800);
+                    }}
+                    className="flex gap-1.5"
+                  >
+                    <input 
+                      type="text" 
+                      value={promptInput}
+                      onChange={(e) => setPromptInput(e.target.value)}
+                      placeholder={voiceTelemetryActive ? "Listening for voice..." : "Ask AI Assistant..."}
+                      className="flex-1 bg-slate-950 border border-white/10 text-xs px-3 py-2 rounded-xl text-white placeholder-slate-700 focus:outline-none" 
+                    />
+                    <button 
+                      type="submit"
+                      style={{ background: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}
+                      className="text-white rounded-xl px-3 py-2 text-xs font-bold transition-all hover:opacity-90 active:scale-95 flex items-center justify-center cursor-pointer"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+              {businessType === 'smartengine' && (
+                <div className="saas-card p-6 rounded-2xl border border-white/5 space-y-3 mt-6">
                   <span className="text-[8px] text-slate-500 uppercase font-bold tracking-wider font-mono block">Real-time System Pipeline Logs</span>
                   <div className="bg-black border border-white/5 p-4 rounded-xl font-mono text-[8px] text-indigo-400 overflow-y-auto space-y-2 h-[140px] shadow-inner text-left max-h-[140px]">
                     {saasLogs.map((log, idx) => (
@@ -3466,13 +2849,11 @@ export default function Home() {
                     ))}
                   </div>
                 </div>
-
-              </div>
+              )}
 
             </div>
           </div>
-        )}
-      </section>
+        </section>
       )}
 
       {/* Interactive Contact Form (Global) */}
@@ -3620,6 +3001,30 @@ export default function Home() {
                 </div>
 
                 <form onSubmit={authTab === 'login' ? handleLoginSubmit : handleRegisterSubmit} className="space-y-4">
+                  {authTab === 'register' && (
+                    <div className="space-y-1">
+                      <input
+                        type="text" required
+                        value={authName}
+                        onChange={(e) => setAuthName(e.target.value)}
+                        placeholder="Enter Student Name"
+                        className="w-full bg-[#0d0d0d] border border-white/15 rounded-xl px-4 py-3.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-amber-400 transition-all font-mono"
+                      />
+                    </div>
+                  )}
+
+                  {authTab === 'register' && (
+                    <div className="space-y-1">
+                      <input
+                        type="tel" required
+                        value={authPhone}
+                        onChange={(e) => setAuthPhone(e.target.value)}
+                        placeholder="Enter Mobile Number"
+                        className="w-full bg-[#0d0d0d] border border-white/15 rounded-xl px-4 py-3.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-amber-400 transition-all font-mono"
+                      />
+                    </div>
+                  )}
+
                   {/* Email Field with Envelope icon on the right */}
                   <div className="space-y-1">
                     <div className="relative flex items-center">
@@ -3653,6 +3058,52 @@ export default function Home() {
                       </button>
                     </div>
                   </div>
+
+                  {authTab === 'register' && (
+                    <div className="p-3 bg-stone-900/50 border border-white/5 rounded-xl text-[9px] space-y-1.5 leading-normal">
+                      <span className="font-semibold text-slate-400 uppercase tracking-widest block mb-0.5">Password Security:</span>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-1">
+                        <span className={`flex items-center gap-1 font-medium ${authPassword.length >= 8 ? 'text-emerald-400' : 'text-stone-500'}`}>
+                          {authPassword.length >= 8 ? '✓' : '✕'} Min 8 Chars
+                        </span>
+                        <span className={`flex items-center gap-1 font-medium ${(/[a-zA-Z]/.test(authPassword) && /[0-9]/.test(authPassword)) ? 'text-emerald-400' : 'text-stone-500'}`}>
+                          {(/[a-zA-Z]/.test(authPassword) && /[0-9]/.test(authPassword)) ? '✓' : '✕'} Alphanumeric
+                        </span>
+                        <span className={`flex items-center gap-1 font-medium ${/[^a-zA-Z0-9]/.test(authPassword) ? 'text-emerald-400' : 'text-stone-500'}`}>
+                          {/[^a-zA-Z0-9]/.test(authPassword) ? '✓' : '✕'} Symbol
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {authTab === 'register' && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
+                      <div className="space-y-1">
+                        <input
+                          type="text" required
+                          value={authOtp}
+                          onChange={(e) => setAuthOtp(e.target.value)}
+                          placeholder="Enter OTP"
+                          disabled={!authOtpSent}
+                          className="w-full bg-[#0d0d0d] border border-white/15 rounded-xl px-4 py-3.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-amber-400 transition-all font-mono disabled:opacity-50"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleGenerateAuthOtp}
+                        disabled={authCountdown > 0}
+                        className="py-3.5 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all bg-gradient-to-r from-amber-400 to-amber-500 text-black hover:scale-[1.01] active:scale-95 disabled:opacity-75 shadow-md flex items-center justify-center gap-1 cursor-pointer"
+                      >
+                        {authCountdown > 0 ? `Resend (${authCountdown}s)` : 'Generate OTP'}
+                      </button>
+                    </div>
+                  )}
+
+                  {authTab === 'register' && authOtpSent && authOtpValue && (
+                    <div className="p-2 border border-amber-500/30 bg-amber-500/10 text-amber-400 text-[9px] rounded-lg font-mono text-center">
+                      🔒 OTP is <strong className="text-white text-xs bg-black px-1.5 py-0.5 rounded border border-amber-500/20">{authOtpValue}</strong>
+                    </div>
+                  )}
 
                   {authTab === 'login' && (
                     <div className="text-right">
@@ -3958,12 +3409,21 @@ export default function Home() {
                   </div>
                 </div>
 
-                <button
-                  onClick={() => { playClickSound(); setShowPayModal(false); }}
-                  className="w-full bg-white/5 border border-white/10 py-2.5 rounded-xl text-slate-300 hover:bg-white/10 text-xs font-semibold"
-                >
-                  Return to Dashboard
-                </button>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={downloadReceiptSlip}
+                    style={{ background: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}
+                    className="py-2.5 rounded-xl text-white text-xs font-bold shadow-lg hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-1 cursor-pointer"
+                  >
+                    📥 Download Slip
+                  </button>
+                  <button
+                    onClick={() => { playClickSound(); setShowPayModal(false); }}
+                    className="bg-white/5 border border-white/10 py-2.5 rounded-xl text-slate-300 hover:bg-white/10 text-xs font-semibold"
+                  >
+                    Return to Dashboard
+                  </button>
+                </div>
               </div>
             )}
           </div>

@@ -6,7 +6,7 @@ import {
   Tablet, LogOut, Lock, RefreshCw, Sliders, Eye, Palette, 
   Bot, TrendingUp, Sparkles, Plus, Trash, CreditCard, 
   Volume2, Check, AlertCircle, Play, ShieldAlert, FileText, 
-  ChevronRight, Sun, Moon, Users
+  ChevronRight, Sun, Moon, Users, Server, Database, BarChart2
 } from 'lucide-react';
 import { io } from 'socket.io-client';
 import { API_URL } from '../../config';
@@ -38,22 +38,14 @@ export default function AdminDashboard() {
   const [saasPrimary, setSaasPrimary] = useState('#D4AF37');
   const [saasAccent, setSaasAccent] = useState('#fbbf24');
   const [saasFont, setSaasFont] = useState('Space Grotesk');
-  const [saasSections, setSaasSections] = useState(['hero', 'features', 'stats', 'about']);
+  const [saasSections, setSaasSections] = useState(['courses', 'faculty', 'results']);
   const [saasModules, setSaasModules] = useState(['students', 'attendance', 'tests', 'notes', 'fees', 'analytics']);
 
-  // User Desk States
-  const [usersList, setUsersList] = useState([]);
-  const [newUserEmail, setNewUserEmail] = useState('');
-  const [newUserPassword, setNewUserPassword] = useState('');
-  const [newUserRole, setNewUserRole] = useState('student');
-  const [newUserName, setNewUserName] = useState('');
-  const [newUserPhone, setNewUserPhone] = useState('');
-
   // Theme Toggler state
-  const [lightMode, setLightMode] = useState(true);
+  const [lightMode, setLightMode] = useState(false);
 
-  // Active Menu tabs
-  const [activeTab, setActiveTab] = useState('swapper'); // swapper | sections | theme | ai_oracle | payment
+  // Active Menu tabs inside Nexus Command Center
+  const [activeTab, setActiveTab] = useState('super_admin'); // super_admin | website_manager | theme_studio | cms_engine
   const [previewDevice, setPreviewDevice] = useState('desktop'); // desktop | tablet | mobile
   
   // Interactive Customizer Form states
@@ -102,12 +94,6 @@ export default function AdminDashboard() {
       socket.disconnect();
     };
   }, [token]);
-
-  useEffect(() => {
-    if (token && activeTab === 'user_desk') {
-      loadUsersList();
-    }
-  }, [token, activeTab]);
 
   const playSoundChime = () => {
     try {
@@ -210,9 +196,6 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       console.error(err);
-      if (typeof window !== 'undefined' && window.showToast) {
-        window.showToast('Failed to connect to backend configuration database.', 'error');
-      }
     }
   };
 
@@ -227,9 +210,6 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       console.error(err);
-      if (typeof window !== 'undefined' && window.showToast) {
-        window.showToast('Failed to sync system notifications.', 'error');
-      }
     }
   };
 
@@ -290,53 +270,6 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       alert('Error deploying dynamic website.');
-    }
-  };
-
-  const handleCreateSaaSUser = async (e) => {
-    e.preventDefault();
-    playClickSound();
-    try {
-      const res = await fetch(`${API_URL}/api/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: newUserEmail,
-          password: newUserPassword,
-          role: newUserRole,
-          name: newUserName,
-          phone: newUserPhone,
-          otp: '111111', // bypass verification for admin panel
-          websiteId: activeConfig.businessType
-        })
-      });
-      const data = await res.json();
-      if (data.success) {
-        alert(`👤 User ${newUserEmail} successfully created for ${activeConfig.websiteName}!`);
-        setNewUserEmail('');
-        setNewUserPassword('');
-        setNewUserName('');
-        setNewUserPhone('');
-        loadUsersList();
-      } else {
-        alert(data.message || 'Failed to create user.');
-      }
-    } catch (err) {
-      alert('Failed to register user.');
-    }
-  };
-
-  const loadUsersList = async () => {
-    try {
-      const res = await fetch(`${API_URL}/api/auth/users`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
-      if (data.success) {
-        setUsersList(data.users);
-      }
-    } catch (err) {
-      console.error('Error fetching users:', err);
     }
   };
 
@@ -512,9 +445,9 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="flex-1 bg-slate-950 flex flex-col items-center justify-center text-white h-screen">
+      <div className="flex-1 bg-slate-950 flex flex-col items-center justify-center text-white h-screen font-mono">
         <RefreshCw className="w-12 h-12 text-indigo-500 animate-spin mb-4" />
-        <p className="text-sm font-medium tracking-wide">Validating Administration parameters...</p>
+        <p className="text-sm font-medium tracking-wide">Validating Nexus Command session...</p>
       </div>
     );
   }
@@ -523,15 +456,15 @@ export default function AdminDashboard() {
   if (!token) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 cyber-grid cyber-grid-glow font-sans">
-        <div className="w-full max-w-md glass-panel rounded-3xl border border-white/10 p-8 space-y-6 shadow-2xl relative overflow-hidden animate-in zoom-in-95 duration-500">
+        <div className="w-full max-w-md bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-white/10 p-8 space-y-6 shadow-2xl relative overflow-hidden animate-in zoom-in-95 duration-500">
           <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
           
           <div className="text-center space-y-2 relative">
             <div className="w-12 h-12 rounded-2xl bg-indigo-500 flex items-center justify-center mx-auto mb-4 shadow-xl shadow-indigo-500/20">
               <Lock className="w-6 h-6 text-white" />
             </div>
-            <h2 className="text-2xl font-outfit font-black tracking-tight text-white">SmartCity Command</h2>
-            <p className="text-xs text-slate-400 font-mono">Jabalpur Multi-Business Web Operating System</p>
+            <h2 className="text-2xl font-black tracking-tight text-white uppercase font-mono">Nexus Console</h2>
+            <p className="text-xs text-slate-400 font-mono">Centralized Website Engine Administrator</p>
           </div>
 
           {authError && (
@@ -543,7 +476,7 @@ export default function AdminDashboard() {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-1">Email Node Address</label>
+              <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-1">Session Email</label>
               <input 
                 type="email" required 
                 value={email}
@@ -552,7 +485,7 @@ export default function AdminDashboard() {
               />
             </div>
             <div>
-              <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-1">Decryption Password</label>
+              <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-1">Secure Password</label>
               <input 
                 type="password" required 
                 value={password}
@@ -561,7 +494,7 @@ export default function AdminDashboard() {
               />
             </div>
             
-            <div className="bg-slate-900 border border-white/5 p-3 rounded-xl text-[10px] text-slate-400 leading-normal">
+            <div className="bg-slate-950 border border-white/5 p-3 rounded-xl text-[10px] text-slate-400 leading-normal font-mono">
               <strong>🔒 Standard credentials:</strong><br />
               Email: <code className="text-indigo-400">admin@jabalpur.gov</code><br />
               Pass: <code className="text-indigo-400">jabalpur2026</code>
@@ -569,7 +502,7 @@ export default function AdminDashboard() {
 
             <button
               type="submit"
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs py-3.5 rounded-xl shadow-lg shadow-indigo-500/15 hover:scale-[1.01] active:scale-95 transition-transform"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs py-3.5 rounded-xl shadow-lg hover:scale-[1.01] active:scale-95 transition-all uppercase tracking-wider"
             >
               Establish Administrative Session
             </button>
@@ -582,42 +515,40 @@ export default function AdminDashboard() {
   if (!activeConfig || !formConfig) return null;
 
   return (
-    <div className={lightMode ? 'light-theme min-h-screen flex flex-col transition-all duration-500 bg-slate-50 text-slate-900' : 'min-h-screen flex flex-col bg-slate-950 text-slate-100 transition-all duration-500'}>
+    <div className={lightMode ? 'min-h-screen flex flex-col bg-slate-50 text-slate-900 transition-all duration-300' : 'min-h-screen flex flex-col bg-slate-950 text-slate-100 transition-all duration-300'}>
       
       {/* Top command status bar */}
-      <header className="h-16 border-b border-slate-200/10 glass-panel px-6 flex items-center justify-between sticky top-0 z-30 transition-colors">
+      <header className="h-16 border-b border-white/5 bg-slate-900/60 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping" />
-            <h1 className="font-outfit font-black text-sm tracking-wide uppercase text-glow">
+            <h1 className="font-mono font-black text-sm tracking-widest uppercase text-indigo-400">
               Nexus Command Center
             </h1>
           </div>
           <div className="hidden lg:flex items-center gap-4 text-[10px] font-mono opacity-80">
-            <span className="border-r border-slate-500/20 pr-4">
-              STATUS: <strong className="text-emerald-500">ONLINE</strong>
+            <span className="border-r border-white/10 pr-4">
+              SESSION: <strong className="text-emerald-500">ONLINE</strong>
             </span>
             <span>
-              ENGINE: <strong className="text-indigo-500">{serverStatus.mode}</strong>
+              DATABASE: <strong className="text-indigo-400">{serverStatus.mode}</strong>
             </span>
           </div>
         </div>
 
         <div className="flex items-center gap-4">
-          {/* Light/Dark Mode Toggle Toggler */}
           <button 
             onClick={() => { playClickSound(); setLightMode(!lightMode); }}
-            className="p-2 rounded-lg border border-slate-500/20 text-indigo-500 bg-indigo-500/5 hover:scale-105 active:scale-95 transition-transform"
+            className="p-2 rounded-lg border border-white/10 text-indigo-400 bg-white/5 hover:scale-105 active:scale-95 transition-transform"
             title="Toggle Light/Dark Theme"
           >
-            {lightMode ? <Moon className="w-4 h-4 text-slate-700" /> : <Sun className="w-4 h-4 text-amber-400 animate-spin delay-1000" />}
+            {lightMode ? <Moon className="w-4 h-4 text-slate-700" /> : <Sun className="w-4 h-4 text-amber-400 animate-spin" />}
           </button>
 
-          {/* Audio toggle button */}
           <button 
             onClick={() => setSoundEnabled(!soundEnabled)} 
             className={`p-2 rounded-lg border transition-colors ${
-              soundEnabled ? 'border-indigo-500/30 text-indigo-500 bg-indigo-500/5' : 'border-slate-500/20 text-slate-400'
+              soundEnabled ? 'border-indigo-500/30 text-indigo-400 bg-indigo-500/5' : 'border-white/10 text-slate-400'
             }`}
             title="Toggle system sounds"
           >
@@ -626,10 +557,10 @@ export default function AdminDashboard() {
 
           <button
             onClick={handleLogout}
-            className="flex items-center gap-1.5 border border-slate-500/20 hover:bg-rose-500/15 hover:text-rose-500 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300"
+            className="flex items-center gap-1.5 border border-white/10 hover:bg-rose-500/15 hover:text-rose-400 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all"
           >
             <LogOut className="w-3.5 h-3.5" />
-            Term Session
+            Logout
           </button>
         </div>
       </header>
@@ -638,30 +569,25 @@ export default function AdminDashboard() {
       <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 overflow-hidden h-[calc(100vh-64px)]">
         
         {/* Left Side: Parameters Editor pane (5 columns) */}
-        <div className="xl:col-span-5 border-r border-slate-500/20 flex flex-col bg-transparent overflow-y-auto">
+        <div className="xl:col-span-5 border-r border-white/5 flex flex-col bg-slate-900/10 overflow-y-auto">
           
-          {/* Configuration menu selectors */}
-          <div className="flex border-b border-slate-500/10 bg-slate-900/10 p-2 gap-1 overflow-x-auto whitespace-nowrap scrollbar-none shrink-0">
+          {/* Centralized Workspace menu selectors */}
+          <div className="flex border-b border-white/5 bg-slate-900/40 p-2 gap-1 overflow-x-auto whitespace-nowrap scrollbar-none shrink-0 font-mono">
             {[
-              { id: 'swapper', label: 'Engine Swapper', icon: RefreshCw },
-              { id: 'saas_creator', label: 'SaaS Builder', icon: Plus },
-              { id: 'sections', label: 'CMS Editor', icon: Layers },
-              { id: 'theme', label: 'Theme Studio', icon: Palette },
-              { id: 'user_desk', label: 'User Desk', icon: Users },
-              { id: 'ai_oracle', label: 'AI Oracle Console', icon: Bot },
-              { id: 'payment', label: 'Razorpay Sim', icon: CreditCard }
+              { id: 'super_admin', label: 'Super Admin', icon: Server },
+              { id: 'website_manager', label: 'Website Manager', icon: Grid },
+              { id: 'theme_studio', label: 'Theme Studio', icon: Palette },
+              { id: 'cms_engine', label: 'CMS Engine', icon: Layers }
             ].map((tab) => {
               const Icon = tab.icon;
               return (
                 <button
                   key={tab.id}
                   onClick={() => { playClickSound(); setActiveTab(tab.id); }}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-[10px] font-bold uppercase transition-all ${
+                  className={`flex items-center gap-1.5 px-4.5 py-2.5 rounded-xl text-[10px] font-bold uppercase transition-all ${
                     activeTab === tab.id 
-                      ? 'bg-indigo-600 text-white shadow-sm' 
-                      : lightMode
-                        ? 'text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 bg-white/50 border border-slate-200/50'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-500/10'
+                      ? 'bg-indigo-600 text-white shadow-lg' 
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -673,226 +599,308 @@ export default function AdminDashboard() {
 
           <div className="p-6 flex-1 space-y-6">
 
-            {/* TAB 1: WEBSITE TEMPLATE ENGINE SWAPPER */}
-            {activeTab === 'swapper' && (
-              <div className="space-y-4 animate-in fade-in duration-300">
+            {/* STUDIO 1: SUPER ADMIN PANEL */}
+            {activeTab === 'super_admin' && (
+              <div className="space-y-6 animate-in fade-in duration-300 text-left">
                 <div className="space-y-1">
-                  <h3 className="font-bold text-sm">Dynamic Business Engine Swapper</h3>
-                  <p className="text-[10px] opacity-80">Choose from your 10 custom high-premium Jabalpur business website templates. The system re-maps all theme variables and content models in the database instantly!</p>
-                </div>
-                <div className="grid grid-cols-2 gap-2 pt-2">
-                  {allConfigs.map((cfg) => (
-                    <button
-                      key={cfg.businessType}
-                      onClick={() => handleSwitchTemplate(cfg.businessType)}
-                      className={`p-4 rounded-xl border text-left transition-all relative flex flex-col justify-between h-24 ${
-                        cfg.isActive 
-                          ? lightMode
-                            ? 'border-indigo-600 bg-indigo-50/70 text-indigo-900 font-bold shadow-[0_0_15px_rgba(99,102,241,0.08)]'
-                            : 'border-indigo-600 bg-indigo-600/10 text-glow font-bold'
-                          : lightMode
-                            ? 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700 shadow-sm'
-                            : 'border-slate-500/10 bg-slate-900/5 hover:bg-slate-900/10'
-                      }`}
-                    >
-                      <span className="text-[9px] font-bold tracking-widest font-mono uppercase text-indigo-600 dark:text-indigo-400">
-                        {cfg.businessType.replace('_', ' ')}
-                      </span>
-                      <span className={`text-xs font-black block mt-2 leading-tight ${lightMode ? 'text-slate-800' : 'text-slate-200'}`}>
-                        {cfg.theme.name}
-                      </span>
-                      {cfg.isActive && (
-                        <span className="absolute top-3 right-3 w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* TAB 1B: SAAS CREATOR WIZARD */}
-            {activeTab === 'saas_creator' && (
-              <div className="space-y-4 animate-in fade-in duration-300">
-                <div className="space-y-1">
-                  <h3 className="font-bold text-sm flex items-center gap-1">
-                    <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
-                    Deploy New Dynamic Website
-                  </h3>
-                  <p className="text-[10px] opacity-80 font-medium">Configure dynamic properties for your SaaS instance. The system provisions layouts and colors instantly.</p>
+                  <h3 className="font-bold text-sm text-indigo-400 font-mono uppercase tracking-wider">Super Admin Workspace</h3>
+                  <p className="text-[10px] opacity-80">Monitor connected edge microservices, concurrent transaction feeds, and system database states near tilwara servers.</p>
                 </div>
 
-                <form onSubmit={handleCreateSaaSWebsite} className="space-y-4 pt-2">
-                  <div className="space-y-1.5">
-                    <label className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Website Name</label>
-                    <input 
-                      type="text" 
-                      value={saasName} 
-                      onChange={(e) => setSaasName(e.target.value)} 
-                      placeholder="e.g. NextRank Academy" 
-                      className="w-full bg-slate-900/5 border border-slate-500/20 text-xs px-3 py-2 rounded-lg"
-                      required
-                    />
+                {/* Server Telemetry Cards */}
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="p-3 bg-slate-950 border border-white/5 rounded-xl text-center space-y-1">
+                    <span className="text-[8px] text-slate-500 uppercase font-mono block">CPU Compute</span>
+                    <span className="text-md font-bold text-white font-mono">42%</span>
                   </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Industry Category</label>
-                    <select
-                      value={saasCategory}
-                      onChange={(e) => setSaasCategory(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-500/20 text-xs px-3 py-2.5 rounded-lg"
-                    >
-                      <option value="coaching">Education / Coaching (NextRank)</option>
-                      <option value="ecommerce">E-Commerce (Libaas Couture)</option>
-                      <option value="real_estate">Real Estate (AashiyanaX)</option>
-                      <option value="hospital">Hospital (AarogyaCare)</option>
-                      <option value="cafe">Cafe / Restaurant (Cafe Aura)</option>
-                      <option value="startup">Future Tech Startup (NexaTech)</option>
-                      <option value="gym">Gym / Fitness (FlexArena)</option>
-                      <option value="tourism">Tourism Planners (ExploreAura)</option>
-                      <option value="cybersecurity">Cybersecurity (ThreatZero)</option>
-                      <option value="career">Career Job Portal (JobSphere)</option>
-                      <option value="smartengine">Autonomous AI SaaS (SmartEngine)</option>
-                    </select>
+                  <div className="p-3 bg-slate-950 border border-white/5 rounded-xl text-center space-y-1">
+                    <span className="text-[8px] text-slate-500 uppercase font-mono block">Active Threads</span>
+                    <span className="text-md font-bold text-emerald-400 font-mono">3 active</span>
                   </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Primary Color</label>
-                      <div className="flex gap-2">
-                        <input 
-                          type="color" 
-                          value={saasPrimary} 
-                          onChange={(e) => setSaasPrimary(e.target.value)} 
-                          className="w-10 h-8 rounded border border-slate-500/20 bg-transparent cursor-pointer shrink-0" 
-                        />
-                        <input 
-                          type="text" 
-                          value={saasPrimary} 
-                          onChange={(e) => setSaasPrimary(e.target.value)} 
-                          className="w-full bg-slate-900/5 border border-slate-500/20 text-[10px] px-2 rounded-lg" 
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Accent Color</label>
-                      <div className="flex gap-2">
-                        <input 
-                          type="color" 
-                          value={saasAccent} 
-                          onChange={(e) => setSaasAccent(e.target.value)} 
-                          className="w-10 h-8 rounded border border-slate-500/20 bg-transparent cursor-pointer shrink-0" 
-                        />
-                        <input 
-                          type="text" 
-                          value={saasAccent} 
-                          onChange={(e) => setSaasAccent(e.target.value)} 
-                          className="w-full bg-slate-900/5 border border-slate-500/20 text-[10px] px-2 rounded-lg" 
-                        />
-                      </div>
-                    </div>
+                  <div className="p-3 bg-slate-950 border border-white/5 rounded-xl text-center space-y-1">
+                    <span className="text-[8px] text-slate-500 uppercase font-mono block">Alloc Memory</span>
+                    <span className="text-md font-bold text-indigo-400 font-mono">242 MB</span>
                   </div>
+                </div>
 
-                  <div className="space-y-1.5">
-                    <label className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Font Family</label>
-                    <select
-                      value={saasFont}
-                      onChange={(e) => setSaasFont(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-500/20 text-xs px-3 py-2.5 rounded-lg"
-                    >
-                      <option value="Space Grotesk">Space Grotesk (Futuristic)</option>
-                      <option value="Outfit">Outfit (Modern Tech)</option>
-                      <option value="Inter">Inter (Clean Clean)</option>
-                      <option value="Poppins">Poppins (Friendly)</option>
-                    </select>
+                {/* Webhook and database indicators */}
+                <div className="p-4 bg-white/5 border border-white/10 rounded-2xl space-y-3 font-mono text-[11px]">
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-400">Server Address:</span>
+                    <span className="text-white font-semibold">{API_URL}</span>
                   </div>
-
-                  <div className="space-y-2 border-t border-slate-500/10 pt-3">
-                    <label className="text-[9px] text-indigo-400 font-bold uppercase tracking-wider block">Dynamic Sections Selection</label>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      {[
-                        { id: 'hero', label: 'Hero Banner' },
-                        { id: 'features', label: 'Features Specs' },
-                        { id: 'stats', label: 'Stats Grid' },
-                        { id: 'about', label: 'Vision / Story' }
-                      ].map(sec => (
-                        <label key={sec.id} className="flex items-center gap-1.5 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={saasSections.includes(sec.id)}
-                            onChange={(e) => {
-                              if (e.target.checked) setSaasSections([...saasSections, sec.id]);
-                              else setSaasSections(saasSections.filter(s => s !== sec.id));
-                            }}
-                            className="accent-indigo-500"
-                          />
-                          {sec.label}
-                        </label>
-                      ))}
-                    </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-400">Database Index:</span>
+                    <span className="text-emerald-400 font-semibold">{serverStatus.mode} (CONNECTED)</span>
                   </div>
-
-                  <div className="space-y-2 border-t border-slate-500/10 pt-3">
-                    <label className="text-[9px] text-indigo-400 font-bold uppercase tracking-wider block">Dashboard Modules (Role Adaptive)</label>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      {[
-                        { id: 'students', label: 'Student Directory' },
-                        { id: 'attendance', label: 'RFID Gate Log' },
-                        { id: 'tests', label: 'MCQ Test Builder' },
-                        { id: 'notes', label: 'Notes Library' },
-                        { id: 'fees', label: 'Fees Manager' },
-                        { id: 'analytics', label: 'Rank Analytics' },
-                        { id: 'products', label: 'Product Catalog' },
-                        { id: 'orders', label: 'Orders List' },
-                        { id: 'appointments', label: 'Appointments Book' },
-                        { id: 'doctors', label: 'Doctor Roster' }
-                      ].map(mod => (
-                        <label key={mod.id} className="flex items-center gap-1.5 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={saasModules.includes(mod.id)}
-                            onChange={(e) => {
-                              if (e.target.checked) setSaasModules([...saasModules, mod.id]);
-                              else setSaasModules(saasModules.filter(m => m !== mod.id));
-                            }}
-                            className="accent-indigo-500"
-                          />
-                          {mod.label}
-                        </label>
-                      ))}
-                    </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-400">WebSocket Broadcast:</span>
+                    <span className="text-indigo-400 font-semibold">Broadcasting Active</span>
                   </div>
+                </div>
 
+                {/* Razorpay transaction simulator */}
+                <div className="saas-card p-4 rounded-2xl border border-white/5 space-y-3 bg-emerald-500/5 border-emerald-500/10">
+                  <h4 className="text-[9px] font-bold text-emerald-400 uppercase tracking-widest font-mono">Razorpay Gateway Event</h4>
+                  <p className="text-[10px] text-slate-400 leading-normal">Trigger simulated payment events. This fires webhook calls that reflect transactions instantly across active client frames.</p>
                   <button
-                    type="submit"
-                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-3 rounded-xl shadow-lg active:scale-95 transition-transform uppercase tracking-wider"
+                    onClick={handleManualPaymentSimulation}
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold py-2.5 rounded-xl flex items-center justify-center gap-1.5 shadow"
                   >
-                    🚀 Deploy Dynamic SaaS Site
+                    <CreditCard className="w-3.5 h-3.5" />
+                    Simulate Payment Broadcast (₹15,000)
                   </button>
-                </form>
+                </div>
               </div>
             )}
 
-            {/* TAB 2: VISUAL SECTION EDITOR (CMS CONTENT MANAGER) */}
-            {activeTab === 'sections' && (
-              <div className="space-y-4 animate-in fade-in duration-300">
-                <div className="flex justify-between items-center border-b border-slate-500/10 pb-2">
-                  <h3 className="font-bold text-sm">Dynamic Page & CMS Editor</h3>
+            {/* STUDIO 2: WEBSITE MANAGEMENT CONSOLE */}
+            {activeTab === 'website_manager' && (
+              <div className="space-y-6 animate-in fade-in duration-300 text-left">
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sm text-indigo-400 font-mono uppercase tracking-wider">Website Management Console</h3>
+                  <p className="text-[10px] opacity-80">Toggle active configured templates or dynamically deploy a new SaaS site config.</p>
+                </div>
+
+                {/* Active Template Swapper */}
+                <div className="space-y-2">
+                  <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block font-mono">Choose Active Site Configuration</span>
+                  <div className="grid grid-cols-2 gap-2">
+                    {allConfigs.map((cfg) => (
+                      <button
+                        key={cfg.businessType}
+                        onClick={() => handleSwitchTemplate(cfg.businessType)}
+                        className={`p-3 rounded-xl border text-left transition-all relative flex flex-col justify-between h-20 ${
+                          cfg.isActive 
+                            ? 'border-indigo-500 bg-indigo-500/10 text-white font-bold'
+                            : 'border-white/5 bg-white/2 hover:bg-white/5'
+                        }`}
+                      >
+                        <span className="text-[8px] font-mono uppercase text-indigo-400">
+                          {cfg.businessType.replace('_', ' ')}
+                        </span>
+                        <span className="text-[11px] font-bold block mt-1 leading-snug">
+                          {cfg.theme.name}
+                        </span>
+                        {cfg.isActive && (
+                          <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Deploy New SaaS Site Wizard */}
+                <div className="p-4 bg-white/2 border border-white/5 rounded-2xl space-y-4">
+                  <h4 className="text-[9px] font-bold text-indigo-400 uppercase tracking-widest font-mono flex items-center gap-1.5">
+                    <Plus className="w-3.5 h-3.5 text-indigo-500" />
+                    Deploy New Dynamic Website
+                  </h4>
+                  <form onSubmit={handleCreateSaaSWebsite} className="space-y-3.5">
+                    <div>
+                      <label className="text-[9px] text-slate-400 uppercase block mb-1">Website Name</label>
+                      <input 
+                        type="text" 
+                        value={saasName} 
+                        onChange={(e) => setSaasName(e.target.value)} 
+                        placeholder="e.g. Libaas Couture Store" 
+                        className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2 rounded-lg text-white"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[9px] text-slate-400 uppercase block mb-1">Industry Category</label>
+                      <select
+                        value={saasCategory}
+                        onChange={(e) => setSaasCategory(e.target.value)}
+                        className="w-full bg-slate-950 border border-white/10 text-xs p-2 rounded-lg text-white font-bold"
+                      >
+                        <option value="coaching">Education / Coaching (NextRank)</option>
+                        <option value="ecommerce">E-Commerce (Libaas Couture)</option>
+                        <option value="real_estate">Real Estate (AashiyanaX)</option>
+                        <option value="hospital">Hospital (AarogyaCare)</option>
+                        <option value="cafe">Cafe / Restaurant (Cafe Aura)</option>
+                        <option value="startup">Future Tech Startup (NexaTech)</option>
+                        <option value="gym">Gym / Fitness (FlexArena)</option>
+                        <option value="tourism">Tourism Planners (ExploreAura)</option>
+                        <option value="cybersecurity">Cybersecurity (ThreatZero)</option>
+                        <option value="career">Career Job Portal (JobSphere)</option>
+                        <option value="smartengine">Autonomous AI SaaS (SmartEngine)</option>
+                      </select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-[9px] text-slate-400 uppercase block mb-1">Primary Color</label>
+                        <input 
+                          type="color" 
+                          value={saasPrimary} 
+                          onChange={(e) => setSaasPrimary(e.target.value)} 
+                          className="w-full h-8 rounded border border-white/10 bg-transparent cursor-pointer" 
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[9px] text-slate-400 uppercase block mb-1">Accent Color</label>
+                        <input 
+                          type="color" 
+                          value={saasAccent} 
+                          onChange={(e) => setSaasAccent(e.target.value)} 
+                          className="w-full h-8 rounded border border-white/10 bg-transparent cursor-pointer" 
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-2.5 rounded-xl uppercase tracking-wider transition-colors active:scale-95"
+                    >
+                      🚀 Deploy SaaS Website
+                    </button>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            {/* STUDIO 3: THEME STUDIO */}
+            {activeTab === 'theme_studio' && (
+              <div className="space-y-6 animate-in fade-in duration-300 text-left">
+                <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                  <h3 className="font-bold text-sm text-indigo-400 font-mono uppercase tracking-wider">Dynamic Theme Studio</h3>
                   <button 
                     onClick={handleSaveConfig}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow transition-transform active:scale-95"
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors"
                   >
-                    Save Changes
+                    Save Styling
                   </button>
                 </div>
 
-                {/* Hero section CMS fields */}
-                <div className="glass-card rounded-2xl p-4 space-y-3 bg-indigo-500/5 border-indigo-500/10 border">
-                  <span className="text-[10px] font-bold text-indigo-400 font-mono uppercase">
-                    CMS: HERO BANNER DETAILS
-                  </span>
+                {/* AI Palette suggester */}
+                <div className="space-y-2">
+                  <span className="text-[9px] text-slate-500 uppercase block font-mono">AI suggested colors</span>
+                  <div className="flex gap-2">
+                    {['futuristic', 'elegant'].map(style => (
+                      <button
+                        key={style}
+                        onClick={() => handleTriggerAISuggestTheme(style)}
+                        className="flex-1 bg-white/5 border border-white/10 hover:bg-white/10 text-[10px] font-bold py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors"
+                      >
+                        <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+                        Apply {style}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Custom Color Pickers */}
+                <div className="space-y-3.5">
+                  <div>
+                    <label className="text-[10px] text-slate-400 block mb-1">Primary Color (Hex/HSL)</label>
+                    <div className="flex gap-2">
+                      <input 
+                        type="color" 
+                        value={formConfig.theme.primary.startsWith('#') ? formConfig.theme.primary : '#3b82f6'} 
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          updated.theme.primary = e.target.value;
+                          setFormConfig(updated);
+                        }}
+                        className="w-10 h-8 rounded border border-white/10 bg-transparent cursor-pointer shrink-0" 
+                      />
+                      <input 
+                        type="text" 
+                        value={formConfig.theme.primary} 
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          updated.theme.primary = e.target.value;
+                          setFormConfig(updated);
+                        }}
+                        className="w-full bg-slate-950 border border-white/10 text-xs px-3 rounded-lg text-white" 
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-400 block mb-1">Secondary Accent</label>
+                    <div className="flex gap-2">
+                      <input 
+                        type="color" 
+                        value={formConfig.theme.secondary.startsWith('#') ? formConfig.theme.secondary : '#8b5cf6'} 
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          updated.theme.secondary = e.target.value;
+                          setFormConfig(updated);
+                        }}
+                        className="w-10 h-8 rounded border border-white/10 bg-transparent cursor-pointer shrink-0" 
+                      />
+                      <input 
+                        type="text" 
+                        value={formConfig.theme.secondary} 
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          updated.theme.secondary = e.target.value;
+                          setFormConfig(updated);
+                        }}
+                        className="w-full bg-slate-950 border border-white/10 text-xs px-3 rounded-lg text-white" 
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-400 block mb-1">Custom Font Family</label>
+                    <select
+                      value={formConfig.theme.fontFamily || 'Space Grotesk'}
+                      onChange={(e) => {
+                        const updated = { ...formConfig };
+                        updated.theme.fontFamily = e.target.value;
+                        setFormConfig(updated);
+                      }}
+                      className="w-full bg-slate-950 border border-white/10 text-xs p-2 rounded-lg text-white font-bold"
+                    >
+                      <option value="Space Grotesk">Space Grotesk (Futuristic)</option>
+                      <option value="Outfit">Outfit (Luxury Tech)</option>
+                      <option value="Inter">Inter (Clean Modern)</option>
+                      <option value="Poppins">Poppins (Friendly Serif)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-400 block mb-1">Jabalpur Landmark Background Animation</label>
+                    <select
+                      value={formConfig.hero.jabalpurBranding?.interactiveEffect || 'electronic_grid'}
+                      onChange={(e) => {
+                        const updated = { ...formConfig };
+                        if (!updated.hero.jabalpurBranding) updated.hero.jabalpurBranding = {};
+                        updated.hero.jabalpurBranding.interactiveEffect = e.target.value;
+                        setFormConfig(updated);
+                      }}
+                      className="w-full bg-slate-950 border border-white/10 text-xs p-2 rounded-lg text-white font-mono"
+                    >
+                      <option value="electronic_grid">Madan Mahal electronic grid</option>
+                      <option value="canvas_ripples">Tilwara river ripples</option>
+                      <option value="misty_parallax">Bhedaghat gorges mist</option>
+                      <option value="neon_grids">Bhedaghat glowing grids</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* STUDIO 4: CMS ENGINE */}
+            {activeTab === 'cms_engine' && (
+              <div className="space-y-6 animate-in fade-in duration-300 text-left">
+                <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                  <h3 className="font-bold text-sm text-indigo-400 font-mono uppercase tracking-wider">CMS & Content Engine</h3>
+                  <button 
+                    onClick={handleSaveConfig}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors"
+                  >
+                    Save CMS
+                  </button>
+                </div>
+
+                {/* Hero section details */}
+                <div className="p-4 bg-indigo-500/5 border border-indigo-500/10 rounded-2xl space-y-3">
+                  <span className="text-[9px] font-bold text-indigo-400 font-mono uppercase block">Hero Title Slogans</span>
                   <div className="space-y-2">
                     <div>
-                      <label className="text-[9px] font-bold text-slate-500">Hero Main Title</label>
+                      <label className="text-[9px] text-slate-400">Hero Main Title</label>
                       <input 
                         type="text" 
                         value={formConfig.hero.title} 
@@ -901,11 +909,11 @@ export default function AdminDashboard() {
                           updated.hero.title = e.target.value;
                           setFormConfig(updated);
                         }}
-                        className="w-full bg-slate-900/5 border border-slate-500/20 text-xs px-3 py-2 rounded-lg mt-0.5" 
+                        className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2 rounded-lg mt-0.5 text-white" 
                       />
                     </div>
                     <div>
-                      <label className="text-[9px] font-bold text-slate-500">Hero Description</label>
+                      <label className="text-[9px] text-slate-400">Hero Subtitle</label>
                       <textarea 
                         value={formConfig.hero.subtitle} 
                         onChange={(e) => {
@@ -913,491 +921,94 @@ export default function AdminDashboard() {
                           updated.hero.subtitle = e.target.value;
                           setFormConfig(updated);
                         }}
-                        className="w-full bg-slate-900/5 border border-slate-500/20 text-xs px-3 py-2 rounded-lg h-16 mt-0.5" 
+                        className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2 rounded-lg h-16 mt-0.5 text-white" 
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  {formConfig.sections.map((sec, idx) => (
-                    <div key={sec.id} className="glass-card rounded-2xl p-4 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold text-slate-400 font-mono uppercase">
-                          SECTION [{idx + 1}]: {sec.type.toUpperCase()}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <label className="text-[9px] font-bold text-slate-500">VISIBLE</label>
-                          <input 
-                            type="checkbox" 
-                            checked={sec.visible} 
-                            onChange={(e) => handleUpdateConfigField(idx, 'visible', e.target.checked)}
-                            className="accent-indigo-500 w-3.5 h-3.5 cursor-pointer" 
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <div>
-                          <label className="text-[9px] font-bold text-slate-500">Section Title</label>
-                          <input 
-                            type="text" 
-                            value={sec.title} 
-                            onChange={(e) => handleUpdateConfigField(idx, 'title', e.target.value)}
-                            placeholder="Section Title" 
-                            className="w-full bg-slate-900/5 border border-slate-500/20 text-xs px-3 py-2 rounded-lg" 
-                          />
-                        </div>
-                        <div>
-                          <label className="text-[9px] font-bold text-slate-500">Section Subtitle</label>
-                          <input 
-                            type="text" 
-                            value={sec.subtitle} 
-                            onChange={(e) => handleUpdateConfigField(idx, 'subtitle', e.target.value)}
-                            placeholder="Section Subtitle" 
-                            className="w-full bg-slate-900/5 border border-slate-500/20 text-xs px-3 py-2 rounded-lg" 
-                          />
-                        </div>
-                        {sec.type === 'about' && sec.content && (
-                          <div>
-                            <label className="text-[9px] font-bold text-indigo-400">About Content Paragraph</label>
-                            <textarea 
-                              value={sec.content.text || ''} 
-                              onChange={(e) => {
-                                const updated = { ...formConfig };
-                                updated.sections[idx].content.text = e.target.value;
-                                setFormConfig(updated);
-                              }}
-                              placeholder="About Text Paragraph" 
-                              className="w-full bg-slate-900/5 border border-slate-500/20 text-xs px-3 py-2 rounded-lg h-20 mt-0.5" 
-                            />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Custom Payment & Billing Settings Section */}
-                <div className="glass-card rounded-2xl p-4 space-y-3 bg-emerald-500/5 border-emerald-500/10 border text-left">
-                  <span className="text-[10px] font-bold text-emerald-400 font-mono uppercase block">
-                    CMS: PAYMENT & BILLING DETAILS
-                  </span>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                {/* Banking coordination specs */}
+                <div className="p-4 bg-emerald-500/5 border border-emerald-500/10 rounded-2xl space-y-3">
+                  <span className="text-[9px] font-bold text-emerald-400 font-mono uppercase block">Payment Gate details</span>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
                     <div>
-                      <label className="text-[9px] font-bold text-slate-500">UPI ID</label>
+                      <label className="text-[8px] text-slate-400">UPI Node</label>
                       <input 
                         type="text" 
-                        value={formConfig.paymentDetails?.upiId || ''} 
+                        value={formConfig.paymentDetails?.upiId || 'jabalpur@sbi'} 
                         onChange={(e) => {
                           const updated = { ...formConfig };
                           if (!updated.paymentDetails) updated.paymentDetails = {};
                           updated.paymentDetails.upiId = e.target.value;
                           setFormConfig(updated);
                         }}
-                        placeholder="e.g. user@okaxis"
-                        className="w-full bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg mt-0.5" 
+                        className="w-full bg-slate-950 border border-white/10 text-[10px] px-2 py-1.5 rounded-lg text-white" 
                       />
                     </div>
                     <div>
-                      <label className="text-[9px] font-bold text-slate-500">QR Code Image URL</label>
+                      <label className="text-[8px] text-slate-400">Bank Account</label>
                       <input 
                         type="text" 
-                        value={formConfig.paymentDetails?.qrCodeUrl || ''} 
-                        onChange={(e) => {
-                          const updated = { ...formConfig };
-                          if (!updated.paymentDetails) updated.paymentDetails = {};
-                          updated.paymentDetails.qrCodeUrl = e.target.value;
-                          setFormConfig(updated);
-                        }}
-                        placeholder="e.g. https://example.com/qr.png (optional)"
-                        className="w-full bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg mt-0.5" 
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[9px] font-bold text-slate-500">Account Holder Name</label>
-                      <input 
-                        type="text" 
-                        value={formConfig.paymentDetails?.holderName || ''} 
-                        onChange={(e) => {
-                          const updated = { ...formConfig };
-                          if (!updated.paymentDetails) updated.paymentDetails = {};
-                          updated.paymentDetails.holderName = e.target.value;
-                          setFormConfig(updated);
-                        }}
-                        placeholder="e.g. Megha Choudhary"
-                        className="w-full bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg mt-0.5" 
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[9px] font-bold text-slate-500">Bank Name</label>
-                      <input 
-                        type="text" 
-                        value={formConfig.paymentDetails?.bankName || ''} 
-                        onChange={(e) => {
-                          const updated = { ...formConfig };
-                          if (!updated.paymentDetails) updated.paymentDetails = {};
-                          updated.paymentDetails.bankName = e.target.value;
-                          setFormConfig(updated);
-                        }}
-                        placeholder="e.g. State Bank of India"
-                        className="w-full bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg mt-0.5" 
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[9px] font-bold text-slate-500">Bank Account Number</label>
-                      <input 
-                        type="text" 
-                        value={formConfig.paymentDetails?.accountNumber || ''} 
+                        value={formConfig.paymentDetails?.accountNumber || '382901928392'} 
                         onChange={(e) => {
                           const updated = { ...formConfig };
                           if (!updated.paymentDetails) updated.paymentDetails = {};
                           updated.paymentDetails.accountNumber = e.target.value;
                           setFormConfig(updated);
                         }}
-                        placeholder="e.g. 382901928392"
-                        className="w-full bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg mt-0.5" 
+                        className="w-full bg-slate-950 border border-white/10 text-[10px] px-2 py-1.5 rounded-lg text-white" 
                       />
                     </div>
-                    <div>
-                      <label className="text-[9px] font-bold text-slate-500">Bank IFSC Code</label>
-                      <input 
-                        type="text" 
-                        value={formConfig.paymentDetails?.ifscCode || ''} 
-                        onChange={(e) => {
-                          const updated = { ...formConfig };
-                          if (!updated.paymentDetails) updated.paymentDetails = {};
-                          updated.paymentDetails.ifscCode = e.target.value;
-                          setFormConfig(updated);
-                        }}
-                        placeholder="e.g. SBIN0001234"
-                        className="w-full bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg mt-0.5" 
-                      />
-                    </div>
+                  </div>
+                </div>
+
+                {/* Sections visibility list */}
+                <div className="space-y-3 pt-2">
+                  <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block font-mono">Dynamic Sections Management</span>
+                  <div className="space-y-2">
+                    {formConfig.sections.map((sec, idx) => (
+                      <div key={sec.id} className="p-3 bg-white/2 border border-white/5 rounded-xl flex items-center justify-between">
+                        <div>
+                          <span className="text-[10px] font-bold text-white uppercase font-mono">{sec.title}</span>
+                          <span className="text-[8px] font-mono text-slate-500 block">TYPE: {sec.type}</span>
+                        </div>
+                        <input 
+                          type="checkbox" 
+                          checked={sec.visible} 
+                          onChange={(e) => handleUpdateConfigField(idx, 'visible', e.target.checked)}
+                          className="accent-indigo-600 w-4 h-4 cursor-pointer" 
+                        />
+                      </div>
+                    ))}
                   </div>
                 </div>
 
                 <button
                   onClick={handleResetTemplate}
-                  className="w-full border border-rose-500/30 hover:bg-rose-500/10 text-rose-500 text-[10px] font-bold py-2.5 rounded-xl transition-all cursor-pointer"
+                  className="w-full border border-rose-500/20 hover:bg-rose-500/10 text-rose-400 text-[10px] font-bold py-2.5 rounded-xl transition-all"
                 >
-                  Reset Current Template to Defaults
+                  Reset Current Template defaults
                 </button>
-              </div>
-            )}
-
-            {/* TAB 3B: USER DESK PANEL */}
-            {activeTab === 'user_desk' && (
-              <div className="space-y-4 animate-in fade-in duration-300">
-                <div className="space-y-1 pb-2 border-b border-slate-500/10">
-                  <h3 className="font-bold text-sm flex items-center gap-1.5">
-                    <Users className="w-5 h-5 text-indigo-500 animate-bounce" />
-                    Dynamic User Directories
-                  </h3>
-                  <p className="text-[10px] opacity-80">Administrate registered users across all dynamic websites, select roles, and link them to tenant websites.</p>
-                </div>
-
-                {/* Provision User Form */}
-                <form onSubmit={handleCreateSaaSUser} className="space-y-3 p-4 bg-slate-500/5 rounded-2xl border border-slate-500/10">
-                  <span className="text-[8px] text-indigo-400 font-bold tracking-widest block uppercase">Provision SaaS User</span>
-                  <div className="grid grid-cols-2 gap-2">
-                    <input 
-                      type="text" 
-                      placeholder="Name" 
-                      value={newUserName} 
-                      onChange={(e) => setNewUserName(e.target.value)} 
-                      className="bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg text-white placeholder-slate-700"
-                      required
-                    />
-                    <input 
-                      type="tel" 
-                      placeholder="Phone" 
-                      value={newUserPhone} 
-                      onChange={(e) => setNewUserPhone(e.target.value)} 
-                      className="bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg text-white placeholder-slate-700"
-                      required
-                    />
-                  </div>
-                  <input 
-                    type="email" 
-                    placeholder="Email Address" 
-                    value={newUserEmail} 
-                    onChange={(e) => setNewUserEmail(e.target.value)} 
-                    className="w-full bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg text-white placeholder-slate-700"
-                    required
-                  />
-                  <div className="grid grid-cols-2 gap-2 items-center">
-                    <input 
-                      type="password" 
-                      placeholder="Password" 
-                      value={newUserPassword} 
-                      onChange={(e) => setNewUserPassword(e.target.value)} 
-                      className="bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg text-white placeholder-slate-700"
-                      required
-                    />
-                    <select
-                      value={newUserRole}
-                      onChange={(e) => setNewUserRole(e.target.value)}
-                      className="bg-slate-950 border border-slate-500/20 text-xs px-3 py-2 rounded-lg text-white font-semibold"
-                    >
-                      <option value="student">Student (Education)</option>
-                      <option value="customer">Customer (E-Commerce)</option>
-                      <option value="teacher">Teacher (Education)</option>
-                      <option value="admin">System Admin</option>
-                    </select>
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 rounded-xl active:scale-95 transition-transform"
-                  >
-                    + Provision User Node
-                  </button>
-                </form>
-
-                {/* User Directory list */}
-                <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
-                  <span className="text-[8px] text-slate-400 font-bold uppercase tracking-widest block font-mono">Active Directory</span>
-                  {usersList.map((user) => (
-                    <div key={user._id} className="p-3 bg-slate-950 border border-white/5 rounded-xl flex items-center justify-between text-[11px] hover:bg-slate-900/50 transition-colors">
-                      <div>
-                        <p className="font-bold text-white leading-normal">{user.name || 'Anonymous User'} <span className="bg-indigo-500/15 text-indigo-400 font-mono text-[9px] px-2 py-0.5 rounded-full uppercase ml-1.5 font-black">{user.role}</span></p>
-                        <p className="text-[10px] text-slate-400 mt-0.5">{user.email} • {user.phone || 'No Mobile'}</p>
-                        <p className="text-[9px] text-slate-500 font-mono mt-0.5">Linked Tenant: <span className="text-amber-500 font-bold">{user.websiteId ? user.websiteId.split('_')[0].toUpperCase() : 'CENTRAL SYSTEM'}</span></p>
-                      </div>
-                    </div>
-                  ))}
-                  {usersList.length === 0 && (
-                    <p className="italic text-slate-500 text-xs text-center py-4">No users logged in dynamic database.</p>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* TAB 3: THEME STUDIO */}
-            {activeTab === 'theme' && (
-              <div className="space-y-4 animate-in fade-in duration-300">
-                <div className="flex justify-between items-center border-b border-slate-500/10 pb-2">
-                  <h3 className="font-bold text-sm">Visual Color & Styling Studio</h3>
-                  <button 
-                    onClick={handleSaveConfig}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow"
-                  >
-                    Save Style
-                  </button>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2 font-mono">AI Suggested Palette Generative</h4>
-                    <div className="flex gap-2">
-                      {['futuristic', 'elegant'].map((style) => (
-                        <button
-                          key={style}
-                          onClick={() => handleTriggerAISuggestTheme(style)}
-                          className="flex-1 bg-slate-500/5 border border-slate-500/20 hover:bg-slate-500/10 text-[10px] font-bold py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-all"
-                        >
-                          <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                          Apply {style}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-3 pt-2">
-                    <div>
-                      <label className="text-[10px] text-slate-400 font-semibold block mb-1">Primary Color (Hex/HSL)</label>
-                      <div className="flex gap-2">
-                        <input 
-                          type="color" 
-                          value={formConfig.theme.primary.startsWith('#') ? formConfig.theme.primary : '#3b82f6'} 
-                          onChange={(e) => {
-                            const updated = { ...formConfig };
-                            updated.theme.primary = e.target.value;
-                            setFormConfig(updated);
-                          }}
-                          className="w-10 h-8 rounded border border-slate-500/20 bg-transparent cursor-pointer shrink-0" 
-                        />
-                        <input 
-                          type="text" 
-                          value={formConfig.theme.primary} 
-                          onChange={(e) => {
-                            const updated = { ...formConfig };
-                            updated.theme.primary = e.target.value;
-                            setFormConfig(updated);
-                          }}
-                          className="w-full bg-slate-900/5 border border-slate-500/20 text-xs px-3 rounded-lg" 
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="text-[10px] text-slate-400 font-semibold block mb-1">Secondary Color</label>
-                      <div className="flex gap-2">
-                        <input 
-                          type="color" 
-                          value={formConfig.theme.secondary.startsWith('#') ? formConfig.theme.secondary : '#8b5cf6'} 
-                          onChange={(e) => {
-                            const updated = { ...formConfig };
-                            updated.theme.secondary = e.target.value;
-                            setFormConfig(updated);
-                          }}
-                          className="w-10 h-8 rounded border border-slate-500/20 bg-transparent cursor-pointer shrink-0" 
-                        />
-                        <input 
-                          type="text" 
-                          value={formConfig.theme.secondary} 
-                          onChange={(e) => {
-                            const updated = { ...formConfig };
-                            updated.theme.secondary = e.target.value;
-                            setFormConfig(updated);
-                          }}
-                          className="w-full bg-slate-900/5 border border-slate-500/20 text-xs px-3 rounded-lg" 
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="text-[10px] text-slate-400 font-semibold block mb-1">Accent Accent Color</label>
-                      <div className="flex gap-2">
-                        <input 
-                          type="color" 
-                          value={formConfig.theme.accent.startsWith('#') ? formConfig.theme.accent : '#06b6d4'} 
-                          onChange={(e) => {
-                            const updated = { ...formConfig };
-                            updated.theme.accent = e.target.value;
-                            setFormConfig(updated);
-                          }}
-                          className="w-10 h-8 rounded border border-slate-500/20 bg-transparent cursor-pointer shrink-0" 
-                        />
-                        <input 
-                          type="text" 
-                          value={formConfig.theme.accent} 
-                          onChange={(e) => {
-                            const updated = { ...formConfig };
-                            updated.theme.accent = e.target.value;
-                            setFormConfig(updated);
-                          }}
-                          className="w-full bg-slate-900/5 border border-slate-500/20 text-xs px-3 rounded-lg" 
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* TAB 4: AI ORACLE PANEL */}
-            {activeTab === 'ai_oracle' && (
-              <div className="space-y-4 animate-in fade-in duration-300">
-                <div className="space-y-1">
-                  <h3 className="font-bold text-sm flex items-center gap-1.5">
-                    <Bot className="w-5 h-5 text-indigo-500 animate-bounce" />
-                    AI Dynamic Copy & Slogan Generator
-                  </h3>
-                  <p className="text-[10px] opacity-80">Provide a marketing description. The AI will output a matching header title, optimized subtitles, and structured specs specific to Jabalpur city.</p>
-                </div>
-
-                <div className="space-y-3">
-                  <textarea
-                    value={aiPrompt}
-                    onChange={(e) => setAiPrompt(e.target.value)}
-                    placeholder="Describe your target business goal..."
-                    className="w-full bg-slate-900/5 border border-slate-500/20 text-xs p-3 rounded-xl h-20 placeholder-slate-500 focus:outline-none"
-                  />
-                  <button
-                    onClick={handleTriggerAIContent}
-                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold py-2.5 rounded-xl flex items-center justify-center gap-1.5 shadow"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                    Simulate AI Generation
-                  </button>
-
-                  {aiGeneratedData && (
-                    <div className="bg-indigo-500/5 border border-indigo-500/20 p-4 rounded-2xl space-y-3 animate-in slide-in-from-bottom-2 duration-300">
-                      <span className="text-[8px] bg-indigo-500/10 text-indigo-500 font-bold px-2 py-0.5 rounded-full block w-fit">AI DRAFT COPY</span>
-                      <h4 className="font-bold text-xs leading-snug">{aiGeneratedData.heroTitle}</h4>
-                      <p className="text-[10px] opacity-80 leading-normal">{aiGeneratedData.heroSubtitle}</p>
-                      <button
-                        onClick={applyAIGeneratedContent}
-                        className="w-full bg-indigo-500 hover:bg-indigo-600 text-white text-[9px] font-bold py-2 rounded-lg"
-                      >
-                        Apply Content Draft
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* Local SEO Optimizer Section */}
-                <div className="border-t border-slate-500/10 pt-4 space-y-3">
-                  <div className="space-y-1">
-                    <h4 className="font-bold text-xs">Local Google SEO Evaluator</h4>
-                    <p className="text-[9px] opacity-75">Scan active metadata tags to calculate search indexing parameters.</p>
-                  </div>
-                  <button
-                    onClick={handleTriggerAISEOScan}
-                    className="w-full bg-slate-500/5 border border-slate-500/20 text-[10px] font-bold py-2 rounded-lg hover:bg-slate-500/10"
-                  >
-                    Scan Landing Page Metadata
-                  </button>
-
-                  {seoReport && (
-                    <div className="bg-indigo-500/5 border border-indigo-500/10 p-4 rounded-xl space-y-2 text-[10px] text-slate-300">
-                      <div className="flex justify-between items-center">
-                        <span className="font-bold">SEO Health Index</span>
-                        <span className={`font-mono font-bold text-sm ${seoReport.score > 85 ? 'text-emerald-500' : 'text-amber-500'}`}>
-                          {seoReport.score}/100
-                        </span>
-                      </div>
-                      <div className="space-y-1.5 pt-1 border-t border-slate-500/10">
-                        <strong className="text-[9px] text-slate-500 block uppercase tracking-wider">Optimization Suggestions:</strong>
-                        {seoReport.suggestions.map((s, idx) => (
-                          <p key={idx} className="leading-snug flex items-start gap-1">
-                            <span className="text-amber-500 shrink-0">•</span>
-                            {s}
-                          </p>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* TAB 5: RAZORPAY PAYMENT SIMULATION */}
-            {activeTab === 'payment' && (
-              <div className="space-y-4 animate-in fade-in duration-300">
-                <div className="space-y-1">
-                  <h3 className="font-bold text-sm">Razorpay Webhooks Simulation</h3>
-                  <p className="text-[10px] opacity-80">Trigger a simulated transaction event from the server. This emits instant WebSocket events, popping beautiful checkout confirmations on all active frontend users!</p>
-                </div>
-
-                <div className="pt-2">
-                  <button
-                    onClick={handleManualPaymentSimulation}
-                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold py-3 rounded-xl flex items-center justify-center gap-1.5 shadow-lg active:scale-95 transition-transform"
-                  >
-                    <CreditCard className="w-4 h-4" />
-                    Simulate Payment Reciept (₹15,000)
-                  </button>
-                </div>
               </div>
             )}
 
           </div>
 
-          {/* System Notifications log footer */}
-          <div className="border-t border-slate-500/10 bg-slate-900/5 p-4 max-h-[140px] overflow-y-auto shrink-0">
-            <h4 className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-2 font-mono flex items-center justify-between">
-              <span>Server Webhook Feeds</span>
-              <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-ping" />
+          {/* Webhook logs footer */}
+          <div className="border-t border-white/5 bg-slate-950 p-4 max-h-[140px] overflow-y-auto shrink-0 font-mono text-[9px] text-slate-400 text-left">
+            <h4 className="text-[8px] text-slate-500 font-bold uppercase tracking-widest mb-2 flex items-center justify-between">
+              <span>Intrusion Webhook Logs Feed</span>
+              <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-ping shrink-0" />
             </h4>
-            <div className="space-y-1.5 font-mono text-[9px] opacity-75">
+            <div className="space-y-1.5">
               {notifications.slice(0, 3).map((n, idx) => (
-                <p key={idx} className="truncate flex items-start gap-1.5">
-                  <ChevronRight className="w-2.5 h-2.5 text-indigo-500 shrink-0 mt-0.5" />
+                <p key={idx} className="truncate flex items-start gap-1">
+                  <ChevronRight className="w-3 h-3 text-indigo-500 shrink-0 mt-0.5" />
                   {n.message}
                 </p>
               ))}
               {notifications.length === 0 && (
-                <p className="italic text-slate-500">No network triggers caught.</p>
+                <p className="italic text-slate-600">No Webhook queries logged.</p>
               )}
             </div>
           </div>
@@ -1405,16 +1016,16 @@ export default function AdminDashboard() {
         </div>
 
         {/* Right Side: Split live Preview Pane (7 columns) */}
-        <div className="xl:col-span-7 bg-slate-100 dark:bg-slate-900 flex flex-col overflow-hidden relative transition-colors duration-500">
+        <div className="xl:col-span-7 bg-slate-900 flex flex-col overflow-hidden relative border-l border-white/5">
           
-          {/* Header controls for Device Viewports */}
-          <div className="h-14 border-b border-slate-500/20 bg-slate-950/5 dark:bg-slate-950/20 px-6 flex items-center justify-between shrink-0">
-            <div className="flex items-center gap-2">
+          {/* Viewport bar controls */}
+          <div className="h-14 border-b border-white/5 bg-slate-950 px-6 flex items-center justify-between shrink-0 font-mono">
+            <div className="flex items-center gap-2 text-xs font-bold text-indigo-400 uppercase tracking-wider">
               <Eye className="w-4 h-4 text-indigo-500" />
-              <span className="text-xs font-bold">High-Fidelity Preview Gateway</span>
+              <span>Dynamic Engine Live Preview</span>
             </div>
 
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               {[
                 { id: 'desktop', icon: Monitor },
                 { id: 'tablet', icon: Tablet },
@@ -1427,10 +1038,10 @@ export default function AdminDashboard() {
                     onClick={() => { playClickSound(); setPreviewDevice(dev.id); }}
                     className={`p-2 rounded-lg border transition-all ${
                       previewDevice === dev.id 
-                        ? 'border-indigo-500/30 text-indigo-500 bg-indigo-500/5' 
-                        : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                        ? 'border-indigo-500/30 text-indigo-400 bg-indigo-500/5' 
+                        : 'border-transparent text-slate-400 hover:text-white hover:bg-white/5'
                     }`}
-                    title={`Preview in ${dev.id} resolution`}
+                    title={`Preview in ${dev.id} viewport`}
                   >
                     <Icon className="w-4 h-4" />
                   </button>
@@ -1439,24 +1050,24 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Device Mock Viewport viewport */}
-          <div className="flex-1 p-8 flex items-center justify-center overflow-auto cyber-grid">
+          {/* Iframe Device shell */}
+          <div className="flex-1 p-8 flex items-center justify-center overflow-auto bg-slate-950/80 cyber-grid">
             <div 
               style={{ 
                 width: previewDevice === 'desktop' ? '100%' : previewDevice === 'tablet' ? '768px' : '375px',
                 height: '100%',
                 maxWidth: '100%'
               }}
-              className="rounded-2xl border border-slate-500/20 bg-slate-950 shadow-2xl flex flex-col overflow-hidden transition-all duration-500 select-none relative"
+              className="rounded-3xl border border-white/10 bg-slate-950 shadow-2xl flex flex-col overflow-hidden transition-all duration-500 select-none relative"
             >
               {/* Browser bar layout */}
-              <div className="h-10 border-b border-white/5 bg-slate-900 flex items-center justify-between px-4 shrink-0">
+              <div className="h-10 border-b border-white/5 bg-slate-900 flex items-center justify-between px-4 shrink-0 font-mono text-[9px] text-slate-400">
                 <div className="flex gap-1.5 shrink-0">
                   <span className="w-2.5 h-2.5 bg-rose-500 rounded-full inline-block" />
                   <span className="w-2.5 h-2.5 bg-amber-500 rounded-full inline-block" />
                   <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full inline-block" />
                 </div>
-                <div className="bg-white/5 border border-white/5 text-[9px] text-slate-400 px-4 py-1.5 rounded-lg w-1/2 text-center truncate font-mono">
+                <div className="bg-white/5 border border-white/5 px-4 py-1 rounded-lg w-1/2 text-center truncate">
                   {typeof window !== 'undefined' ? window.location.origin + '/' : 'http://localhost:3000/'}
                 </div>
                 <button 

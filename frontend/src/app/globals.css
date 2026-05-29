@@ -915,4 +915,113 @@ div.matte-gold-theme.light-site {
   pointer-events: none;
 }
 
+/* ========================================================
+   INDUSTRY CUSTOM THEME ACCENTS FOR ALL 10 SAAS SITES
+   ======================================================== */
+.ecommerce-theme {
+  --primary: #f59e0b !important;
+  --secondary: #818cf8 !important;
+  --accent: #fbbf24 !important;
+  --background: #0c0a09 !important;
+  --bg-custom: #0c0a09 !important;
+}
+
+.real_estate-theme {
+  --primary: #b45309 !important;
+  --secondary: #1e3a8a !important;
+  --accent: #fbbf24 !important;
+  --background: #020617 !important;
+  --bg-custom: #020617 !important;
+}
+
+.hospital-theme {
+  --primary: #06b6d4 !important;
+  --secondary: #10b981 !important;
+  --accent: #38bdf8 !important;
+  --background: #030f12 !important;
+  --bg-custom: #030f12 !important;
+}
+
+.cafe-theme {
+  --primary: #b45309 !important;
+  --secondary: #ea580c !important;
+  --accent: #f59e0b !important;
+  --background: #0d0705 !important;
+  --bg-custom: #0d0705 !important;
+}
+
+.startup-theme {
+  --primary: #3b82f6 !important;
+  --secondary: #a855f7 !important;
+  --accent: #06b6d4 !important;
+  --background: #030014 !important;
+  --bg-custom: #030014 !important;
+}
+
+.gym-theme {
+  --primary: #ef4444 !important;
+  --secondary: #3b82f6 !important;
+  --accent: #f97316 !important;
+  --background: #040404 !important;
+  --bg-custom: #040404 !important;
+}
+
+.tourism-theme {
+  --primary: #0284c7 !important;
+  --secondary: #f97316 !important;
+  --accent: #38bdf8 !important;
+  --background: #051026 !important;
+  --bg-custom: #051026 !important;
+}
+
+.cybersecurity-theme {
+  --primary: #22c55e !important;
+  --secondary: #06b6d4 !important;
+  --accent: #10b981 !important;
+  --background: #020804 !important;
+  --bg-custom: #020804 !important;
+}
+
+.career-theme {
+  --primary: #2563eb !important;
+  --secondary: #7c3aed !important;
+  --accent: #3b82f6 !important;
+  --background: #050714 !important;
+  --bg-custom: #050714 !important;
+}
+
+/* ========================================================
+   CINEMATIC GLOWING AND ROTATING WIDGET STYLING
+   ======================================================== */
+.cyber-outline-glow {
+  position: relative;
+  border-radius: var(--radius-custom);
+  background: rgba(10, 8, 28, 0.45);
+  backdrop-filter: blur(20px);
+}
+
+.cyber-outline-glow::after {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+  border-radius: calc(var(--radius-custom) + 1.5px);
+  z-index: -1;
+  opacity: 0.25;
+  transition: opacity 0.4s ease;
+}
+
+.cyber-outline-glow:hover::after {
+  opacity: 0.65;
+  box-shadow: 0 0 25px -3px var(--primary);
+}
+
+/* Draggable widgets custom drop highlights */
+.drag-target-highlight {
+  border: 2px dashed var(--primary);
+  background: rgba(99, 102, 241, 0.05);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15) inset;
+}
+
+
 

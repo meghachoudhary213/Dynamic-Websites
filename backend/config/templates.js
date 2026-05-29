@@ -29,50 +29,50 @@ export const defaultTemplates = {
       logoText: "NextRank Institute",
       links: [
         { label: "Classroom Hub", href: "#home" },
-        { label: "Dashboard Portal", href: "#dynamic_modules" },
-        { label: "Test Features", href: "#features" },
+        { label: "Courses & Mentors", href: "#courses" },
         { label: "Our Story", href: "#about" },
         { label: "Admission Desk", href: "#contact" }
       ]
     },
     sections: [
       {
-        id: "features",
-        type: "features",
-        title: "Glass Education Pro Standards",
-        subtitle: "Integrated student utilities designed for unmatched academic clarity.",
+        id: "courses",
+        type: "courses",
+        title: "Classroom Programs & Courses",
+        subtitle: "Highly targeted preparation structures built for maximum scholastic results.",
         visible: true,
         order: 1,
         content: [
-          { icon: "📝", title: "Adaptive MCQ Test Series", desc: "Adaptive dynamic mock exams tracking student percentiles, response speeds, and physics concepts." },
-          { icon: "📅", title: "Biometric RFID Parent Logs", desc: "Digital RFID gate check-ins logged instantly to parent nodes with real-time SMS checkpoints." },
-          { icon: "📊", title: "AI Rank Percentile Predictor", desc: "Deep-learning rank forecasting simulators charting rank targets based on conceptual mocks scorecards." }
+          { id: "jee", name: "IIT-JEE Elite Prep", duration: "2 Years", fees: "₹1,25,000", faculty: "Er. Amit Agrawal (IIT Delhi)", target: "JEE Advanced Aspirants" },
+          { id: "neet", name: "NEET Medical Star", duration: "2 Years", fees: "₹1,20,000", faculty: "Dr. Priya Nair (AIIMS Delhi)", target: "Pre-Medical Scholars" },
+          { id: "board", name: "Class 11-12 Board Prep", duration: "1 Year", fees: "₹85,000", faculty: "Dr. S. K. Verma (IIT Kanpur)", target: "Board Excellence" }
         ]
       },
       {
-        id: "stats",
-        type: "stats",
-        title: "Apex Achievers",
-        subtitle: "Verifiable board examination ranks representing NextRank's elite coaching standards.",
+        id: "faculty",
+        type: "faculty",
+        title: "Distinguished Mentors Panel",
+        subtitle: "Learn from Sanskardhani's top-tier concepts coaches and Ph.D. scholars.",
         visible: true,
         order: 2,
         content: [
-          { number: "99.6%", label: "Jabalpur Board Topper - AIR 12" },
-          { number: "99.2%", label: "NEET Top Medical Score - AIR 28" },
-          { number: "1,500+", label: "IIT-JEE / NEET Credentials Logged" }
+          { name: "Dr. S. K. Verma", subject: "Physics Expert", exp: "15 Yrs Experience", qual: "Ph.D. IIT Kanpur", image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400" },
+          { name: "Prof. Ritu Kapoor", subject: "Chemistry Expert", exp: "12 Yrs Experience", qual: "M.Sc. BITS Pilani", image: "https://images.unsplash.com/photo-1580894732444-8fecef2271da?q=80&w=400" },
+          { name: "Er. Amit Agrawal", subject: "Mathematics Mentor", exp: "10 Yrs Experience", qual: "B.Tech. IIT Delhi", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400" }
         ]
       },
       {
-        id: "about",
-        type: "about",
-        title: "Bridging Science & Success",
-        subtitle: "Our Academic Mission",
+        id: "results",
+        type: "results",
+        title: "Scholastic Ranks & Results",
+        subtitle: "Outstanding board achievements and competitive exam milestones.",
         visible: true,
         order: 3,
-        content: {
-          text: "NextRank Institute is Sanskardhani's premier science and commerce prep node for students up to Class 12th. Guided by expert mentors, our classroom structures combine traditional curriculum with state-of-the-art interactive digital notes. We focus on building a strong foundation, encouraging competitive problem solving, and generating real-time academic logs for parents.",
-          image: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=800&auto=format&fit=crop"
-        }
+        content: [
+          { number: "AIR 12", label: "JEE Topper 2025", desc: "Aarav Sharma - 99.6% marks" },
+          { number: "AIR 28", label: "NEET Medical Topper", desc: "Ananya Patel - 710/720 score" },
+          { number: "1500+", label: "Successful IIT/NEET Admits", desc: "Over 8 years of pedagogical trust" }
+        ]
       }
     ],
     footer: {
@@ -102,10 +102,10 @@ export const defaultTemplates = {
       borderRadius: 'xl'
     },
     hero: {
-      title: "Luxury Liquid Commerce by Libaas",
-      subtitle: "Experience absolute wardrobe couture. Explore highly animated product cards, interactive wishlist caches, AI-driven style suggestions, and a smart, seamless glass checkout gateway.",
+      title: "Luxury Liquid Couture by Libaas",
+      subtitle: "Experience absolute wardrobe elegance. Explore highly animated product catalogs, interactive wishlist caches, AI-driven style suggestions, and a smart, seamless glass checkout gateway.",
       ctaText: "Browse Couture",
-      ctaLink: "#couture",
+      ctaLink: "#products",
       bgImage: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1920&auto=format&fit=crop",
       jabalpurBranding: {
         landmark: "Narmada River",
@@ -115,38 +115,50 @@ export const defaultTemplates = {
     navigation: {
       logoText: "Libaas",
       links: [
-        { label: "Couture Collection", href: "#home" },
-        { label: "Shop Libaas", href: "#dynamic_modules" },
-        { label: "Smart Features", href: "#features" },
-        { label: "Libaas Vision", href: "#about" },
-        { label: "Inquire", href: "#contact" }
+        { label: "Couture Collections", href: "#home" },
+        { label: "Our Products", href: "#products" },
+        { label: "Active Offers", href: "#offers" },
+        { label: "Contact Us", href: "#contact" }
       ]
     },
     sections: [
       {
-        id: "features",
-        type: "features",
-        title: "High-End E-Commerce Standards",
-        subtitle: "Intelligent digital shopping workflows configured for premium shoppers.",
+        id: "products",
+        type: "products",
+        title: "Exclusive Wardrobe Couture",
+        subtitle: "Discover modern traditional fusions woven with absolute craftsmanship.",
         visible: true,
         order: 1,
         content: [
-          { icon: "🧠", title: "AI Style Recommendation", desc: "Custom style selectors recommend matching clothing designs based on color codes and season context." },
-          { icon: "🛍️", title: "Animated Product Grid", desc: "Premium product cards displaying full liquid hover transforms, size options, and direct cart add triggers." },
-          { icon: "💳", title: "Smart Checkout Link", desc: "Highly secure checkouts optimized for mobile-first transactions with dynamic payment trackers." }
+          { id: "p1", name: "Royal Banarasi Silk Sherwani", price: "₹45,000", image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800", rating: "4.9" },
+          { id: "p2", name: "Premium Organza Silk Lehenga", price: "₹85,000", image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=800", rating: "5.0" },
+          { id: "p3", name: "Handcrafted Lucknowi Kurta Set", price: "₹18,500", image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=800", rating: "4.8" }
         ]
       },
       {
-        id: "about",
-        type: "about",
-        title: "Woven in Elegance",
-        subtitle: "Libaas Signature Heritage",
+        id: "offers",
+        type: "offers",
+        title: "Seasonal Couture Events",
+        subtitle: "Claim luxury promo nodes and secure direct artisan booking options.",
         visible: true,
         order: 2,
-        content: {
-          text: "Libaas represents the peak of Indian premium startup design. We combine traditional embroidery methods with contemporary global silhouettes to create gorgeous, sustainable wardrobe couture. Partnering with indigenous organic silk weavers in Central MP, our collections bring beautiful, local craft styles to global digital shoppers through liquid-fast digital pipelines.",
-          image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=800&auto=format&fit=crop"
-        }
+        content: [
+          { promo: "SILK30", discount: "30% OFF", desc: "Flat 30% discount on Banarasi Couture collections.", code: "NEXUSSILK30" },
+          { promo: "FESTIVE15", discount: "15% OFF", desc: "Artisan weavers special festive discount.", code: "NEXUSFESTIVE" }
+        ]
+      },
+      {
+        id: "categories",
+        type: "categories",
+        title: "Curated Couture Categories",
+        subtitle: "Explore highly-premium luxury segments for special occasions.",
+        visible: true,
+        order: 3,
+        content: [
+          { name: "Sherwani Collections", image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=400", count: "12 Designs" },
+          { name: "Silk Couture Lehengas", image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=400", count: "8 Designs" },
+          { name: "Kurtas & Tunics", image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=400", count: "24 Designs" }
+        ]
       }
     ],
     footer: {
@@ -177,7 +189,7 @@ export const defaultTemplates = {
     },
     hero: {
       title: "Luxury Property Glass UI Portal by AashiyanaX",
-      subtitle: "Discover high-premium houses, custom plots, and modern duplexes. Explore simulated virtual 3D tours, interactive region maps, smart filters, and book consultation sessions instantly.",
+      subtitle: "Discover high-premium houses, custom plots, and modern duplexes nearTilwara Ghat and Narmada river coordinates. Explore simulated virtual 3D tours and schedule consulting sessions instantly.",
       ctaText: "Open Property Finder",
       ctaLink: "#properties",
       bgImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1920&auto=format&fit=crop",
@@ -190,37 +202,49 @@ export const defaultTemplates = {
       logoText: "AashiyanaX",
       links: [
         { label: "Elite Estates", href: "#home" },
-        { label: "Property Search", href: "#dynamic_modules" },
-        { label: "UI Features", href: "#features" },
-        { label: "Our Story", href: "#about" },
+        { label: "Properties Grid", href: "#properties" },
+        { label: "Key Regions", href: "#regions" },
         { label: "Consult Agent", href: "#contact" }
       ]
     },
     sections: [
       {
-        id: "features",
-        type: "features",
-        title: "AashiyanaX Smart Utilities",
-        subtitle: "Luxury buying engineered with absolute digital transparency.",
+        id: "properties",
+        type: "properties",
+        title: "Elite Gated Properties",
+        subtitle: "Luxury buying engineered with absolute digital transparency and riverfront sights.",
         visible: true,
         order: 1,
         content: [
-          { icon: "📽️", title: "Simulated Virtual Tours", desc: "Walk through premium riverfront duplex layouts virtually using interactive 3D blueprints." },
-          { icon: "🗺️", title: "Interactive Regional Map", desc: "Locate properties near Tilwara Ghat, Vijay Nagar, or Bhedaghat bypass bypass routes instantly." },
-          { icon: "📞", title: "Agent Consultation Slots", desc: "Schedule instant consulting sessions and track agent status real-time from the dashboard." }
+          { id: "r1", name: "Tilwara Riverfront Duplex", price: "₹1.4 Crore", type: "Duplex Villa", size: "4 BHK - 3200 sqft", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800" },
+          { id: "r2", name: "Vijay Nagar Penthouse Suite", price: "₹95 Lakhs", type: "Penthouse", size: "3 BHK - 2400 sqft", image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=800" },
+          { id: "r3", name: "Bhedaghat Bypass Green Acres", price: "₹65 Lakhs", type: "Plot Complex", size: "1800 sqft plot", image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=800" }
         ]
       },
       {
-        id: "about",
-        type: "about",
-        title: "Architecting Cozy Havens",
-        subtitle: "About AashiyanaX Developers",
+        id: "regions",
+        type: "regions",
+        title: "Key Jabalpur Regions",
+        subtitle: "Select your target neighborhood with active growth indices.",
         visible: true,
         order: 2,
-        content: {
-          text: "AashiyanaX Developers has revolutionized residential real estate in central India. Taking inspiration from Jabalpur's unshakeable Madan Mahal balance rocks, we construct highly premium architectural structures that merge raw security with sleek glass aesthetic layouts. Our projects feature green energy systems, direct water recyclers, and pristine river views.",
-          image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=800&auto=format&fit=crop"
-        }
+        content: [
+          { name: "Tilwara Ghat Sector", desc: "Serene riverfront views, close to green bypass networks.", growth: "+14% Annual" },
+          { name: "Vijay Nagar Hub", desc: "Commercial core with active metro routes and shopping nodes.", growth: "+18% Annual" },
+          { name: "Bhedaghat Bypass", desc: "Pristine nature coordinates, excellent for premium resorts.", growth: "+11% Annual" }
+        ]
+      },
+      {
+        id: "agents",
+        type: "agents",
+        title: "Elite Developers Panel",
+        subtitle: "Meet our professional advisors waiting to manage your investment logs.",
+        visible: true,
+        order: 3,
+        content: [
+          { name: "Megha Choudhary", role: "Chief Executive Agent", exp: "10 Yrs Experience", image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400" },
+          { name: "Ramesh Patel", role: "Senior Land Coordinator", exp: "14 Yrs Experience", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400" }
+        ]
       }
     ],
     footer: {
@@ -253,11 +277,11 @@ export const defaultTemplates = {
       title: "Healing Frost UI - Smart Care Portal by AarogyaCare",
       subtitle: "Welcome to AarogyaCare Clinic. Register dynamic clinical appointments, consult expert doctors, download detailed health reports, and access 24/7 rapid emergency support feeds.",
       ctaText: "Book Appointment Now",
-      ctaLink: "#booking",
+      ctaLink: "#dynamic_modules",
       bgImage: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=1920&auto=format&fit=crop",
       jabalpurBranding: {
-        landmark: "Narmada River",
-        interactiveEffect: "canvas_ripples"
+        landmark: "Tilwara Ghat",
+        interactiveEffect: "electronic_grid"
       }
     },
     navigation: {
@@ -265,36 +289,48 @@ export const defaultTemplates = {
       links: [
         { label: "Care Gateway", href: "#home" },
         { label: "Clinical Booking", href: "#dynamic_modules" },
-        { label: "Frost Features", href: "#features" },
-        { label: "Our Story", href: "#about" },
-        { label: "Emergency Contact", href: "#contact" }
+        { label: "Frost Services", href: "#services" },
+        { label: "Our Doctors", href: "#doctors" }
       ]
     },
     sections: [
       {
-        id: "features",
-        type: "features",
-        title: "Care Innovation and Comfort",
-        subtitle: "Healing Frost UI designed to deliver medical operations with microsecond-latency security.",
+        id: "services",
+        type: "services",
+        title: " Frost Clinical Specialities",
+        subtitle: "Specialized diagnostics and surgeries delivered with high efficiency.",
         visible: true,
         order: 1,
         content: [
-          { icon: "🩺", title: "Health Report Node", desc: "Download clinical checkup sheets, MRI files, and lab telemetry directly from a secured digital chest." },
-          { icon: "📅", title: "Appointment Calendar", desc: "Self-booking calendar showing real-time doctor availability slots and patient queue counters." },
-          { icon: "🚑", title: "Emergency Support Dispatch", desc: "Direct hotline and GPS ambulance transit system routed across Jabalpur city boundaries." }
+          { icon: "🩺", name: "Cardiology & Surgery", desc: "Advanced cardiac diagnostics, bypass simulations, and structural health logs." },
+          { icon: "🔬", name: "Full Body MRI Diagnostics", desc: "High-resolution full-body scan telemetry with quick laboratory report vaults." },
+          { icon: "🚑", name: "Emergency Dispatch 24/7", desc: "Direct GPS ambulance dispatch tracking across Jabalpur municipal zones." }
         ]
       },
       {
-        id: "about",
-        type: "about",
-        title: "A Sanctuary of Health",
-        subtitle: "Serving Jabalpur with trust since 2015",
+        id: "doctors",
+        type: "doctors",
+        title: "Distinguished Physicians",
+        subtitle: "Meet our board-certified medical personnel ready to evaluate your care logs.",
         visible: true,
         order: 2,
-        content: {
-          text: "AarogyaCare was established in Sanskardhani to deliver premium multi-specialty clinical health services in central India. Headed by board-certified physicians, our clinic incorporates zero-emission energy systems, clean oxygenation loops, and advanced diagnostics to maintain high recovery percentages and compassionate patient rehabilitation.",
-          image: "https://images.unsplash.com/photo-1586773860418-d3b3de97e963?q=80&w=800&auto=format&fit=crop"
-        }
+        content: [
+          { name: "Dr. Priya Nair", specialty: "MD Cardiology", exp: "12 Yrs Exp", qual: "AIIMS Delhi Scholar", image: "https://images.unsplash.com/photo-1594744803329-e58b31de215f?q=80&w=400" },
+          { name: "Dr. S. K. Verma", specialty: "Senior Pathologist", exp: "18 Yrs Exp", qual: "Ph.D. IIT Kanpur Bio-Sci", image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400" }
+        ]
+      },
+      {
+        id: "appointments",
+        type: "appointments",
+        title: "Active Appointment Checkpoint",
+        subtitle: "Direct schedule portal for instant outpatient token allocation.",
+        visible: true,
+        order: 3,
+        content: [
+          { time: "09:00 AM - 12:00 PM", status: "AVAILABLE", slots: "4 Slots left" },
+          { time: "02:00 PM - 05:00 PM", status: "LIMITED", slots: "1 Slot left" },
+          { time: "06:00 PM - 08:00 PM", status: "FULL", slots: "0 Slots left" }
+        ]
       }
     ],
     footer: {
@@ -327,7 +363,7 @@ export const defaultTemplates = {
       title: "Cafe Aura - Coffee Glass Lounge Experience",
       subtitle: "Relax in our glassmorphic coffee retreat. Savor artisanal micro-batch roasted brews, reserve river-view dining tables, explore live music schedules, and order food online instantly.",
       ctaText: "Reserve Table Online",
-      ctaLink: "#booking",
+      ctaLink: "#dynamic_modules",
       bgImage: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1920&auto=format&fit=crop",
       jabalpurBranding: {
         landmark: "Bhedaghat",
@@ -338,37 +374,48 @@ export const defaultTemplates = {
       logoText: "Cafe Aura",
       links: [
         { label: "Aura Vibe", href: "#home" },
-        { label: "Cafe Menu", href: "#dynamic_modules" },
-        { label: "Reservation Details", href: "#features" },
-        { label: "Brew Story", href: "#about" },
+        { label: "Our Menu", href: "#menu" },
+        { label: "Acoustic Nights", href: "#gigs" },
         { label: "Dine In", href: "#contact" }
       ]
     },
     sections: [
       {
-        id: "features",
-        type: "features",
-        title: "Aura Coffee Lounging",
-        subtitle: "Every cup roasted to perfection, celebrating native Indian spice integrations.",
+        id: "menu",
+        type: "menu",
+        title: "Artisanal Coffee & Bakeries",
+        subtitle: "Single-origin beans roasted in Sanskardhani daily.",
         visible: true,
         order: 1,
         content: [
-          { icon: "🌅", title: "Online reservations", desc: "Reserve tables overlooking the gorges, complete with digital preview grids." },
-          { icon: "☕", title: "Coffee Menu Showcase", desc: "Locally-roasted single-origin coffees, organic teas, and custom chocolate lava shells." },
-          { icon: "🎵", title: "Live Music Sessions", desc: "Unplugged acoustic performances by regional Sanskardhani artists every weekend." }
+          { name: "Single-Origin Pour Over", price: "₹280", category: "Coffee", image: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400" },
+          { name: "Organic Spiced Cardamom Chai", price: "₹180", category: "Tea", image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?q=80&w=400" },
+          { name: "Gourmet Lava Fudge Shell", price: "₹340", category: "Bakery", image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=400" }
         ]
       },
       {
-        id: "about",
-        type: "about",
-        title: "Our Roasting History",
-        subtitle: "Crafting cozy moments since 2018",
+        id: "gigs",
+        type: "gigs",
+        title: "Moonlight Acoustic Gigs",
+        subtitle: "Relax with live unplugged rhythms by regional Jabalpur artists.",
         visible: true,
         order: 2,
-        content: {
-          text: "Cafe Aura represents the peak of relaxing coffee spaces. Partnering with indigenous growers in Central India, we procure high-grade organic coffee beans and blend them in-house daily. Our elegant glass lounge provides natural light, high-end acoustical configurations for unplugged nights, and clean local ingredients.",
-          image: "https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=800&auto=format&fit=crop"
-        }
+        content: [
+          { name: "Sufi Fusion Night", date: "Friday Evening", timing: "07:30 PM", artist: "Sanskardhani Swar Group" },
+          { name: "Unplugged Acoustic Hits", date: "Saturday Night", timing: "08:00 PM", artist: "Er. Amit & Friends" }
+        ]
+      },
+      {
+        id: "gallery",
+        type: "gallery",
+        title: "Glass Lounge Gallery",
+        subtitle: "Pristine visual spaces tailored for deep conceptual work.",
+        visible: true,
+        order: 3,
+        content: [
+          { caption: "Bhedaghat Riverside Balcony", image: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=400" },
+          { caption: "Artisanal Espresso Deck", image: "https://images.unsplash.com/photo-1442512595331-e89e73853f31?q=80&w=400" }
+        ]
       }
     ],
     footer: {
@@ -401,7 +448,7 @@ export const defaultTemplates = {
       title: "NexaTech Hub - Future Tech Glass Incubator",
       subtitle: "Accelerate digital operations from central India. Access advanced AI integrations dashboard, explore product demos, check team showcases, and monitor live network statistics.",
       ctaText: "Open AI Integrations",
-      ctaLink: "#ai-console",
+      ctaLink: "#dynamic_modules",
       bgImage: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=1920&auto=format&fit=crop",
       jabalpurBranding: {
         landmark: "Madan Mahal Fort",
@@ -412,37 +459,47 @@ export const defaultTemplates = {
       logoText: "NexaTech Hub",
       links: [
         { label: "Smart Hub", href: "#home" },
-        { label: "AI Dashboard", href: "#dynamic_modules" },
-        { label: "Core Perks", href: "#features" },
-        { label: "Tech Vision", href: "#about" },
+        { label: "Incubator Tracks", href: "#programs" },
+        { label: "Advisors Panel", href: "#mentors" },
         { label: "Collab Terminal", href: "#contact" }
       ]
     },
     sections: [
       {
-        id: "features",
-        type: "features",
-        title: "Future Tech Glass Assets",
-        subtitle: "SaaS accelerators configured to deploy enterprise nodes instantly.",
+        id: "programs",
+        type: "programs",
+        title: "Startup Accelerator Programs",
+        subtitle: "Accelerating local Jabalpur SaaS nodes into global enterprises.",
         visible: true,
         order: 1,
         content: [
-          { icon: "🤖", title: "AI Integrations Module", desc: "Embed conversational models and data parsers directly into your standard codebase pipeline." },
-          { icon: "📊", title: "Live Network Stats", desc: "Track system concurrency, container load ratios, and Bargi dam green hydro grid power flow." },
-          { icon: "📽️", title: "Product Demos Sandbox", desc: "Interactive sandboxes displaying real-time UI code examples for young MP tech teams." }
+          { name: "Incubation cohort 2026", duration: "6 Months", equity: "3% Commitment", cap: "10 Startups limit" },
+          { name: "VC Seed Pitch Day", duration: "1 Day Track", equity: "None", cap: "Direct Investor access" }
         ]
       },
       {
-        id: "about",
-        type: "about",
-        title: "Incubating Digital Giants",
-        subtitle: "NexaTech Hub Architecture",
+        id: "mentors",
+        type: "mentors",
+        title: "Seasoned Tech Advisors",
+        subtitle: "Learn directly from programmers and venture capitalists.",
         visible: true,
         order: 2,
-        content: {
-          text: "NexaTech Hub was founded to accelerate technology startups in Madhya Pradesh. We provide co-working spaces, seed capital advisories, and direct developer sandbox frameworks. Our mission is to raise high-concurrency SaaS companies utilizing low-latency digital containers and eco-sustainable green grids in central India.",
-          image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800&auto=format&fit=crop"
-        }
+        content: [
+          { name: "Er. Amit Agrawal", role: "Distributed Systems Lead", exp: "15 Yrs Experience", qual: "B.Tech. IIT Delhi" },
+          { name: "Megha Choudhary", role: "Venture Deal Partner", exp: "10 Yrs Experience", qual: "MBA Wharton" }
+        ]
+      },
+      {
+        id: "showcase",
+        type: "showcase",
+        title: "Sanskardhani Showcase",
+        subtitle: "Active dynamic SaaS applications compiled on our edge cloud.",
+        visible: true,
+        order: 3,
+        content: [
+          { company: "ThreatZero security", slogan: "Mitigating cyber hacks.", status: "LIVE ON EDGE" },
+          { company: "NextRank Academy", slogan: "Conceptual RFID education.", status: "ACTIVE SEED" }
+        ]
       }
     ],
     footer: {
@@ -475,7 +532,7 @@ export const defaultTemplates = {
       title: "FlexArena - Power Glass Fitness Training",
       subtitle: "Unleash extreme athletic potential. Calculate dynamic target calories on our BMI tracker, build workout schedules, choose membership modules, and book elite personal trainers.",
       ctaText: "Open BMI Tracker",
-      ctaLink: "#bmi-planner",
+      ctaLink: "#dynamic_modules",
       bgImage: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1920&auto=format&fit=crop",
       jabalpurBranding: {
         landmark: "Marble Rocks",
@@ -486,37 +543,48 @@ export const defaultTemplates = {
       logoText: "FlexArena",
       links: [
         { label: "The Arena", href: "#home" },
-        { label: "Fitness Portal", href: "#dynamic_modules" },
-        { label: "Arena Perks", href: "#features" },
-        { label: "Trainer Rosters", href: "#about" },
-        { label: "Enlist Now", href: "#contact" }
+        { label: "Workout Tracks", href: "#workouts" },
+        { label: "Elite Coaches", href: "#trainers" },
+        { label: "Memberships", href: "#plans" }
       ]
     },
     sections: [
       {
-        id: "features",
-        type: "features",
-        title: "Power Glass Fitness Perks",
-        subtitle: "Uncompromising physical training assets engineered to break personal limits.",
+        id: "workouts",
+        type: "workouts",
+        title: "Targeted Athletic Workouts",
+        subtitle: "Power glass training plans customized to break physical targets.",
         visible: true,
         order: 1,
         content: [
-          { icon: "📋", title: "Targeted Workout Plans", desc: "Build tailored programs tracking barbell volume, recovery periods, and conditioning schedules." },
-          { icon: "📊", title: "Interactive BMI Tracker", desc: "Input physical weight parameters to generate active metabolic metabolic targets." },
-          { icon: "🏋️", title: "Trainer Booking Console", desc: "Schedule 1-on-1 coaching runs directly under certified powerlifters." }
+          { name: "Powerlifting Hypertrophy", frequency: "4 Days/Wk", focus: "Barbell Squat / Bench / Deadlift", load: "High Intensity" },
+          { name: "Conditioning & Agility", frequency: "3 Days/Wk", focus: "Sprint intervals & Kettlebell load", load: "Moderate Intensity" }
         ]
       },
       {
-        id: "about",
-        type: "about",
-        title: "The Iron Philosophy",
-        subtitle: "FlexArena Athletic Standard",
+        id: "trainers",
+        type: "trainers",
+        title: "Elite Coaching Roster",
+        subtitle: "Work directly under certified biomechanics specialists.",
         visible: true,
         order: 2,
-        content: {
-          text: "FlexArena was established with a singular focus: to elevate physical preparedness standards in central India. We run on the structural rule that strength is the master quality of well-being. Our custom 12,000 sq ft facility provides high-grade mechanical steel rigs, biometric telemetry tools, and organic pre/post shake bars.",
-          image: "https://images.unsplash.com/photo-1549060263-237a4cd50a04?q=80&w=800&auto=format&fit=crop"
-        }
+        content: [
+          { name: "Vikram Singh", role: "Head Biomechanics Coach", exp: "12 Yrs Coach", certs: "IPF Powerlifter AIR 5" },
+          { name: "Riya Sen", role: "Calisthenics Lead", exp: "8 Yrs Coach", certs: "Advanced Gymnast Expert" }
+        ]
+      },
+      {
+        id: "plans",
+        type: "plans",
+        title: "Flexible Arena Memberships",
+        subtitle: "Select your tier and unlock our premium iron facility.",
+        visible: true,
+        order: 3,
+        content: [
+          { tier: "Silver Pass", price: "₹1,500/Mo", perks: "Gym floor access, RFID lock room" },
+          { tier: "Gold Premium", price: "₹2,500/Mo", perks: "Gym floor, 2 personal training sessions/Mo" },
+          { tier: "Platinum Elite", price: "₹4,500/Mo", perks: "Unlimited coaching, customized pre-workouts" }
+        ]
       }
     ],
     footer: {
@@ -547,9 +615,9 @@ export const defaultTemplates = {
     },
     hero: {
       title: "ExploreAura - SkyGlass Explorer Expeditions",
-      subtitle: "Voyage down the white marble gorges under starlit skies. Access customized AI itineraries, evaluate tour costs on our budget planner, and book luxury riverfront stays instantly.",
-      ctaText: "Open AI Itinerary",
-      ctaLink: "#itinerary",
+      subtitle: "Voyage down the white marble gorges under starlit skies in Bhedaghat. Access customized AI itineraries, evaluate tour costs on our budget planner, and book luxury riverfront stays instantly.",
+      ctaText: "Open Travel Console",
+      ctaLink: "#dynamic_modules",
       bgImage: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1920&auto=format&fit=crop",
       jabalpurBranding: {
         landmark: "Bhedaghat",
@@ -560,37 +628,47 @@ export const defaultTemplates = {
       logoText: "ExploreAura",
       links: [
         { label: "Sky Canopy", href: "#home" },
-        { label: "Expeditions", href: "#dynamic_modules" },
-        { label: "Trip Features", href: "#features" },
-        { label: "Travel Heritage", href: "#about" },
-        { label: "Secure Ticket", href: "#contact" }
+        { label: "Trip Packages", href: "#packages" },
+        { label: "Riverside Stays", href: "#stays" },
+        { label: "Itineraries", href: "#itineraries" }
       ]
     },
     sections: [
       {
-        id: "features",
-        type: "features",
-        title: "SkyGlass Travel Perks",
-        subtitle: "Adventure packages directed by native historians for uncompromised travel memory creation.",
+        id: "packages",
+        type: "packages",
+        title: "Marble Gorges Expeditions",
+        subtitle: "Adventure trips directed by native Bhedaghat historians.",
         visible: true,
         order: 1,
         content: [
-          { icon: "🗺️", title: "AI Travel Itinerary", desc: "Construct fully customized weekend travel agendas based on weather telemetry parameters." },
-          { icon: "💰", title: "Travel Budget Calculator", desc: "Forecast transit costs, cottage rates, and boating ticket prices in real-time." },
-          { icon: "🏨", title: "Luxury Hotel Booking", desc: "Select direct bookings at eco-resorts positioned beautifully near Narmada gorges." }
+          { name: "Moonlight Boat Boating Trip", price: "₹800/Person", timing: "06:00 PM - 09:00 PM", highlight: "Full Moon gorges reflection" },
+          { name: "Kanha Tiger Reserve Safari", price: "₹4,200/Jeep", timing: "05:00 AM Departure", highlight: "Spotting wild tigers" }
         ]
       },
       {
-        id: "about",
-        type: "about",
-        title: "Guardians of the Wilderness",
-        subtitle: "About ExploreAura Travels",
+        id: "stays",
+        type: "stays",
+        title: "SkyGlass Luxury Stays",
+        subtitle: "Reserve carbon-neutral eco-cottages overlooking the Tilwara River gorges.",
         visible: true,
         order: 2,
-        content: {
-          text: "ExploreAura was launched to highlight Central India's geological wonders. We orchestrate carbon-neutral excursions, Moonlight boat trips in Bhedaghat, and tiger reserve safaris that give back directly to local forest tribes and protect biodiversity.",
-          image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=800&auto=format&fit=crop"
-        }
+        content: [
+          { hotel: "SkyGlass Riverside Cottage", rate: "₹4,500/Night", location: "Tilwara Ghat Bypass", rating: "4.9 Stars" },
+          { hotel: "Marble Rocks Sunset Cabin", rate: "₹3,800/Night", location: "Bhedaghat Gorges Edge", rating: "4.8 Stars" }
+        ]
+      },
+      {
+        id: "itineraries",
+        type: "itineraries",
+        title: "Active AI Travel Itineraries",
+        subtitle: "Pre-planned conceptual travel grids suited to local Jabalpur weather.",
+        visible: true,
+        order: 3,
+        content: [
+          { title: "1-Day Bhedaghat Special", route: "Marble Rocks boating -> Dhuandhar Falls -> Tilwara Lunch", duration: "10 Hours" },
+          { title: "2-Day Jabalpur Heritage", route: "Madan Mahal Fort -> Balancing Rocks -> Tilwara Ghat -> Bhedaghat Sunset", duration: "36 Hours" }
+        ]
       }
     ],
     footer: {
@@ -620,10 +698,10 @@ export const defaultTemplates = {
       borderRadius: '2xl'
     },
     hero: {
-      title: "ThreatZero - Cyber Matrix Glass Awareness Platform",
+      title: "ThreatZero - Cyber Matrix Glass Shield",
       subtitle: "Welcome to the ultimate security shield. Monitor live simulated network attacks, participate in interactive cyber quizzes, read actionable security tips, and keep protocols locked.",
       ctaText: "Open Security Sandbox",
-      ctaLink: "#security-hub",
+      ctaLink: "#dynamic_modules",
       bgImage: "https://images.unsplash.com/photo-1510511459019-5dda7724fd87?q=80&w=1920&auto=format&fit=crop",
       jabalpurBranding: {
         landmark: "Madan Mahal Fort",
@@ -634,37 +712,47 @@ export const defaultTemplates = {
       logoText: "ThreatZero",
       links: [
         { label: "Firewall Node", href: "#home" },
-        { label: "Security Sandbox", href: "#dynamic_modules" },
-        { label: "Shield Perks", href: "#features" },
-        { label: "Our Protocol", href: "#about" },
-        { label: "Report Incident", href: "#contact" }
+        { label: "Interactive Quizzes", href: "#quizzes" },
+        { label: "Security Tips", href: "#tips" },
+        { label: "Threat Simulator", href: "#dynamic_modules" }
       ]
     },
     sections: [
       {
-        id: "features",
-        type: "features",
-        title: "Cyber Matrix Glass Perks",
-        subtitle: "Defense grids engineered to evaluate and protect digital network assets.",
+        id: "quizzes",
+        type: "quizzes",
+        title: "Interactive Security Quizzes",
+        subtitle: "Audit your network hygiene and phish filtering concepts.",
         visible: true,
         order: 1,
         content: [
-          { icon: "🛡️", title: "Live Simulated Attack map", desc: "Interact with live simulations displaying simulated network attack blocks caught by modern firewalls." },
-          { icon: "🧩", title: "Interactive Security Quizzes", desc: "Test your cybersecurity posture on phishing filters, hash functions, and network security concepts." },
-          { icon: "💡", title: "Actionable Security Tips", desc: "Crucial micro-lessons detailing password management, multi-factor setups, and safe browsing behaviors." }
+          { q: "What is salt encryption coordinates?", options: ["Random strings added to hash", "A password database bypass", "Network load balancer key"], correct: 0 },
+          { q: "How does DDoS attack manifest on API?", options: ["Extreme request concurrency packet overload", "Database SQL code injections", " RFID check-in leaks"], correct: 0 }
         ]
       },
       {
-        id: "about",
-        type: "about",
-        title: "Constructing Zero-Trust Grids",
-        subtitle: "ThreatZero Mission",
+        id: "tips",
+        type: "tips",
+        title: "Actionable Security Tips",
+        subtitle: "Zero-Trust lessons configured to keep server assets firewalled.",
         visible: true,
         order: 2,
-        content: {
-          text: "ThreatZero was created to protect regional startups and developers against cyber threats. Based in Jabalpur, we develop lightweight security sandboxes, multi-factor plugins, and automated pen-testing APIs to verify operational security.",
-          image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop"
-        }
+        content: [
+          { title: "Enforce Factor-10 password salts", desc: "Audit and enforce random alphanumeric salts before storing hashes in JSON fallback desks." },
+          { title: "Route traffic through edge firewalls", desc: "Filter concurrent request pipelines near Tilwara and Bhedaghat edge servers." }
+        ]
+      },
+      {
+        id: "threats",
+        type: "threats",
+        title: "Active Threat Simulation Logs",
+        subtitle: "Realtime network intrusion attempts mitigated by ThreatZero matrix.",
+        visible: true,
+        order: 3,
+        content: [
+          { time: "10:42 AM", threat: "Brute Force SSH Attack", source: "IP 182.28.12.92", action: "BLOCKED" },
+          { time: "10:45 AM", threat: "SQL Injection query", source: "IP 45.82.91.82", action: "MITIGATED" }
+        ]
       }
     ],
     footer: {
@@ -697,7 +785,7 @@ export const defaultTemplates = {
       title: "JobSphere - FutureHire Glass Job Portal",
       subtitle: "Welcome to the future of employment in central India. Analyze your resume rating, participate in conversational AI mock interviews, track skill progress, and discover premium internships.",
       ctaText: "Launch Resume Analyzer",
-      ctaLink: "#career-sandbox",
+      ctaLink: "#dynamic_modules",
       bgImage: "https://images.unsplash.com/photo-1521737711867-e3b904737c88?q=80&w=1920&auto=format&fit=crop",
       jabalpurBranding: {
         landmark: "Madan Mahal Fort",
@@ -708,37 +796,48 @@ export const defaultTemplates = {
       logoText: "JobSphere",
       links: [
         { label: "Career Core", href: "#home" },
-        { label: "Placement Sandbox", href: "#dynamic_modules" },
-        { label: "JobSphere Perks", href: "#features" },
-        { label: "Placement Vision", href: "#about" },
-        { label: "Post Internship", href: "#contact" }
+        { label: "Internship Postings", href: "#internships" },
+        { label: "Skill Tracks", href: "#skills" },
+        { label: "Success Stories", href: "#success" }
       ]
     },
     sections: [
       {
-        id: "features",
-        type: "features",
-        title: "FutureHire Glass Perks",
-        subtitle: "Employment discovery assets designed to connect talent with high-margin remote startups.",
+        id: "internships",
+        type: "internships",
+        title: "Active Remote Internships",
+        subtitle: "Connect with high-margin technology startups looking for Sanskardhani talent.",
         visible: true,
         order: 1,
         content: [
-          { icon: "📄", title: "Smart Resume Analyzer", desc: "Upload or copy text to receive instant ratings, keyword densities, and visual suggestion logs." },
-          { icon: "🎙️", title: "AI Conversational Mock Interview", desc: "Participate in micro-interviews matching target startup requirements." },
-          { icon: "🎯", title: "Dynamic Skill Tracking", desc: "Track certifications, mock project progress, and competitive developer scores." }
+          { id: "i1", title: "AI Agent Orchestrator Intern", stipend: "₹25,000/Mo", company: "SmartEngine AI", location: "Remote - MP" },
+          { id: "i2", title: "Cybermatrix Defense Operator", stipend: "₹22,000/Mo", company: "ThreatZero Security", location: "Hybrid - Jabalpur" },
+          { id: "i3", title: "Luxury Commerce Frontend Lead", stipend: "₹30,000/Mo", company: "Libaas Clothing", location: "Remote" }
         ]
       },
       {
-        id: "about",
-        type: "about",
-        title: "Empowering Sanskardhani's Youth",
-        subtitle: "JobSphere Recruitment Vision",
+        id: "skills",
+        type: "skills",
+        title: "Target Skill Track Index",
+        subtitle: "Audit certifications required to pass the AI Mock Interview desk.",
         visible: true,
         order: 2,
-        content: {
-          text: "JobSphere was launched in Jabalpur to connect regional graduates with high-growth remote startup tech firms. We provide dynamic sandboxes, resume rating engines, and skill tracking systems to help local coders secure top placements.",
-          image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop"
-        }
+        content: [
+          { name: "MERN Stack Compilation", duration: "12 Modules", level: "Intermediate" },
+          { name: "Vector Database Analytics", duration: "8 Modules", level: "Advanced" }
+        ]
+      },
+      {
+        id: "success",
+        type: "success",
+        title: "Placement Success Ledger",
+        subtitle: "Sanskardhani graduates placed in global startup nodes.",
+        visible: true,
+        order: 3,
+        content: [
+          { student: "Ramesh Patel", placed: "ThreatZero security", package: "₹12 Lakhs LPA", feedback: "Mock interviews prepared me perfectly for tech rounds!" },
+          { student: "Ananya Patel", placed: "SmartEngine AI", package: "₹18 Lakhs LPA", feedback: "Resume rating index saved my time!" }
+        ]
       }
     ],
     footer: {
@@ -757,7 +856,7 @@ export const defaultTemplates = {
   smartengine: {
     businessType: 'smartengine',
     theme: {
-      name: 'SmartEngine AI',
+      name: 'SmartEngine AI flagship',
       primary: '#6366f1', // Neon Blue/Indigo
       secondary: '#a855f7', // Neon Purple
       accent: '#00f5ff', // Neon Cyan
@@ -768,9 +867,9 @@ export const defaultTemplates = {
       borderRadius: '2xl'
     },
     hero: {
-      title: "SmartEngine AI Platform",
+      title: "SmartEngine AI Flagship Console",
       subtitle: "The world-class autonomous AI engineering ecosystem. Spin up self-optimizing server microservices, orchestrate intelligent LLM agent swarms, and visual real-time vector logs with microsecond execution speeds.",
-      ctaText: "Launch SaaS Workspace",
+      ctaText: "Launch Command console",
       ctaLink: "#dynamic_modules",
       bgImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920&auto=format&fit=crop",
       jabalpurBranding: {
@@ -782,64 +881,47 @@ export const defaultTemplates = {
       logoText: "SmartEngine",
       links: [
         { label: "AI Console", href: "#home" },
-        { label: "Interactive Workspace", href: "#dynamic_modules" },
-        { label: "Platform Perks", href: "#features" },
-        { label: "Core Architecture", href: "#about" },
-        { label: "SaaS Enterprise Gate", href: "#contact" }
+        { label: "Autonomous telemetry", href: "#analytics" },
+        { label: "Agent Swarms", href: "#workflows" }
       ]
     },
     sections: [
       {
-        id: "features",
-        type: "features",
-        title: "Autonomous SaaS Infrastructure",
-        subtitle: "Enterprise assets built on low-latency microservices, Vercel-like performance, and highly intelligent workflows.",
+        id: "analytics",
+        type: "analytics",
+        title: "Autonomous Agent Telemetry",
+        subtitle: "Edge latency and token computations mapped across local servers.",
         visible: true,
         order: 1,
         content: [
-          { icon: "⚡", title: "LLM Agent Orchestrator", desc: "Deploy autonomous swarms of self-improving agents that write code, scan databases, and solve tickets in real-time." },
-          { icon: "🔮", title: "Predictive Analytics Node", desc: "Forecast container load requirements and model tokens consumption metrics using high-fidelity edge regression nets." },
-          { icon: "⛓️", title: "Automated Vector Pipelines", desc: "Feed raw text data arrays directly into distributed high-speed vector embeddings databases without write locks." }
+          { label: "Tilwara Edge Node", load: "42% CPU Load", activeAgents: "12 swarms active" },
+          { label: "Bhedaghat Core Processor", load: "18% CPU Load", activeAgents: "8 swarms active" }
         ]
       },
       {
-        id: "stats",
-        type: "stats",
-        title: "Platform Scalability Ratios",
-        subtitle: "Live verified telemetry illustrating SmartEngine AI operations performance logs.",
+        id: "workflows",
+        type: "workflows",
+        title: "Active AI Swarm Workflows",
+        subtitle: "Self-healing distributed microservices running pen-tests and code refactors.",
         visible: true,
         order: 2,
         content: [
-          { number: "18ms", label: "Model Response Latency" },
-          { number: "99.999%", label: "Edge Gateway Uptime Ratio" },
-          { number: "4.2M", label: "Concurrent Transactions/Sec" }
+          { task: "Auto-audit Bcrypt Salts", efficiency: "99.8% Perfect", uptime: "99.99% Uptime" },
+          { task: "Vector Database tuning", efficiency: "94.2% Match Index", uptime: "100% Uptime" }
         ]
-      },
-      {
-        id: "about",
-        type: "about",
-        title: "Engineering Intelligent Future Nodes",
-        subtitle: "Our SaaS Architectural Paradigm",
-        visible: true,
-        order: 3,
-        content: {
-          text: "SmartEngine represents the absolute pinnacle of next-generation cloud automation. Leveraging deep cyber-grid clustering and low-overhead MERN orchestration, we empower teams to deploy full-fledged production databases, integrate voice triggers, and launch vector caches with a single click. Designed in Sanskardhani, we celebrate raw structural integrity and sleek glass aesthetics.",
-          image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop"
-        }
       }
     ],
     footer: {
-      text: "© 2026 SmartEngine AI. Autonomous SaaS infrastructure orchestrated globally.",
+      text: "© 2026 SmartEngine. Orchestrating dynamic MERN ecosystems.",
       socials: [
-        { platform: "github", url: "#" },
-        { platform: "linkedin", url: "#" },
-        { platform: "twitter", url: "#" }
+        { platform: "youtube", url: "#" },
+        { platform: "instagram", url: "#" }
       ]
     },
     seo: {
-      metaTitle: "SmartEngine - Autonomous AI SaaS Platform",
-      metaDescription: "Step into SmartEngine, the next-generation autonomous AI SaaS platform featuring live telemetry, vector databases, and agent workspaces.",
-      keywords: ["SmartEngine AI", "SaaS incubator jabalpur", "autonomous AI platform"]
+      metaTitle: "SmartEngine - Autonomous MERN Portal Engine",
+      metaDescription: "Centralized dynamic portal generator powered by MERN.",
+      keywords: ["smartengine MERN", "autonomous SaaS MP"]
     }
   }
 };
