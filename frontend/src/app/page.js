@@ -849,6 +849,163 @@ THANK YOU FOR YOUR TRUST AND BUSINESS WITH SMARTENGINE!`;
     document.body.removeChild(element);
   };
 
+  const getIndustryWidgets = () => {
+    const defaultWidgets = [
+      { id: 'w_latency', title: 'Gateway Latency', value: `${latencyMeter}ms`, desc: 'Average edge api response time.' },
+      { id: 'w_tokens', title: 'LLM Active Tokens', value: `${(tokensTicked/1000).toFixed(1)}K`, desc: 'Realtime token consumption rate.' },
+      { id: 'w_load', title: 'Container Load', value: '42%', desc: 'Tilwara-Bhedaghat edge processor.' }
+    ];
+
+    switch(businessType) {
+      case 'coaching':
+        return [
+          { id: 'w_students', title: 'Active Students', value: '150+', desc: 'Logged on RFID classroom portal.' },
+          { id: 'w_attendance', title: 'Biometric Attendance', value: '98%', desc: 'Current daily check-in average.' },
+          { id: 'w_score', title: 'Mock Target Score', value: `${rankMockScore}`, desc: 'Target conceptual metric score.' }
+        ];
+      case 'ecommerce':
+        return [
+          { id: 'w_orders', title: 'Active Orders', value: `${cart.length + 3} active`, desc: 'Wardrobe checkout queue.' },
+          { id: 'w_wishlist', title: 'Wishlist Caches', value: `${wishlist.length} items`, desc: 'Style targets saved.' },
+          { id: 'w_price', title: 'Couture Total', value: `₹${cartTotal.toLocaleString()}`, desc: 'Active shopping bag value.' }
+        ];
+      case 'real_estate':
+        return [
+          { id: 'w_properties', title: 'Properties Listed', value: '24 listed', desc: 'Duplexes and plots coordinates.' },
+          { id: 'w_tours', title: 'Active 3D Tours', value: virtualTourActive ? 'ACTIVE' : 'STANDBY', desc: 'Blueprints visual state.' },
+          { id: 'w_consults', title: 'Agent consultations', value: selectedBookingTime ? 'BOOKED' : 'OPEN', desc: 'Active slot allocations.' }
+        ];
+      case 'hospital':
+        return [
+          { id: 'w_patients', title: 'Telem Patients', value: '12 tokens', desc: 'Frost wait list status.' },
+          { id: 'w_ambulance', title: 'Siren Dispatch', value: activeSupportSiren ? 'DISPATCHED' : 'STANDBY', desc: 'Rapid EMT coordinates status.' },
+          { id: 'w_sugar', title: 'Verified Sugar', value: `${diagSugar} mg/dL`, desc: 'Diagnostics sugar logs.' }
+        ];
+      case 'cafe':
+        return [
+          { id: 'w_tables', title: 'Tables Reserved', value: `${tableSeats} seats`, desc: 'Riverside Bhedaghat lounge deck.' },
+          { id: 'w_roaster', title: 'Roaster Temperature', value: `${roastTemp}°C`, desc: 'Arabica coffee roasting targets.' },
+          { id: 'w_cart', title: 'Dine-In Cart', value: `${orderCart.length} orders`, desc: 'Artisanal coffee orders queue.' }
+        ];
+      case 'startup':
+        return [
+          { id: 'w_incubators', title: 'Accelerator slots', value: '4 cohorts', desc: 'Incubation tracks allocated.' },
+          { id: 'w_concurrency', title: 'Node Compute CPU', value: `${cpuUsage}%`, desc: 'Hydro green grid load ratio.' },
+          { id: 'w_teams', title: 'MP Teams Seeding', value: '12 active', desc: 'Jabalpur developers catalog.' }
+        ];
+      case 'gym':
+        return [
+          { id: 'w_bmi', title: 'Caloric BMI index', value: bmiResult ? bmiResult.bmi : '22.8', desc: 'Calculated metabolic target.' },
+          { id: 'w_weight', title: 'Volume Target', value: `${bmiWeight} kg`, desc: 'Target mechanical load.' },
+          { id: 'w_members', title: 'Active Athletes', value: '340 active', desc: 'FlexArena roster checkpoint.' }
+        ];
+      case 'tourism':
+        return [
+          { id: 'w_trips', title: 'Moonlight Bookings', value: '48 tickets', desc: 'Boating white marble reservations.' },
+          { id: 'w_stays', title: 'Resort stays', value: '9 stays', desc: 'Riverside cottages checklist.' },
+          { id: 'w_budget', title: 'Itinerary budget', value: `₹${(budgetTransit * budgetDays).toLocaleString()}`, desc: 'Forecasted package rates.' }
+        ];
+      case 'cybersecurity':
+        return [
+          { id: 'w_attacks', title: 'DDoS Blocks', value: `${simulatedAttackLogs.length} blocked`, desc: 'Cyber firewall intrusion filters.' },
+          { id: 'w_quiz', title: 'Quiz Score', value: `${secQuizScore} correct`, desc: 'phishing posturing check index.' },
+          { id: 'w_threat', title: 'Threat Status', value: simDdosActive ? 'DDoS COMPILING' : 'SECURE', desc: 'Active security salt posture.' }
+        ];
+      case 'career':
+        return [
+          { id: 'w_rating', title: 'Resume rating', value: resumeRating ? `${resumeRating.score}/100` : 'N/A', desc: 'Deep learning parse check index.' },
+          { id: 'w_interview', title: 'Conversational Feedback', value: interviewFeedback ? 'COMPLETED' : 'PENDING', desc: 'AI mock interview evaluation.' },
+          { id: 'w_internships', title: 'Startup Internships', value: '24 listings', desc: 'High-margin remote slots index.' }
+        ];
+      default:
+        return defaultWidgets;
+    }
+  };
+
+  const getIndustryChartData = () => {
+    const defaultChart = [
+      { x: 'SWARMS', y: 84, val: '12 swarms' },
+      { x: 'REFACTORS', y: 91, val: '240 nodes' },
+      { x: 'TUNING', y: 95, val: '95% index' },
+      { x: 'LOGS', y: 72, val: '18ms lat' }
+    ];
+
+    switch(businessType) {
+      case 'coaching':
+        return [
+          { x: 'PHYSICS', y: 94, val: '94% score' },
+          { x: 'CHEMISTRY', y: 91, val: '91% score' },
+          { x: 'MATHS', y: 98, val: '98% score' },
+          { x: 'BIOLOGY', y: 88, val: '88% score' }
+        ];
+      case 'ecommerce':
+        return [
+          { x: 'BANARASI', y: 75, val: '₹45K price' },
+          { x: 'ORGANZA', y: 92, val: '₹85K price' },
+          { x: 'LUCKNOWI', y: 64, val: '₹18.5K price' },
+          { x: 'COUTURE', y: 82, val: '82% demand' }
+        ];
+      case 'real_estate':
+        return [
+          { x: 'TILWARA', y: 84, val: '₹1.4 Cr' },
+          { x: 'VIJAY NAGAR', y: 95, val: '₹95L price' },
+          { x: 'BHEDAGHAT', y: 70, val: '₹65L price' },
+          { x: 'GROWTH', y: 88, val: '88% index' }
+        ];
+      case 'hospital':
+        return [
+          { x: 'CARDIOLOGY', y: 85, val: '85% recovery' },
+          { x: 'DIAGNOSTICS', y: 92, val: '92% speed' },
+          { x: 'PEDIATRICS', y: 76, val: '76% beds' },
+          { x: 'EMERGENCY', y: 60, val: '12 min dispatch' }
+        ];
+      case 'cafe':
+        return [
+          { x: 'ESPRESSO', y: 90, val: '₹280 price' },
+          { x: 'ROSE CHAI', y: 78, val: '₹180 price' },
+          { x: 'LAVA FUDGE', y: 94, val: '₹340 price' },
+          { x: 'MUSIC GIGS', y: 85, val: '85% occupancy' }
+        ];
+      case 'startup':
+        return [
+          { x: 'INCUBATION', y: 80, val: '80% success' },
+          { x: 'VC PITCH', y: 65, val: '₹10L average' },
+          { x: 'COWORKING', y: 90, val: '90% occupied' },
+          { x: 'SAAS CORES', y: 75, val: '75% nodes' }
+        ];
+      case 'gym':
+        return [
+          { x: 'STRENGTH', y: 92, val: '92% reps' },
+          { x: 'HIIT CARDIO', y: 84, val: '84% bpm' },
+          { x: 'SILVER PASS', y: 60, val: '60% capacity' },
+          { x: 'GOLD VIP', y: 78, val: '78% capacity' }
+        ];
+      case 'tourism':
+        return [
+          { x: 'BOATING', y: 95, val: '95% tickets' },
+          { x: 'SAFARIS', y: 88, val: '88% jeep slots' },
+          { x: 'ECO RESORT', y: 74, val: '74% booked' },
+          { x: 'HERITAGE', y: 60, val: '60% matches' }
+        ];
+      case 'cybersecurity':
+        return [
+          { x: 'PHISH BLOCKS', y: 92, val: '92% filters' },
+          { x: 'PORT SCANS', y: 85, val: '85% firewall' },
+          { x: 'SSH BLOCKS', y: 98, val: '98% secure' },
+          { x: 'DDOS BLOCK', y: 74, val: '74% logs' }
+        ];
+      case 'career':
+        return [
+          { x: 'RESUME RATING', y: 78, val: '78% avg' },
+          { x: 'MOCK ANSWERS', y: 86, val: '86% grade' },
+          { x: 'PLACED LPA', y: 94, val: '₹18L package' },
+          { x: 'INTERNSHIPS', y: 64, val: '24 active' }
+        ];
+      default:
+        return defaultChart;
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex-1 bg-slate-950 flex flex-col items-center justify-center text-white h-screen">
