@@ -1023,5 +1023,74 @@ div.matte-gold-theme.light-site {
   box-shadow: 0 0 20px rgba(99, 102, 241, 0.15) inset;
 }
 
+/* ========================================================
+   DYNAMIC THEME ENGINE SCOPED OVERRIDES
+   ======================================================== */
+.website-preview-scope {
+  /* Default fallbacks if variables not configured */
+  --card-radius: var(--radius-custom);
+  --card-border-width: 1px;
+  --card-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5);
+  
+  --button-bg: var(--primary);
+  --button-radius: 12px;
+  --button-border: none;
+  --button-shadow: none;
+  --button-hover-bg: var(--accent);
+  --button-hover-transform: scale(1.05);
+
+  --layout-alignment: center;
+  --layout-flex-alignment: center;
+  --section-spacing-top: 64px;
+  --section-spacing-bottom: 64px;
+}
+
+/* Scoped Card Styles */
+.website-preview-scope .royal-card,
+.website-preview-scope .glass-card {
+  border-radius: var(--card-radius) !important;
+  border-width: var(--card-border-width) !important;
+  box-shadow: var(--card-shadow) !important;
+  transition: all 0.4s ease !important;
+}
+
+/* Scoped CTA Button Overrides */
+.website-preview-scope .bg-indigo-600,
+.website-preview-scope .bg-indigo-500,
+.website-preview-scope button.cta-theme-btn {
+  background: var(--button-bg) !important;
+  border-radius: var(--button-radius) !important;
+  border: var(--button-border) !important;
+  box-shadow: var(--button-shadow) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.website-preview-scope .hover\:bg-indigo-700:hover,
+.website-preview-scope button.cta-theme-btn:hover {
+  background: var(--button-hover-bg) !important;
+  transform: var(--button-hover-transform) !important;
+}
+
+/* Scoped Section Layout & Alignment Spacing */
+.website-preview-scope section {
+  padding-top: var(--section-spacing-top) !important;
+  padding-bottom: var(--section-spacing-bottom) !important;
+  transition: all 0.3s ease !important;
+}
+
+.website-preview-scope .section-header-alignment {
+  text-align: var(--layout-alignment) !important;
+}
+
+.website-preview-scope .section-header-alignment .flex-center-align {
+  justify-content: var(--layout-flex-alignment) !important;
+}
+
+.website-preview-scope .section-header-divider {
+  margin-left: var(--layout-margin-left, auto) !important;
+  margin-right: var(--layout-margin-right, auto) !important;
+}
+
+
 
 

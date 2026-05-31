@@ -6,7 +6,7 @@ import {
   User, Mail, Phone, Lock, Eye, EyeOff, Sun, Moon, 
   ArrowRight, Sparkles, ShieldCheck, Check, X, ShieldAlert 
 } from 'lucide-react';
-import { API_URL } from '../../config';
+import { useAuth } from '../../context/AuthContext';
 
 export default function RegisterPage() {
   const [siteLightMode, setSiteLightMode] = useState(false);
@@ -17,12 +17,14 @@ export default function RegisterPage() {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
+  const [role, setRole] = useState('student');
   
   // UI states
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const { register, generateOtp } = useAuth();
 
   useEffect(() => {
     if (error) {
@@ -81,12 +83,7 @@ export default function RegisterPage() {
     }
 
     try {
-      const res = await fetch(`${API_URL}/api/auth/generate-otp`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.toLowerCase(), phone })
-      });
-      const data = await res.json();
+      const data = await generateOtp(email, phone);
 
       if (data.success) {
         setOtpSent(true);
@@ -129,28 +126,31 @@ export default function RegisterPage() {
     }
 
     try {
-      const res = await fetch(`${API_URL}/api/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name,
-          email: email.toLowerCase(),
-          phone,
-          password,
-          otp,
-          role: 'student'
-        })
+      const data = await register({
+        name,
+        email: email.toLowerCase(),
+        phone,
+        password,
+        otp,
+        role
       });
-      const data = await res.json();
       setLoading(false);
 
       if (data.success) {
         setSuccess('🎉 Account successfully registered! Auto-logging in...');
-        localStorage.setItem('userToken', data.token);
 
-        // Redirect to homepage after success
+        // Redirect to respective dynamic dashboard routes after success
         setTimeout(() => {
-          window.location.href = '/#dynamic_modules';
+          const userRole = (data.role || 'student').toLowerCase();
+          if (userRole === 'admin' || userRole === 'super_admin') {
+            window.location.href = '/dashboard/super-admin';
+          } else if (userRole === 'teacher') {
+            window.location.href = '/dashboard/teacher';
+          } else if (userRole === 'customer') {
+            window.location.href = '/dashboard/customer';
+          } else {
+            window.location.href = '/dashboard/student';
+          }
         }, 1500);
       } else {
         setError(data.message || 'Registration failed. Please verify fields and OTP.');
@@ -334,6 +334,23 @@ export default function RegisterPage() {
                   {hasSymbol ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />} Special Symbol (@#$!)
                 </span>
               </div>
+            </div>
+
+            {/* Role Selection Dropdown */}
+            <div className="space-y-1.5 text-left">
+              <label className="text-[11px] font-semibold text-slate-300 tracking-wide block">
+                Register System Account Role
+              </label>
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="w-full bg-[#181513] border border-white/10 text-xs px-3.5 py-2.5 rounded-xl text-white focus:outline-none focus:border-amber-500/50 font-medium font-mono cursor-pointer"
+              >
+                <option value="student">🎓 Student Portal</option>
+                <option value="teacher">💼 Teacher Console</option>
+                <option value="customer">🛍️ Customer Store</option>
+                <option value="super_admin">👑 Super Admin Center</option>
+              </select>
             </div>
 
             {/* OTP verification Row */}

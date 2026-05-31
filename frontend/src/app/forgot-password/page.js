@@ -6,7 +6,7 @@ import {
   Mail, Phone, Lock, Eye, EyeOff, Sun, Moon, 
   ArrowRight, Sparkles, ShieldCheck, Check, X, ShieldAlert 
 } from 'lucide-react';
-import { API_URL } from '../../config';
+import { useAuth } from '../../context/AuthContext';
 
 export default function ForgotPasswordPage() {
   const [siteLightMode, setSiteLightMode] = useState(false);
@@ -23,6 +23,7 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const { resetPassword, generateOtp } = useAuth();
 
   useEffect(() => {
     if (error) {
@@ -82,12 +83,7 @@ export default function ForgotPasswordPage() {
     }
 
     try {
-      const res = await fetch(`${API_URL}/api/auth/generate-otp`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.toLowerCase(), phone })
-      });
-      const data = await res.json();
+      const data = await generateOtp(email, phone);
 
       if (data.success) {
         setOtpSent(true);
@@ -134,17 +130,7 @@ export default function ForgotPasswordPage() {
     }
 
     try {
-      const res = await fetch(`${API_URL}/api/auth/reset-password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: email.toLowerCase(),
-          phone,
-          otp,
-          newPassword
-        })
-      });
-      const data = await res.json();
+      const data = await resetPassword(email, phone, otp, newPassword);
       setLoading(false);
 
       if (data.success) {

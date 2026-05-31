@@ -1,6 +1,7 @@
 import { Space_Grotesk, Cormorant_Garamond, Montserrat, Poppins } from "next/font/google";
 import "./globals.css";
 import ThemeToast from "../components/ThemeToast";
+import { AuthProvider } from "../context/AuthContext";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -36,8 +37,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${cormorant.variable} ${montserrat.variable} ${poppins.variable} h-full scroll-smooth`}>
       <body className="min-h-full bg-slate-950 text-slate-100 flex flex-col font-sans">
-        <ThemeToast />
-        {children}
+        <AuthProvider>
+          <ThemeToast />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

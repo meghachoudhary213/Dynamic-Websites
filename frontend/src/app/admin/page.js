@@ -10,9 +10,10 @@ import {
 } from 'lucide-react';
 import { io } from 'socket.io-client';
 import { API_URL } from '../../config';
+import { useAuth } from '../../context/AuthContext';
 
 export default function AdminDashboard() {
-  const [token, setToken] = useState(null);
+  const { user, token, login, logout, loading: authLoading } = useAuth();
   const [email, setEmail] = useState('admin@jabalpur.gov');
   const [password, setPassword] = useState('jabalpur2026');
   const [authError, setAuthError] = useState('');
@@ -54,19 +55,21 @@ export default function AdminDashboard() {
   const [aiGeneratedData, setAiGeneratedData] = useState(null);
   const [seoReport, setSeoReport] = useState(null);
 
+  // Dynamic Section Creator states
+  const [newSecType, setNewSecType] = useState('features');
+  const [newSecTitle, setNewSecTitle] = useState('Featured Services');
+  const [newSecSubtitle, setNewSecSubtitle] = useState('Explore our professional catalog of offerings.');
+
   // Sound effects toggler
   const [soundEnabled, setSoundEnabled] = useState(true);
 
   const iframeRef = useRef(null);
 
   useEffect(() => {
-    // Check for saved JWT token
-    const savedToken = localStorage.getItem('admin_token');
-    if (savedToken) {
-      setToken(savedToken);
+    if (authLoading === false) {
+      setLoading(false);
     }
-    setLoading(false);
-  }, []);
+  }, [authLoading]);
 
   useEffect(() => {
     if (!token) return;
@@ -140,20 +143,27 @@ export default function AdminDashboard() {
     }
   };
 
+  const syncLivePreview = (updatedConfig) => {
+    if (iframeRef.current && iframeRef.current.contentWindow) {
+      iframeRef.current.contentWindow.postMessage({
+        type: 'LIVE_CONFIG_UPDATE',
+        config: updatedConfig
+      }, '*');
+    }
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setAuthError('');
     try {
-      const res = await fetch(`${API_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-      if (data.success && data.token) {
-        localStorage.setItem('admin_token', data.token);
-        setToken(data.token);
-        if (soundEnabled) playSoundChime();
+      const data = await login(email, password);
+      if (data.success) {
+        if (data.role !== 'admin' && data.role !== 'super_admin') {
+          setAuthError('Access Denied. Administrative clearance required.');
+          logout();
+        } else {
+          if (soundEnabled) playSoundChime();
+        }
       } else {
         setAuthError(data.message || 'Credentials invalid.');
       }
@@ -163,8 +173,7 @@ export default function AdminDashboard() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('admin_token');
-    setToken(null);
+    logout();
   };
 
   const loadSystemStats = async () => {
@@ -277,6 +286,58 @@ export default function AdminDashboard() {
     const updated = { ...formConfig };
     updated.sections[sectionIndex][field] = value;
     setFormConfig(updated);
+  };
+
+  const handleMoveSection = (idx, direction) => {
+    if (direction === 'up' && idx === 0) return;
+    if (direction === 'down' && idx === formConfig.sections.length - 1) return;
+
+    const updated = { ...formConfig };
+    const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
+    
+    // Swap elements
+    const temp = updated.sections[idx];
+    updated.sections[idx] = updated.sections[targetIdx];
+    updated.sections[targetIdx] = temp;
+
+    setFormConfig(updated);
+    syncLivePreview(updated);
+  };
+
+  const handleRemoveSection = (idx) => {
+    if (!confirm('Are you sure you want to permanently delete this section from your landing page layout?')) return;
+    const updated = { ...formConfig };
+    updated.sections.splice(idx, 1);
+    setFormConfig(updated);
+    syncLivePreview(updated);
+  };
+
+  const handleAddSection = (type, title, subtitle) => {
+    const defaultContentMap = {
+      features: [{ title: 'Custom Feature 1', desc: 'Detailed description of custom feature.', icon: '✦' }],
+      stats: [{ number: '99%', label: 'Success Ratio' }, { number: '100+', label: 'Happy Clients' }],
+      courses: [{ id: 'custom_c1', name: 'Custom Dynamic Course', duration: '3 Months', fees: '₹12,000', faculty: 'Lead Coach', target: 'Scholars' }],
+      faculty: [{ name: 'Expert Mentor', subject: 'Speciality coaching', qual: 'Ph.D. Graduate', exp: '8 Yrs Experience', image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400' }],
+      products: [{ id: 'custom_p1', name: 'Premium Luxury Item', price: '₹9,900', rating: '5.0', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800' }],
+      services: [{ icon: '🩺', name: 'Clinical Consultation', desc: 'Expert medical diagnosis.' }],
+      doctors: [{ name: 'Senior Consultant', specialty: 'General Medicine', qual: 'MBBS Scholar', exp: '10 Yrs Experience', image: 'https://images.unsplash.com/photo-1594744803329-e58b31de215f?q=80&w=400' }],
+      threats: [{ time: '12:00 PM', threat: 'Mock Malware Attempt', source: 'IP 192.168.1.1', action: 'MITIGATED' }]
+    };
+
+    const newSec = {
+      id: `custom_${type}_${Date.now()}`,
+      type: type,
+      title: title || `New Dynamic ${type}`,
+      subtitle: subtitle || 'Customized dynamic section description.',
+      visible: true,
+      order: formConfig.sections.length + 1,
+      content: defaultContentMap[type] || []
+    };
+
+    const updated = { ...formConfig };
+    updated.sections.push(newSec);
+    setFormConfig(updated);
+    syncLivePreview(updated);
   };
 
   const handleSaveConfig = async () => {
@@ -399,6 +460,113 @@ export default function AdminDashboard() {
     } catch (err) {
       alert('AI suggestions offline.');
     }
+  };
+
+  const handleApplyPresetTheme = (presetKey) => {
+    playClickSound();
+    const presets = {
+      'obsidian': {
+        primary: '#00f5ff',
+        secondary: '#7000ff',
+        accent: '#00f5ff',
+        background: '#040814',
+        textColor: '#f1f5f9',
+        borderRadius: 'xl',
+        cardRadius: 'xl',
+        cardBorder: 'thin',
+        cardShadow: 'glass',
+        buttonBg: 'gradient',
+        buttonRadius: 'md',
+        buttonBorder: 'none',
+        buttonHover: 'translate',
+        layoutAlignment: 'center',
+        sectionSpacing: 'balanced',
+        fontFamily: 'Space Grotesk'
+      },
+      'sunset': {
+        primary: '#f97316',
+        secondary: '#b45309',
+        accent: '#f59e0b',
+        background: '#0c0a09',
+        textColor: '#fafaf9',
+        borderRadius: '2xl',
+        cardRadius: '2xl',
+        cardBorder: 'thin',
+        cardShadow: 'subtle',
+        buttonBg: 'solid',
+        buttonRadius: 'lg',
+        buttonBorder: 'none',
+        buttonHover: 'grow',
+        layoutAlignment: 'left',
+        sectionSpacing: 'relaxed',
+        fontFamily: 'Outfit'
+      },
+      'cyberpunk': {
+        primary: '#39ff14',
+        secondary: '#ff007f',
+        accent: '#00f5ff',
+        background: '#000000',
+        textColor: '#ffffff',
+        borderRadius: 'none',
+        cardRadius: 'none',
+        cardBorder: 'thick',
+        cardShadow: 'glowing-neon',
+        buttonBg: 'outline',
+        buttonRadius: 'none',
+        buttonBorder: 'neon',
+        buttonHover: 'glow',
+        layoutAlignment: 'center',
+        sectionSpacing: 'compact',
+        fontFamily: 'Space Grotesk'
+      },
+      'amethyst': {
+        primary: '#a855f7',
+        secondary: '#ec4899',
+        accent: '#f43f5e',
+        background: '#090514',
+        textColor: '#fdfaff',
+        borderRadius: '3xl',
+        cardRadius: '3xl',
+        cardBorder: 'thin',
+        cardShadow: 'glass',
+        buttonBg: 'gradient',
+        buttonRadius: 'full',
+        buttonBorder: 'none',
+        buttonHover: 'pulse',
+        layoutAlignment: 'center',
+        sectionSpacing: 'balanced',
+        fontFamily: 'Poppins'
+      },
+      'ivory': {
+        primary: '#1c1917',
+        secondary: '#44403c',
+        accent: '#78716c',
+        background: '#fafaf9',
+        textColor: '#1c1917',
+        borderRadius: 'sm',
+        cardRadius: 'sm',
+        cardBorder: 'thin',
+        cardShadow: 'subtle',
+        buttonBg: 'solid',
+        buttonRadius: 'sm',
+        buttonBorder: 'none',
+        buttonHover: 'grow',
+        layoutAlignment: 'left',
+        sectionSpacing: 'compact',
+        fontFamily: 'Inter'
+      }
+    };
+
+    const targetPreset = presets[presetKey];
+    if (!targetPreset) return;
+
+    const updated = { ...formConfig };
+    updated.theme = {
+      ...updated.theme,
+      ...targetPreset
+    };
+    setFormConfig(updated);
+    syncLivePreview(updated);
   };
 
   const handleTriggerAISEOScan = async () => {
@@ -690,6 +858,25 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
+                {/* Active Dynamic Route Generator Link */}
+                <div className="p-4 bg-emerald-950/20 border border-emerald-500/10 rounded-2xl space-y-3 font-mono text-[10px] text-left">
+                  <span className="text-emerald-400 font-bold uppercase tracking-wider block">Generated Dynamic Route</span>
+                  <p className="text-[9px] text-slate-400 font-sans">Every deployed website generates a dynamic public URL using reusable dynamic rendering engines.</p>
+                  <div className="flex items-center justify-between bg-slate-950/80 border border-white/5 p-3 rounded-xl gap-2">
+                    <span className="text-slate-300 truncate text-[10px]">
+                      /website/{activeConfig ? (activeConfig.businessType.includes('_') ? activeConfig.businessType : activeConfig.businessType === 'coaching' ? 'nextrank' : activeConfig.businessType === 'ecommerce' ? 'shopverse' : activeConfig.businessType === 'hospital' ? 'medicare' : activeConfig.businessType === 'cybersecurity' ? 'cybershield' : activeConfig.businessType) : 'nextrank'}
+                    </span>
+                    <a
+                      href={`/website/${activeConfig ? (activeConfig.businessType.includes('_') ? activeConfig.businessType : activeConfig.businessType === 'coaching' ? 'nextrank' : activeConfig.businessType === 'ecommerce' ? 'shopverse' : activeConfig.businessType === 'hospital' ? 'medicare' : activeConfig.businessType === 'cybersecurity' ? 'cybershield' : activeConfig.businessType) : 'nextrank'}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 hover:scale-105 active:scale-95 transition-all uppercase tracking-wider shrink-0"
+                    >
+                      <Eye className="w-3.5 h-3.5 shrink-0" /> Launch Route
+                    </a>
+                  </div>
+                </div>
+
                 {/* Deploy New SaaS Site Wizard */}
                 <div className="p-4 bg-white/2 border border-white/5 rounded-2xl space-y-4">
                   <h4 className="text-[9px] font-bold text-indigo-400 uppercase tracking-widest font-mono flex items-center gap-1.5">
@@ -763,120 +950,423 @@ export default function AdminDashboard() {
 
             {/* STUDIO 3: THEME STUDIO */}
             {activeTab === 'theme_studio' && (
-              <div className="space-y-6 animate-in fade-in duration-300 text-left">
+              <div className="space-y-6 animate-in fade-in duration-300 text-left pb-12">
                 <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                  <h3 className="font-bold text-sm text-indigo-400 font-mono uppercase tracking-wider">Dynamic Theme Studio</h3>
+                  <div>
+                    <h3 className="font-bold text-sm text-indigo-400 font-mono uppercase tracking-wider">Dynamic Theme Studio</h3>
+                    <p className="text-[10px] text-slate-400">Design systems styling, presets, card, button, and layout studio.</p>
+                  </div>
                   <button 
                     onClick={handleSaveConfig}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors"
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors shadow"
                   >
-                    Save Styling
+                    Save Theme Config
                   </button>
                 </div>
 
-                {/* AI Palette suggester */}
+                {/* Theme Preset Selections */}
                 <div className="space-y-2">
-                  <span className="text-[9px] text-slate-500 uppercase block font-mono">AI suggested colors</span>
-                  <div className="flex gap-2">
-                    {['futuristic', 'elegant'].map(style => (
+                  <span className="text-[9px] text-indigo-400 uppercase tracking-widest font-mono block">Premium Design Theme Presets</span>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { key: 'obsidian', name: 'Obsidian Neo-Noir', color: '#00f5ff' },
+                      { key: 'sunset', name: 'Sunset Copper', color: '#f97316' },
+                      { key: 'cyberpunk', name: 'Cyberpunk Neon', color: '#39ff14' },
+                      { key: 'amethyst', name: 'Royal Amethyst', color: '#a855f7' },
+                      { key: 'ivory', name: 'Ivory Minimalist', color: '#1c1917' }
+                    ].map(preset => (
                       <button
-                        key={style}
-                        onClick={() => handleTriggerAISuggestTheme(style)}
-                        className="flex-1 bg-white/5 border border-white/10 hover:bg-white/10 text-[10px] font-bold py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors"
+                        key={preset.key}
+                        onClick={() => handleApplyPresetTheme(preset.key)}
+                        className="bg-slate-900/60 border border-white/5 hover:border-indigo-500/30 text-[10px] font-bold py-2 px-3 rounded-lg flex items-center justify-between transition-all text-slate-300 cursor-pointer"
                       >
-                        <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-                        Apply {style}
+                        <span className="truncate">{preset.name}</span>
+                        <span className="w-2.5 h-2.5 rounded-full shrink-0 ml-1.5" style={{ backgroundColor: preset.color }} />
                       </button>
                     ))}
                   </div>
                 </div>
 
-                {/* Custom Color Pickers */}
-                <div className="space-y-3.5">
-                  <div>
-                    <label className="text-[10px] text-slate-400 block mb-1">Primary Color (Hex/HSL)</label>
-                    <div className="flex gap-2">
-                      <input 
-                        type="color" 
-                        value={formConfig.theme.primary.startsWith('#') ? formConfig.theme.primary : '#3b82f6'} 
-                        onChange={(e) => {
-                          const updated = { ...formConfig };
-                          updated.theme.primary = e.target.value;
-                          setFormConfig(updated);
-                        }}
-                        className="w-10 h-8 rounded border border-white/10 bg-transparent cursor-pointer shrink-0" 
-                      />
-                      <input 
-                        type="text" 
-                        value={formConfig.theme.primary} 
-                        onChange={(e) => {
-                          const updated = { ...formConfig };
-                          updated.theme.primary = e.target.value;
-                          setFormConfig(updated);
-                        }}
-                        className="w-full bg-slate-950 border border-white/10 text-xs px-3 rounded-lg text-white" 
-                      />
+                {/* Colors custom palette */}
+                <div className="p-4 bg-slate-900/40 border border-white/5 rounded-2xl space-y-4">
+                  <span className="text-[9px] text-slate-400 uppercase tracking-widest font-mono block">Custom Visual Color Palette</span>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-[9px] text-slate-400 block mb-1">Primary Color</label>
+                      <div className="flex gap-2">
+                        <input 
+                          type="color" 
+                          value={formConfig.theme.primary?.startsWith('#') ? formConfig.theme.primary : '#6366f1'} 
+                          onChange={(e) => {
+                            const updated = { ...formConfig };
+                            updated.theme.primary = e.target.value;
+                            setFormConfig(updated);
+                            syncLivePreview(updated);
+                          }}
+                          className="w-8 h-8 rounded border border-white/10 bg-transparent cursor-pointer shrink-0" 
+                        />
+                        <input 
+                          type="text" 
+                          value={formConfig.theme.primary || ''} 
+                          onChange={(e) => {
+                            const updated = { ...formConfig };
+                            updated.theme.primary = e.target.value;
+                            setFormConfig(updated);
+                            syncLivePreview(updated);
+                          }}
+                          className="w-full bg-slate-950 border border-white/10 text-[10px] px-2 rounded-lg text-white font-mono" 
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-[9px] text-slate-400 block mb-1">Secondary Color</label>
+                      <div className="flex gap-2">
+                        <input 
+                          type="color" 
+                          value={formConfig.theme.secondary?.startsWith('#') ? formConfig.theme.secondary : '#a855f7'} 
+                          onChange={(e) => {
+                            const updated = { ...formConfig };
+                            updated.theme.secondary = e.target.value;
+                            setFormConfig(updated);
+                            syncLivePreview(updated);
+                          }}
+                          className="w-8 h-8 rounded border border-white/10 bg-transparent cursor-pointer shrink-0" 
+                        />
+                        <input 
+                          type="text" 
+                          value={formConfig.theme.secondary || ''} 
+                          onChange={(e) => {
+                            const updated = { ...formConfig };
+                            updated.theme.secondary = e.target.value;
+                            setFormConfig(updated);
+                            syncLivePreview(updated);
+                          }}
+                          className="w-full bg-slate-950 border border-white/10 text-[10px] px-2 rounded-lg text-white font-mono" 
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-[9px] text-slate-400 block mb-1">Accent Glow</label>
+                      <div className="flex gap-2">
+                        <input 
+                          type="color" 
+                          value={formConfig.theme.accent?.startsWith('#') ? formConfig.theme.accent : '#f43f5e'} 
+                          onChange={(e) => {
+                            const updated = { ...formConfig };
+                            updated.theme.accent = e.target.value;
+                            setFormConfig(updated);
+                            syncLivePreview(updated);
+                          }}
+                          className="w-8 h-8 rounded border border-white/10 bg-transparent cursor-pointer shrink-0" 
+                        />
+                        <input 
+                          type="text" 
+                          value={formConfig.theme.accent || ''} 
+                          onChange={(e) => {
+                            const updated = { ...formConfig };
+                            updated.theme.accent = e.target.value;
+                            setFormConfig(updated);
+                            syncLivePreview(updated);
+                          }}
+                          className="w-full bg-slate-950 border border-white/10 text-[10px] px-2 rounded-lg text-white font-mono" 
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-[9px] text-slate-400 block mb-1">Canvas Background</label>
+                      <div className="flex gap-2">
+                        <input 
+                          type="color" 
+                          value={formConfig.theme.background?.startsWith('#') ? formConfig.theme.background : '#0b0f19'} 
+                          onChange={(e) => {
+                            const updated = { ...formConfig };
+                            updated.theme.background = e.target.value;
+                            setFormConfig(updated);
+                            syncLivePreview(updated);
+                          }}
+                          className="w-8 h-8 rounded border border-white/10 bg-transparent cursor-pointer shrink-0" 
+                        />
+                        <input 
+                          type="text" 
+                          value={formConfig.theme.background || ''} 
+                          onChange={(e) => {
+                            const updated = { ...formConfig };
+                            updated.theme.background = e.target.value;
+                            setFormConfig(updated);
+                            syncLivePreview(updated);
+                          }}
+                          className="w-full bg-slate-950 border border-white/10 text-[10px] px-2 rounded-lg text-white font-mono" 
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-span-2">
+                      <label className="text-[9px] text-slate-400 block mb-1">Typography Text Color</label>
+                      <div className="flex gap-2">
+                        <input 
+                          type="color" 
+                          value={formConfig.theme.textColor?.startsWith('#') ? formConfig.theme.textColor : '#f3f4f6'} 
+                          onChange={(e) => {
+                            const updated = { ...formConfig };
+                            updated.theme.textColor = e.target.value;
+                            setFormConfig(updated);
+                            syncLivePreview(updated);
+                          }}
+                          className="w-8 h-8 rounded border border-white/10 bg-transparent cursor-pointer shrink-0" 
+                        />
+                        <input 
+                          type="text" 
+                          value={formConfig.theme.textColor || ''} 
+                          onChange={(e) => {
+                            const updated = { ...formConfig };
+                            updated.theme.textColor = e.target.value;
+                            setFormConfig(updated);
+                            syncLivePreview(updated);
+                          }}
+                          className="w-full bg-slate-950 border border-white/10 text-[10px] px-2 rounded-lg text-white font-mono" 
+                        />
+                      </div>
                     </div>
                   </div>
+                </div>
+
+                {/* Typography and Fonts selection */}
+                <div className="p-4 bg-slate-900/40 border border-white/5 rounded-2xl space-y-3">
+                  <span className="text-[9px] text-slate-400 uppercase tracking-widest font-mono block">Typography Font System</span>
                   <div>
-                    <label className="text-[10px] text-slate-400 block mb-1">Secondary Accent</label>
-                    <div className="flex gap-2">
-                      <input 
-                        type="color" 
-                        value={formConfig.theme.secondary.startsWith('#') ? formConfig.theme.secondary : '#8b5cf6'} 
-                        onChange={(e) => {
-                          const updated = { ...formConfig };
-                          updated.theme.secondary = e.target.value;
-                          setFormConfig(updated);
-                        }}
-                        className="w-10 h-8 rounded border border-white/10 bg-transparent cursor-pointer shrink-0" 
-                      />
-                      <input 
-                        type="text" 
-                        value={formConfig.theme.secondary} 
-                        onChange={(e) => {
-                          const updated = { ...formConfig };
-                          updated.theme.secondary = e.target.value;
-                          setFormConfig(updated);
-                        }}
-                        className="w-full bg-slate-950 border border-white/10 text-xs px-3 rounded-lg text-white" 
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-[10px] text-slate-400 block mb-1">Custom Font Family</label>
                     <select
                       value={formConfig.theme.fontFamily || 'Space Grotesk'}
                       onChange={(e) => {
                         const updated = { ...formConfig };
                         updated.theme.fontFamily = e.target.value;
                         setFormConfig(updated);
-                      }}
-                      className="w-full bg-slate-950 border border-white/10 text-xs p-2 rounded-lg text-white font-bold"
-                    >
-                      <option value="Space Grotesk">Space Grotesk (Futuristic)</option>
-                      <option value="Outfit">Outfit (Luxury Tech)</option>
-                      <option value="Inter">Inter (Clean Modern)</option>
-                      <option value="Poppins">Poppins (Friendly Serif)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-[10px] text-slate-400 block mb-1">Jabalpur Landmark Background Animation</label>
-                    <select
-                      value={formConfig.hero.jabalpurBranding?.interactiveEffect || 'electronic_grid'}
-                      onChange={(e) => {
-                        const updated = { ...formConfig };
-                        if (!updated.hero.jabalpurBranding) updated.hero.jabalpurBranding = {};
-                        updated.hero.jabalpurBranding.interactiveEffect = e.target.value;
-                        setFormConfig(updated);
+                        syncLivePreview(updated);
                       }}
                       className="w-full bg-slate-950 border border-white/10 text-xs p-2 rounded-lg text-white font-mono"
                     >
-                      <option value="electronic_grid">Madan Mahal electronic grid</option>
-                      <option value="canvas_ripples">Tilwara river ripples</option>
-                      <option value="misty_parallax">Bhedaghat gorges mist</option>
-                      <option value="neon_grids">Bhedaghat glowing grids</option>
+                      <option value="Space Grotesk">Space Grotesk (Futuristic Sci-Fi)</option>
+                      <option value="Outfit">Outfit (Clean Geometric Tech)</option>
+                      <option value="Inter">Inter (Minimal Modern Sans)</option>
+                      <option value="Poppins">Poppins (Polished Standard)</option>
                     </select>
+                  </div>
+                </div>
+
+                {/* Card border and shadows parameters */}
+                <div className="p-4 bg-slate-900/40 border border-white/5 rounded-2xl space-y-4">
+                  <span className="text-[9px] text-slate-400 uppercase tracking-widest font-mono block">Dynamic Cards customizer</span>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                    <div>
+                      <label className="text-[8px] text-slate-400 uppercase block mb-1">Corner Radius</label>
+                      <select
+                        value={formConfig.theme.cardRadius || 'xl'}
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          updated.theme.cardRadius = e.target.value;
+                          setFormConfig(updated);
+                          syncLivePreview(updated);
+                        }}
+                        className="w-full bg-slate-950 border border-white/10 p-2 rounded-lg text-white font-mono text-[10px]"
+                      >
+                        <option value="none">Square sharp (0px)</option>
+                        <option value="sm">Small rounded (4px)</option>
+                        <option value="md">Medium (8px)</option>
+                        <option value="lg">Large (12px)</option>
+                        <option value="xl">Extra Large (16px)</option>
+                        <option value="2xl">Double XL (24px)</option>
+                        <option value="3xl">Capsule round (32px)</option>
+                        <option value="full">Complete pill (9999px)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-[8px] text-slate-400 uppercase block mb-1">Border Width</label>
+                      <select
+                        value={formConfig.theme.cardBorder || 'thin'}
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          updated.theme.cardBorder = e.target.value;
+                          setFormConfig(updated);
+                          syncLivePreview(updated);
+                        }}
+                        className="w-full bg-slate-950 border border-white/10 p-2 rounded-lg text-white font-mono text-[10px]"
+                      >
+                        <option value="none">Borderless (0px)</option>
+                        <option value="thin">Thin accent outline (1px)</option>
+                        <option value="thick">Thick retro border (2px)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-[8px] text-slate-400 uppercase block mb-1">Shadow & Glow</label>
+                      <select
+                        value={formConfig.theme.cardShadow || 'glass'}
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          updated.theme.cardShadow = e.target.value;
+                          setFormConfig(updated);
+                          syncLivePreview(updated);
+                        }}
+                        className="w-full bg-slate-950 border border-white/10 p-2 rounded-lg text-white font-mono text-[10px]"
+                      >
+                        <option value="none">Flat shadows (none)</option>
+                        <option value="subtle">Subtle depth card shadow</option>
+                        <option value="glass">Heavy backdrop glassmorphism</option>
+                        <option value="glowing-neon">Vibrant primary neon glow</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Buttons customizations parameters */}
+                <div className="p-4 bg-slate-900/40 border border-white/5 rounded-2xl space-y-4">
+                  <span className="text-[9px] text-slate-400 uppercase tracking-widest font-mono block">Dynamic Buttons Customizer</span>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                    <div>
+                      <label className="text-[8px] text-slate-400 uppercase block mb-1">Background variant</label>
+                      <select
+                        value={formConfig.theme.buttonBg || 'solid'}
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          updated.theme.buttonBg = e.target.value;
+                          setFormConfig(updated);
+                          syncLivePreview(updated);
+                        }}
+                        className="w-full bg-slate-950 border border-white/10 p-2 rounded-lg text-white font-mono text-[10px]"
+                      >
+                        <option value="solid">Solid primary color</option>
+                        <option value="gradient">Branded gradient flow</option>
+                        <option value="outline">Clean ghost border outline</option>
+                        <option value="glass">Subtle translucent glass</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-[8px] text-slate-400 uppercase block mb-1">Button Radius</label>
+                      <select
+                        value={formConfig.theme.buttonRadius || 'md'}
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          updated.theme.buttonRadius = e.target.value;
+                          setFormConfig(updated);
+                          syncLivePreview(updated);
+                        }}
+                        className="w-full bg-slate-950 border border-white/10 p-2 rounded-lg text-white font-mono text-[10px]"
+                      >
+                        <option value="none">Square sharp (0px)</option>
+                        <option value="sm">Small rounded (4px)</option>
+                        <option value="md">Medium rounded (8px)</option>
+                        <option value="lg">Large rounded (12px)</option>
+                        <option value="xl">Extra rounded (16px)</option>
+                        <option value="full">Perfect capsule pill</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-[8px] text-slate-400 uppercase block mb-1">Button Border</label>
+                      <select
+                        value={formConfig.theme.buttonBorder || 'none'}
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          updated.theme.buttonBorder = e.target.value;
+                          setFormConfig(updated);
+                          syncLivePreview(updated);
+                        }}
+                        className="w-full bg-slate-950 border border-white/10 p-2 rounded-lg text-white font-mono text-[10px]"
+                      >
+                        <option value="none">No extra border</option>
+                        <option value="thin">Thin white border line</option>
+                        <option value="neon">Vibrant accent border</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-[8px] text-slate-400 uppercase block mb-1">Hover Animation</label>
+                      <select
+                        value={formConfig.theme.buttonHover || 'grow'}
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          updated.theme.buttonHover = e.target.value;
+                          setFormConfig(updated);
+                          syncLivePreview(updated);
+                        }}
+                        className="w-full bg-slate-950 border border-white/10 p-2 rounded-lg text-white font-mono text-[10px]"
+                      >
+                        <option value="grow">Slight enlargement scale</option>
+                        <option value="translate">Elevation slide up</option>
+                        <option value="pulse">Soft pulse loop</option>
+                        <option value="glow">Intense box drop shadow glow</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section layouts and spacing parameters */}
+                <div className="p-4 bg-slate-900/40 border border-white/5 rounded-2xl space-y-4">
+                  <span className="text-[9px] text-slate-400 uppercase tracking-widest font-mono block">Dynamic Layouts & Spacing</span>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                    <div>
+                      <label className="text-[8px] text-slate-400 uppercase block mb-1">Heading Alignment</label>
+                      <select
+                        value={formConfig.theme.layoutAlignment || 'center'}
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          updated.theme.layoutAlignment = e.target.value;
+                          setFormConfig(updated);
+                          syncLivePreview(updated);
+                        }}
+                        className="w-full bg-slate-950 border border-white/10 p-2 rounded-lg text-white font-mono text-[10px]"
+                      >
+                        <option value="left">Left aligned layouts</option>
+                        <option value="center">Center aligned elements</option>
+                        <option value="right">Right aligned layout</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-[8px] text-slate-400 uppercase block mb-1">Section Spacing</label>
+                      <select
+                        value={formConfig.theme.sectionSpacing || 'balanced'}
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          updated.theme.sectionSpacing = e.target.value;
+                          setFormConfig(updated);
+                          syncLivePreview(updated);
+                        }}
+                        className="w-full bg-slate-950 border border-white/10 p-2 rounded-lg text-white font-mono text-[10px]"
+                      >
+                        <option value="compact">Compact tight margins</option>
+                        <option value="balanced">Balanced standard spacing</option>
+                        <option value="relaxed">Relaxed extensive cushions</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-[8px] text-slate-400 uppercase block mb-1">Jabalpur local landmark effect</label>
+                      <select
+                        value={formConfig.hero.jabalpurBranding?.interactiveEffect || 'electronic_grid'}
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          if (!updated.hero.jabalpurBranding) updated.hero.jabalpurBranding = {};
+                          updated.hero.jabalpurBranding.interactiveEffect = e.target.value;
+                          setFormConfig(updated);
+                          syncLivePreview(updated);
+                        }}
+                        className="w-full bg-slate-950 border border-white/10 p-2 rounded-lg text-white font-mono text-[10px]"
+                      >
+                        <option value="electronic_grid">Madan Mahal electronic grid</option>
+                        <option value="canvas_ripples">Tilwara river ripples</option>
+                        <option value="misty_parallax">Bhedaghat gorges mist</option>
+                        <option value="neon_grids">Bhedaghat glowing grids</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -884,21 +1374,36 @@ export default function AdminDashboard() {
 
             {/* STUDIO 4: CMS ENGINE */}
             {activeTab === 'cms_engine' && (
-              <div className="space-y-6 animate-in fade-in duration-300 text-left">
+              <div className="space-y-6 animate-in fade-in duration-300 text-left pb-12">
                 <div className="flex justify-between items-center border-b border-white/5 pb-2">
                   <h3 className="font-bold text-sm text-indigo-400 font-mono uppercase tracking-wider">CMS & Content Engine</h3>
                   <button 
                     onClick={handleSaveConfig}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors"
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors shadow"
                   >
-                    Save CMS
+                    Save CMS Parameters
                   </button>
                 </div>
 
                 {/* Hero section details */}
                 <div className="p-4 bg-indigo-500/5 border border-indigo-500/10 rounded-2xl space-y-3">
-                  <span className="text-[9px] font-bold text-indigo-400 font-mono uppercase block">Hero Title Slogans</span>
+                  <span className="text-[9px] font-bold text-indigo-400 font-mono uppercase block">Hero Title & Branding Slogans</span>
                   <div className="space-y-2">
+                    <div>
+                      <label className="text-[9px] text-slate-400">Website Name / Logo Text</label>
+                      <input 
+                        type="text" 
+                        value={formConfig.navigation?.logoText || ''} 
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          if (!updated.navigation) updated.navigation = {};
+                          updated.navigation.logoText = e.target.value;
+                          setFormConfig(updated);
+                          syncLivePreview(updated);
+                        }}
+                        className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2 rounded-lg mt-0.5 text-white" 
+                      />
+                    </div>
                     <div>
                       <label className="text-[9px] text-slate-400">Hero Main Title</label>
                       <input 
@@ -908,6 +1413,7 @@ export default function AdminDashboard() {
                           const updated = { ...formConfig };
                           updated.hero.title = e.target.value;
                           setFormConfig(updated);
+                          syncLivePreview(updated);
                         }}
                         className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2 rounded-lg mt-0.5 text-white" 
                       />
@@ -920,8 +1426,37 @@ export default function AdminDashboard() {
                           const updated = { ...formConfig };
                           updated.hero.subtitle = e.target.value;
                           setFormConfig(updated);
+                          syncLivePreview(updated);
                         }}
-                        className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2 rounded-lg h-16 mt-0.5 text-white" 
+                        className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2 rounded-lg h-20 mt-0.5 text-white" 
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[9px] text-slate-400">Hero Button CTA Label</label>
+                      <input 
+                        type="text" 
+                        value={formConfig.hero.ctaText || 'Get Started'} 
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          updated.hero.ctaText = e.target.value;
+                          setFormConfig(updated);
+                          syncLivePreview(updated);
+                        }}
+                        className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2 rounded-lg mt-0.5 text-white" 
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[9px] text-slate-400">Hero Showcase Image URL</label>
+                      <input 
+                        type="text" 
+                        value={formConfig.hero.bgImage || ''} 
+                        onChange={(e) => {
+                          const updated = { ...formConfig };
+                          updated.hero.bgImage = e.target.value;
+                          setFormConfig(updated);
+                          syncLivePreview(updated);
+                        }}
+                        className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2 rounded-lg mt-0.5 text-white" 
                       />
                     </div>
                   </div>
@@ -962,24 +1497,232 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                {/* Sections visibility list */}
-                <div className="space-y-3 pt-2">
-                  <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block font-mono">Dynamic Sections Management</span>
-                  <div className="space-y-2">
+                {/* Sections layout customization */}
+                <div className="space-y-4 pt-1">
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block font-mono">Sections Layout Customizer</span>
+                  <div className="space-y-4">
                     {formConfig.sections.map((sec, idx) => (
-                      <div key={sec.id} className="p-3 bg-white/2 border border-white/5 rounded-xl flex items-center justify-between">
-                        <div>
-                          <span className="text-[10px] font-bold text-white uppercase font-mono">{sec.title}</span>
-                          <span className="text-[8px] font-mono text-slate-500 block">TYPE: {sec.type}</span>
+                      <div key={sec.id} className="p-4 bg-slate-900/30 border border-white/5 rounded-2xl space-y-3">
+                        <div className="flex items-center justify-between border-b border-white/5 pb-2 gap-2">
+                          <div>
+                            <span className="text-[10px] font-bold text-white uppercase font-mono truncate max-w-[120px] inline-block">{sec.id.replace('custom_', '').replace('_', ' ')} Section</span>
+                            <span className="text-[8px] font-mono text-slate-500 block">TYPE: {sec.type}</span>
+                          </div>
+                          
+                          <div className="flex items-center gap-2">
+                            {/* Reordering Up/Down controls */}
+                            <div className="flex items-center bg-slate-950 rounded-lg p-0.5 border border-white/5 text-[10px] text-slate-400 font-mono">
+                              <button 
+                                onClick={() => handleMoveSection(idx, 'up')}
+                                disabled={idx === 0}
+                                className="px-1.5 py-0.5 hover:text-indigo-400 disabled:opacity-30 disabled:hover:text-inherit transition-colors"
+                                title="Move Up"
+                              >
+                                ▲
+                              </button>
+                              <button 
+                                onClick={() => handleMoveSection(idx, 'down')}
+                                disabled={idx === formConfig.sections.length - 1}
+                                className="px-1.5 py-0.5 hover:text-indigo-400 disabled:opacity-30 disabled:hover:text-inherit transition-colors"
+                                title="Move Down"
+                              >
+                                ▼
+                              </button>
+                            </div>
+
+                            {/* Remove Section */}
+                            <button
+                              onClick={() => handleRemoveSection(idx)}
+                              className="p-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg border border-rose-500/20 transition-colors active:scale-95 flex items-center justify-center shrink-0"
+                              title="Delete Section"
+                            >
+                              <Trash className="w-3.5 h-3.5" />
+                            </button>
+
+                            {/* Visibility Toggler */}
+                            <div className="flex items-center gap-1.5 pl-1.5 border-l border-white/10 shrink-0">
+                              <label className="text-[8px] text-slate-400 uppercase font-mono">Visible</label>
+                              <input 
+                                type="checkbox" 
+                                checked={sec.visible} 
+                                onChange={(e) => {
+                                  const updated = { ...formConfig };
+                                  updated.sections[idx].visible = e.target.checked;
+                                  setFormConfig(updated);
+                                  syncLivePreview(updated);
+                                }}
+                                className="accent-indigo-600 w-3.5 h-3.5 cursor-pointer" 
+                              />
+                            </div>
+                          </div>
                         </div>
-                        <input 
-                          type="checkbox" 
-                          checked={sec.visible} 
-                          onChange={(e) => handleUpdateConfigField(idx, 'visible', e.target.checked)}
-                          className="accent-indigo-600 w-4 h-4 cursor-pointer" 
-                        />
+
+                        {sec.visible && (
+                          <div className="space-y-3">
+                            <div>
+                              <label className="text-[9px] text-slate-400 block">Section Title Heading</label>
+                              <input 
+                                type="text"
+                                value={sec.title || ''}
+                                onChange={(e) => {
+                                  const updated = { ...formConfig };
+                                  updated.sections[idx].title = e.target.value;
+                                  setFormConfig(updated);
+                                  syncLivePreview(updated);
+                                }}
+                                className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2 rounded-lg text-white"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[9px] text-slate-400 block">Section Subtitle Heading</label>
+                              <textarea 
+                                value={sec.subtitle || ''}
+                                onChange={(e) => {
+                                  const updated = { ...formConfig };
+                                  updated.sections[idx].subtitle = e.target.value;
+                                  setFormConfig(updated);
+                                  syncLivePreview(updated);
+                                }}
+                                className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2 rounded-lg h-12 text-white"
+                              />
+                            </div>
+
+                            {/* Section Cards content mapper */}
+                            {sec.content && sec.content.length > 0 && (
+                              <div className="space-y-3 mt-3 border-t border-white/5 pt-3">
+                                <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest block font-mono">Dynamic Section Cards</span>
+                                <div className="space-y-3">
+                                  {sec.content.map((card, cardIdx) => (
+                                    <div key={cardIdx} className="p-3 bg-white/5 border border-white/5 rounded-xl space-y-2">
+                                      <div className="flex justify-between items-center text-[9px] font-mono text-slate-500">
+                                        <span>Card Item #{cardIdx + 1}</span>
+                                      </div>
+                                      
+                                      <div className="grid grid-cols-2 gap-2 text-xs">
+                                        {Object.keys(card).map((key) => {
+                                          if (key === 'id') return null;
+                                          
+                                          let label = key;
+                                          if (key === 'img' || key === 'image') label = 'Image URL';
+                                          if (key === 'desc') label = 'Description';
+                                          if (key === 'qual') label = 'Qualifications';
+                                          if (key === 'exp') label = 'Experience';
+                                          if (key === 'promo') label = 'Promo Code';
+                                          if (key === 'count') label = 'Item Count';
+                                          
+                                          return (
+                                            <div key={key} className={key === 'desc' || key === 'image' || key === 'img' || key === 'qual' ? 'col-span-2' : ''}>
+                                              <label className="text-[8px] text-slate-400 uppercase">{label}</label>
+                                              {key === 'desc' ? (
+                                                <textarea
+                                                  value={card[key] || ''}
+                                                  onChange={(e) => {
+                                                    const updated = { ...formConfig };
+                                                    updated.sections[idx].content[cardIdx][key] = e.target.value;
+                                                    setFormConfig(updated);
+                                                    syncLivePreview(updated);
+                                                  }}
+                                                  className="w-full bg-slate-950 border border-white/10 text-[10px] px-2 py-1 rounded-lg text-white h-12 mt-0.5"
+                                                />
+                                              ) : (
+                                                <input
+                                                  type="text"
+                                                  value={card[key] || ''}
+                                                  onChange={(e) => {
+                                                    const updated = { ...formConfig };
+                                                    updated.sections[idx].content[cardIdx][key] = e.target.value;
+                                                    setFormConfig(updated);
+                                                    syncLivePreview(updated);
+                                                  }}
+                                                  className="w-full bg-slate-950 border border-white/10 text-[10px] px-2 py-1 rounded-lg text-white mt-0.5"
+                                                />
+                                              )}
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     ))}
+                  </div>
+                </div>
+
+                {/* Add Custom Dynamic Section Pane */}
+                <div className="p-4 bg-indigo-950/20 border border-indigo-500/10 rounded-2xl space-y-4">
+                  <span className="text-[9px] font-bold text-indigo-400 font-mono uppercase block flex items-center gap-1.5">
+                    <Plus className="w-3.5 h-3.5" /> Add Dynamic Section Template
+                  </span>
+                  
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-[9px] text-slate-400 block mb-1">Section Type Template</label>
+                      <select
+                        value={newSecType}
+                        onChange={(e) => {
+                          setNewSecType(e.target.value);
+                          // Auto set friendly name suggestions
+                          const namesMap = {
+                            features: 'Our Unique Features',
+                            stats: 'Company Achievements',
+                            courses: 'Offered Courses',
+                            faculty: 'Our Educators Panel',
+                            products: 'Premium Couture Catalog',
+                            services: 'Frost Care Services',
+                            doctors: 'Elite Specialist Physicians',
+                            threats: 'Threat Mitigation Logs'
+                          };
+                          setNewSecTitle(namesMap[e.target.value] || 'Featured Services');
+                        }}
+                        className="w-full bg-slate-950 border border-white/10 text-xs p-2.5 rounded-lg text-white font-mono"
+                      >
+                        <option value="features">Features Block (Title / Desc / Icon)</option>
+                        <option value="stats">Telemetry Stats (Value / Subtitle)</option>
+                        <option value="courses">Admissions Courses (Duration / Coach / Fees)</option>
+                        <option value="faculty">Mentors Panel (Qualifications / Specialty / Bio)</option>
+                        <option value="products">Boutique Products (Couture / Price / Rating)</option>
+                        <option value="services">Services Catalog (Clinical Specials / Descs)</option>
+                        <option value="doctors">Doctors Roster (Department / Specialty / Experience)</option>
+                        <option value="threats">Threat Registry (Intrusions Logs / Mitigations)</option>
+                      </select>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-2 text-xs">
+                      <div>
+                        <label className="text-[9px] text-slate-400">Section Title Slogan</label>
+                        <input
+                          type="text"
+                          value={newSecTitle}
+                          onChange={(e) => setNewSecTitle(e.target.value)}
+                          placeholder="e.g. Distinguished Concepts Coaches"
+                          className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2.5 rounded-lg text-white mt-1"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[9px] text-slate-400">Section Subtitle</label>
+                        <textarea
+                          value={newSecSubtitle}
+                          onChange={(e) => setNewSecSubtitle(e.target.value)}
+                          placeholder="e.g. Learn directly from certified concepts coaches..."
+                          className="w-full bg-slate-950 border border-white/10 text-xs px-3 py-2 rounded-lg h-12 text-white mt-1"
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        handleAddSection(newSecType, newSecTitle, newSecSubtitle);
+                        alert(`🎉 Custom ${newSecType} section successfully added to layout! Sync'd to preview!`);
+                      }}
+                      className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-2.5 rounded-xl uppercase tracking-wider transition-all active:scale-95 shadow shadow-indigo-500/10"
+                    >
+                      Add Section to Visual Canvas
+                    </button>
                   </div>
                 </div>
 
@@ -1068,7 +1811,7 @@ export default function AdminDashboard() {
                   <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full inline-block" />
                 </div>
                 <div className="bg-white/5 border border-white/5 px-4 py-1 rounded-lg w-1/2 text-center truncate">
-                  {typeof window !== 'undefined' ? window.location.origin + '/' : 'http://localhost:3000/'}
+                  {typeof window !== 'undefined' ? window.location.origin + '/preview' : 'http://localhost:3000/preview'}
                 </div>
                 <button 
                   onClick={reloadPreviewIframe} 
@@ -1081,7 +1824,7 @@ export default function AdminDashboard() {
               {/* Iframe target */}
               <iframe
                 ref={iframeRef}
-                src="/"
+                src="/preview"
                 className="flex-1 w-full border-none bg-slate-950"
                 title="Live Jabalpur Engine Viewer"
               />

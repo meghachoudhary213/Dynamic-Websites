@@ -1,5 +1,5 @@
 import express from 'express';
-import { WebsiteConfig, Blog, Notification } from '../config/db.js';
+import { WebsiteConfig, Blog, Notification, Course, Student, Product, Note, MockTest } from '../config/db.js';
 import { verifyAdmin } from './auth.js';
 import { defaultTemplates } from '../config/templates.js';
 
@@ -306,6 +306,364 @@ router.post('/simulate-payment', async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: 'Error simulating payment.' });
+  }
+});
+
+// 9. Get specific configuration profile by slug/businessType (Public)
+router.get('/config/:businessType', async (req, res) => {
+  try {
+    const querySlug = req.params.businessType.toLowerCase();
+
+    // 1. Direct businessType match
+    let config = await WebsiteConfig.findOne({ businessType: req.params.businessType });
+
+    // 2. Try case-insensitive businessType match
+    if (!config) {
+      config = await WebsiteConfig.findOne({
+        businessType: { $regex: new RegExp(`^${querySlug}$`, 'i') }
+      });
+    }
+
+    // 3. Try matches by websiteName clean slug or substring
+    if (!config) {
+      const allConfigs = await WebsiteConfig.find({});
+      config = allConfigs.find(cfg => {
+        const cleanName = (cfg.websiteName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const cleanQuery = querySlug.replace(/[^a-z0-9]/g, '');
+        return cleanName === cleanQuery || cfg.businessType.toLowerCase().includes(cleanQuery);
+      });
+    }
+
+    if (!config) {
+      if (defaultTemplates[req.params.businessType]) {
+        return res.json({ success: true, config: defaultTemplates[req.params.businessType] });
+      }
+
+      // Check if case-insensitive default template exists
+      const matchedDefaultKey = Object.keys(defaultTemplates).find(
+        key => key.toLowerCase() === querySlug
+      );
+      if (matchedDefaultKey) {
+        return res.json({ success: true, config: defaultTemplates[matchedDefaultKey] });
+      }
+
+      return res.status(404).json({ success: false, message: 'Website configuration not found.' });
+    }
+    return res.json({ success: true, config });
+  } catch (error) {
+    console.error('Error fetching specific config:', error);
+    return res.status(500).json({ success: false, message: 'Error retrieving configuration.' });
+  }
+});
+
+// 10. Get dynamic collection data (courses, products, students) for a dynamic website (Public)
+router.get('/data/:businessType', async (req, res) => {
+  const { businessType } = req.params;
+  try {
+    const slugMap = {
+      nextrank: 'nextrank',
+      shopverse: 'shopverse',
+      medicare: 'medicare',
+      cybershield: 'cybershield'
+    };
+    
+    const targetId = slugMap[businessType.toLowerCase()] || businessType;
+
+    const courses = await Course.find({ websiteId: targetId });
+    const students = await Student.find({ websiteId: targetId });
+    const products = await Product.find({ websiteId: targetId });
+
+    return res.json({
+      success: true,
+      courses,
+      students,
+      products
+    });
+  } catch (err) {
+    console.error('Error fetching website data:', err);
+    return res.status(500).json({ success: false, message: 'Server error retrieving dynamic data.' });
+  }
+});
+
+// 11. Update product price sandbox (Public for demo checklist edits)
+router.put('/product/price', async (req, res) => {
+  const { productId, price } = req.body;
+  if (!productId || !price) {
+    return res.status(400).json({ success: false, message: 'Provide productId and price.' });
+  }
+
+  try {
+    const updated = await Product.findOneAndUpdate(
+      { productId },
+      { price },
+      { new: true }
+    );
+    return res.json({ success: true, product: updated });
+  } catch (err) {
+    console.error('Error updating product price:', err);
+    return res.status(500).json({ success: false, message: 'Failed to write updates to MongoDB.' });
+  }
+});
+
+// 12. Create dynamic catalog product (Public for demo dispatches)
+router.post('/product/create', async (req, res) => {
+  const { name, price, websiteId } = req.body;
+  if (!name || !price || !websiteId) {
+    return res.status(400).json({ success: false, message: 'Provide name, price, and websiteId.' });
+  }
+
+  try {
+    const newProd = await Product.create({
+      productId: `prd_${Math.random().toString(36).substring(2, 9)}`,
+      websiteId,
+      name,
+      price,
+      rating: 5.0,
+      stock: 10,
+      image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=400'
+    });
+    return res.json({ success: true, product: newProd });
+  } catch (err) {
+    console.error('Error creating product:', err);
+    return res.status(500).json({ success: false, message: 'Failed to create product in MongoDB.' });
+  }
+});
+
+// GET Student Dashboard Data (Dynamic Telemetry and Modules)
+router.get('/student-dashboard/:email', async (req, res) => {
+  const { email } = req.params;
+  try {
+    let student = await Student.findOne({ email: email.toLowerCase() });
+    if (!student) {
+      // Auto-provision a dynamic student record on-demand if it doesn't exist
+      student = await Student.create({
+        studentId: `std_${Math.random().toString(36).substring(2, 9)}`,
+        websiteId: 'nextrank',
+        name: email.split('@')[0],
+        email: email.toLowerCase(),
+        phone: '9827012345',
+        attendance: 94.2,
+        mockRank: 'AIR 142',
+        diagnosedHours: 248,
+        syllabusTrack: 76.4,
+        enrolledCourses: ['crs_1'], // Default enroll in first course
+        quizScores: {},
+        attendanceLogs: []
+      });
+      console.log(`🌱 [STUDENT TELEMETRY AUTO-PROVISION] Seeding student profile for ${email}`);
+    }
+
+    const allCourses = await Course.find({ websiteId: 'nextrank' });
+    const databaseCourses = allCourses && allCourses.length > 0 ? allCourses : [
+      { courseId: 'crs_1', websiteId: 'nextrank', name: 'IIT-JEE Advanced Physics', duration: '12 Months', faculty: 'Dr. H.C. Verma', target: 'JEE 2027', fees: '₹15,000', progress: 78 },
+      { courseId: 'crs_2', websiteId: 'nextrank', name: 'Organic Chemistry Masterclass', duration: '6 Months', faculty: 'Prof. D.K. Singh', target: 'JEE/NEET', fees: '₹8,500', progress: 62 },
+      { courseId: 'crs_3', websiteId: 'nextrank', name: 'NEET Biology Diagnostics', duration: '9 Months', faculty: 'Dr. Shashi Bala', target: 'NEET 2026', fees: '₹12,000', progress: 91 }
+    ];
+
+    const studentEnrolledIds = student.enrolledCourses || ['crs_1'];
+    
+    // Map enrolled courses with their database properties
+    const activeCourses = databaseCourses.map(course => {
+      const isEnrolled = studentEnrolledIds.includes(course.courseId);
+      return {
+        ...course.toObject?.() || course,
+        isEnrolled,
+        progress: isEnrolled ? (course.progress || 60) : 0
+      };
+    });
+
+    // Seed mock tests dynamically, highlighting student attempted records
+    const defaultMockTests = [
+      { id: 'test_phy_1', title: 'IIT-JEE Electrostatics MCQ Sprint', subject: 'Physics', duration: '20 mins', qCount: 4, date: 'Active' },
+      { id: 'test_chem_1', title: 'NEET Organic Reaction Mechanism Quiz', subject: 'Chemistry', duration: '15 mins', qCount: 3, date: 'Active' },
+      { id: 'test_math_1', title: 'JEE Advanced Limits & Derivatives Mock', subject: 'Mathematics', duration: '15 mins', qCount: 3, date: 'Active' }
+    ];
+
+    const studentScores = student.quizScores || {};
+    const mockTests = defaultMockTests.map(test => {
+      const attempt = studentScores[test.id];
+      return {
+        ...test,
+        score: attempt ? `${attempt.score}/${test.qCount}` : '--',
+        rank: attempt ? attempt.score >= 3 ? 'EXCELLENT' : 'PASSED' : 'UNATTEMPTED',
+        attempted: !!attempt,
+        attemptDate: attempt ? attempt.date : null
+      };
+    });
+
+    const studentName = student.name || email.split('@')[0];
+    const attendanceLogs = student.attendanceLogs && student.attendanceLogs.length > 0 ? student.attendanceLogs : [
+      { name: studentName, timestamp: '08:02 AM', status: 'PRESENT', method: 'RFID Gate 2' },
+      { name: studentName, timestamp: '08:15 AM', status: 'LATE', method: 'RFID Gate 1' },
+      { name: studentName, timestamp: '07:58 AM', status: 'PRESENT', method: 'Biometric Scanner' }
+    ];
+
+    const notesLibrary = [
+      { title: 'Advanced Electromagnetism Lecture Notes.pdf', date: 'May 26, 2026', author: 'Dr. H.C. Verma', size: '4.2 MB' },
+      { title: 'Organic Reaction Mechanism Cheat-sheet.pdf', date: 'May 22, 2026', author: 'Prof. D.K. Singh', size: '2.8 MB' },
+      { title: 'Plant Physiology Diagnostics Guide.pdf', date: 'May 18, 2026', author: 'Dr. Shashi Bala', size: '5.1 MB' }
+    ];
+
+    const faculty = [
+      { name: 'Dr. H.C. Verma', subject: 'Physics Expert', qual: 'IIT Kanpur' },
+      { name: 'Prof. D.K. Singh', subject: 'Chemistry Expert', qual: 'BITS Pilani' },
+      { name: 'Dr. Shashi Bala', subject: 'Biology Expert', qual: 'AIIMS Delhi' }
+    ];
+
+    return res.json({
+      success: true,
+      student: {
+        ...student.toObject?.() || student,
+        attendanceLogs
+      },
+      courses: activeCourses,
+      tests: mockTests,
+      notes: notesLibrary,
+      faculty
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: 'Server error loading student details.' });
+  }
+});
+
+// POST Course Enrollment
+router.post('/enroll', async (req, res) => {
+  const { email, courseId } = req.body;
+  if (!email || !courseId) {
+    return res.status(400).json({ success: false, message: 'Please provide email and courseId.' });
+  }
+
+  try {
+    const student = await Student.findOne({ email: email.toLowerCase() });
+    if (!student) {
+      return res.status(404).json({ success: false, message: 'Student profile not found.' });
+    }
+
+    const enrolled = student.enrolledCourses || [];
+    if (enrolled.includes(courseId)) {
+      return res.status(400).json({ success: false, message: 'Already enrolled in this course.' });
+    }
+
+    const updatedEnrolled = [...enrolled, courseId];
+    await Student.findOneAndUpdate(
+      { email: email.toLowerCase() },
+      { enrolledCourses: updatedEnrolled }
+    );
+
+    // Create system notification
+    const msg = `🎓 Student "${student.name}" dynamically enrolled in course: ${courseId}!`;
+    await Notification.create({ message: msg });
+
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('new-notification', { message: msg, timestamp: new Date() });
+    }
+
+    return res.json({ success: true, message: 'Successfully enrolled in course!', enrolledCourses: updatedEnrolled });
+  } catch (error) {
+    console.error('Enrollment error:', error);
+    return res.status(500).json({ success: false, message: 'Server error during enrollment.' });
+  }
+});
+
+// POST Mock Quiz Taking Submission
+router.post('/submit-test', async (req, res) => {
+  const { email, testId, score, answers, totalQuestions } = req.body;
+  if (!email || !testId) {
+    return res.status(400).json({ success: false, message: 'Please provide email, testId.' });
+  }
+
+  try {
+    const student = await Student.findOne({ email: email.toLowerCase() });
+    if (!student) {
+      return res.status(404).json({ success: false, message: 'Student profile not found.' });
+    }
+
+    const scores = student.quizScores || {};
+    scores[testId] = {
+      score,
+      totalQuestions,
+      answers,
+      date: new Date().toLocaleDateString(),
+      timestamp: new Date().toISOString()
+    };
+
+    // Calculate dynamic AIR mock rank based on score
+    let mockRank = student.mockRank || 'AIR 142';
+    if (score >= 3) {
+      mockRank = `AIR ${Math.floor(20 + Math.random() * 50)}`;
+    } else if (score === 2) {
+      mockRank = `AIR ${Math.floor(100 + Math.random() * 100)}`;
+    } else {
+      mockRank = `AIR ${Math.floor(250 + Math.random() * 200)}`;
+    }
+
+    const updated = await Student.findOneAndUpdate(
+      { email: email.toLowerCase() },
+      { quizScores: scores, mockRank }
+    );
+
+    // Create system notification
+    const msg = `🏆 Student "${student.name}" completed Mock Test ${testId}! Score: ${score}/${totalQuestions}. Rank: ${mockRank}`;
+    await Notification.create({ message: msg });
+
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('new-notification', { message: msg, timestamp: new Date() });
+    }
+
+    return res.json({ success: true, message: 'Test submitted successfully!', mockRank, quizScores: scores });
+  } catch (error) {
+    console.error('Submit test error:', error);
+    return res.status(500).json({ success: false, message: 'Server error submitting mock test.' });
+  }
+});
+
+// POST Student Profile Updates
+router.post('/student-profile', async (req, res) => {
+  const { email, name, phone, mockRank, diagnosedHours, syllabusTrack } = req.body;
+  if (!email) {
+    return res.status(400).json({ success: false, message: 'Please provide student email.' });
+  }
+
+  try {
+    const student = await Student.findOne({ email: email.toLowerCase() });
+    if (!student) {
+      return res.status(404).json({ success: false, message: 'Student profile not found.' });
+    }
+
+    const updatedStudent = await Student.findOneAndUpdate(
+      { email: email.toLowerCase() },
+      {
+        name: name || student.name,
+        phone: phone || student.phone,
+        mockRank: mockRank || student.mockRank,
+        diagnosedHours: diagnosedHours || student.diagnosedHours,
+        syllabusTrack: syllabusTrack || student.syllabusTrack
+      }
+    );
+
+    await User.findOneAndUpdate(
+      { email: email.toLowerCase() },
+      {
+        name: name || student.name,
+        phone: phone || student.phone
+      }
+    );
+
+    const msg = `✍️ Student "${email}" updated profile parameters dynamically.`;
+    await Notification.create({ message: msg });
+
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('new-notification', { message: msg, timestamp: new Date() });
+    }
+
+    return res.json({ success: true, message: 'Profile updated successfully!', student: updatedStudent });
+  } catch (error) {
+    console.error('Student profile update error:', error);
+    return res.status(500).json({ success: false, message: 'Server error updating student profile.' });
   }
 });
 

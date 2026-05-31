@@ -1,7 +1,7 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { User } from '../config/db.js';
+import { User, Student } from '../config/db.js';
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_jabalpur_nexus_key_2026';
@@ -17,7 +17,7 @@ export const verifyAdmin = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     const admin = await User.findOne({ email: decoded.email });
-    if (!admin || admin.role !== 'admin') {
+    if (!admin || (admin.role !== 'admin' && admin.role !== 'super_admin')) {
       return res.status(403).json({ success: false, message: 'Forbidden. Administrative privileges required.' });
     }
     req.user = decoded;
@@ -79,6 +79,25 @@ router.post('/register', async (req, res) => {
       phone: phone || '',
       websiteId: websiteId || ''
     });
+
+    if (userRole === 'student') {
+      try {
+        await Student.create({
+          studentId: `std_${Math.random().toString(36).substring(2, 9)}`,
+          websiteId: websiteId || 'nextrank',
+          name: name || email.split('@')[0],
+          email: email.toLowerCase(),
+          phone: phone || '9827012345',
+          attendance: 94.2,
+          mockRank: 'AIR 142',
+          diagnosedHours: 248,
+          syllabusTrack: 76.4
+        });
+        console.log(`🌱 [STUDENT REGISTRATION] Created dynamic student profile for: ${email}`);
+      } catch (err) {
+        console.error('Error creating Student profile during registration:', err);
+      }
+    }
 
     const token = jwt.sign(
       { id: newUser._id, email: newUser.email, role: newUser.role, websiteId: newUser.websiteId || '' },

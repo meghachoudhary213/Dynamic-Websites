@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Mail, Lock, Eye, EyeOff, Sun, Moon, ArrowRight, Sparkles, Award } from 'lucide-react';
-import { API_URL } from '../../config';
+import { useAuth } from '../../context/AuthContext';
 
 export default function LoginPage() {
   const [siteLightMode, setSiteLightMode] = useState(false);
@@ -13,6 +13,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const { login } = useAuth();
 
   useEffect(() => {
     if (error) {
@@ -53,21 +54,24 @@ export default function LoginPage() {
     }
 
     try {
-      const res = await fetch(`${API_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.toLowerCase(), password })
-      });
-      const data = await res.json();
+      const data = await login(email, password);
       setLoading(false);
 
       if (data.success) {
-        setSuccess('🎉 Welcome back to NextRank! Authorization granted.');
-        localStorage.setItem('userToken', data.token);
+        setSuccess(`🎉 Authorization granted! Logging in as ${data.role || 'user'}...`);
 
-        // Redirect to landing page with auto scroll to dashboard
+        // Dynamic Redirection based on role to custom landing dashboards
         setTimeout(() => {
-          window.location.href = '/#dynamic_modules';
+          const userRole = (data.role || 'student').toLowerCase();
+          if (userRole === 'admin' || userRole === 'super_admin') {
+            window.location.href = '/dashboard/super-admin'; 
+          } else if (userRole === 'teacher') {
+            window.location.href = '/dashboard/teacher'; 
+          } else if (userRole === 'customer') {
+            window.location.href = '/dashboard/customer'; 
+          } else {
+            window.location.href = '/dashboard/student'; 
+          }
         }, 1200);
       } else {
         setError(data.message || 'Incorrect email address or password combination.');
