@@ -383,6 +383,28 @@ export default function AdminDashboard() {
       alert('Error resetting template.');
     }
   };
+ 
+  const handleDeleteWebsite = async (businessType, name) => {
+    playClickSound();
+    if (!confirm(`Are you absolutely sure you want to permanently delete the dynamic website "${name}"? This action cannot be undone.`)) return;
+    try {
+      const res = await fetch(`${API_URL}/api/website/config/${businessType}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(data.message || 'Website configuration successfully deleted!');
+        loadAllConfigurations();
+      } else {
+        alert(data.message || 'Failed to delete website configuration.');
+      }
+    } catch (err) {
+      alert('Error communicating with database.');
+    }
+  };
 
   // AI Content Generator
   const handleTriggerAIContent = async () => {
@@ -851,7 +873,19 @@ export default function AdminDashboard() {
                           {cfg.theme.name}
                         </span>
                         {cfg.isActive && (
-                          <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          <span className="absolute bottom-2.5 right-2.5 w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        )}
+                        {!['coaching', 'ecommerce', 'real_estate', 'hospital', 'cafe', 'startup', 'gym', 'tourism', 'cybersecurity', 'career', 'smartengine'].includes(cfg.businessType) && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteWebsite(cfg.businessType, cfg.theme.name);
+                            }}
+                            className="absolute top-2 right-2 p-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-400 hover:text-rose-300 transition-colors z-20 cursor-pointer"
+                            title="Delete Website"
+                          >
+                            <Trash className="w-3.5 h-3.5" />
+                          </button>
                         )}
                       </button>
                     ))}

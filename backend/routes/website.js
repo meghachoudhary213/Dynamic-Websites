@@ -209,6 +209,55 @@ router.post('/reset', verifyAdmin, async (req, res) => {
   }
 });
 
+// 5b. Delete website configuration (Admin)
+router.delete('/config/:businessType', verifyAdmin, async (req, res) => {
+  const { businessType } = req.params;
+  if (!businessType) {
+    return res.status(400).json({ success: false, message: 'Missing businessType identifier.' });
+  }
+
+  // Protect default templates from deletion
+  const defaultKeys = ['coaching', 'ecommerce', 'real_estate', 'hospital', 'cafe', 'startup', 'gym', 'tourism', 'cybersecurity', 'career', 'smartengine'];
+  if (defaultKeys.includes(businessType)) {
+    return res.status(400).json({ success: false, message: 'Cannot delete core default templates.' });
+  }
+
+  try {
+    const config = await WebsiteConfig.findOne({ businessType });
+    if (!config) {
+      return res.status(404).json({ success: false, message: 'Website configuration not found.' });
+    }
+
+    // Delete configuration document
+    await WebsiteConfig.deleteOne({ businessType });
+
+    // Clean up associated dynamic models (courses, products, students) to prevent orphan data
+    await Course.deleteMany({ websiteId: businessType });
+    await Student.deleteMany({ websiteId: businessType });
+    await Product.deleteMany({ websiteId: businessType });
+
+    // If the deleted website was currently active, fall back to smartengine flagship
+    if (config.isActive) {
+      await WebsiteConfig.setActiveConfig('smartengine');
+    }
+
+    const msg = `🗑️ Dynamic website "${config.websiteName || businessType}" was permanently deleted.`;
+    await Notification.create({ message: msg });
+
+    const io = req.app.get('io');
+    if (io) {
+      const active = await WebsiteConfig.findOne({ isActive: true }) || await WebsiteConfig.setActiveConfig('smartengine');
+      io.emit('config-updated', active);
+      io.emit('new-notification', { message: msg, timestamp: new Date() });
+    }
+
+    return res.json({ success: true, message: 'Website configuration successfully deleted!' });
+  } catch (error) {
+    console.error('Error deleting configuration:', error);
+    return res.status(500).json({ success: false, message: 'Server error deleting website configuration.' });
+  }
+});
+
 // 6. Blog Operations
 // Get blogs matching the current business type (Public)
 router.get('/blogs/:type', async (req, res) => {
