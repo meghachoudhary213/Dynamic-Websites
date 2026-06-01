@@ -8,7 +8,7 @@
   --bg-custom: #0b0f19;
   --text-custom: #f3f4f6;
   --radius-custom: 16px;
-  
+
   --background: var(--bg-custom);
   --foreground: var(--text-custom);
 }
@@ -19,11 +19,11 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-montserrat), 'Montserrat', sans-serif;
-  overflow-x: hidden;
-  scroll-behavior: smooth;
+  background: linear-gradient(135deg,
+      #3b82f6,
+      #1e1b4b,
+      #312e81);
+  min-height: 100vh;
 }
 
 /* Typography styles for Royal Classic theme */
@@ -60,7 +60,7 @@ body {
 
 .royal-card:hover {
   border-color: rgba(251, 191, 36, 0.45);
-  box-shadow: 
+  box-shadow:
     0 28px 56px -15px rgba(0, 0, 0, 0.7),
     0 0 30px -5px rgba(251, 191, 36, 0.25),
     0 0 12px -2px var(--primary);
@@ -100,7 +100,7 @@ body {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
   border-color: var(--primary);
   transform: translateY(-4px) scale(1.01);
-  box-shadow: 
+  box-shadow:
     0 24px 48px -15px rgba(0, 0, 0, 0.6),
     0 0 20px -5px var(--primary);
 }
@@ -136,19 +136,19 @@ body {
 .light-theme .glass-card:hover {
   background: #ffffff;
   border-color: var(--primary);
-  box-shadow: 
+  box-shadow:
     0 24px 48px -15px rgba(15, 23, 42, 0.08),
     0 0 25px -5px var(--primary);
 }
 
 .light-theme .cyber-grid {
-  background-image: 
+  background-image:
     linear-gradient(rgba(15, 23, 42, 0.02) 1px, transparent 1px),
     linear-gradient(90deg, rgba(15, 23, 42, 0.02) 1px, transparent 1px);
 }
 
-.light-theme input, 
-.light-theme textarea, 
+.light-theme input,
+.light-theme textarea,
 .light-theme select {
   background: #ffffff !important;
   border: 1px solid rgba(15, 23, 42, 0.12) !important;
@@ -156,8 +156,8 @@ body {
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.01) !important;
 }
 
-.light-theme input:focus, 
-.light-theme textarea:focus, 
+.light-theme input:focus,
+.light-theme textarea:focus,
 .light-theme select:focus {
   border-color: var(--primary) !important;
   background: #ffffff !important;
@@ -179,7 +179,7 @@ body {
 
 /* Animated Cyber Grid Overlay */
 .cyber-grid {
-  background-image: 
+  background-image:
     linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
   background-size: 40px 40px;
@@ -187,7 +187,7 @@ body {
 }
 
 .cyber-grid-glow {
-  background-image: 
+  background-image:
     radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.05), transparent 80%);
 }
 
@@ -195,22 +195,33 @@ body {
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: rgba(15, 23, 42, 0.3);
 }
+
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 99px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
 }
 
 /* Animations */
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 .animate-float {
@@ -218,8 +229,15 @@ body {
 }
 
 @keyframes pulse-slow {
-  0%, 100% { opacity: 0.2; }
-  50% { opacity: 0.4; }
+
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
 }
 
 .animate-pulse-slow {
@@ -230,8 +248,10 @@ body {
    LIGHT SITE CUSTOM OVERRIDES FOR DYNAMIC MERN WEBSITE ENGINES
    ======================================================== */
 .light-site {
-  --bg-custom: #fdfbf7 !important; /* Elegant Warm Royal Cream Ivory background */
-  --text-custom: #1c1917 !important; /* Deep Imperial Charcoal text */
+  --bg-custom: #fdfbf7 !important;
+  /* Elegant Warm Royal Cream Ivory background */
+  --text-custom: #1c1917 !important;
+  /* Deep Imperial Charcoal text */
 }
 
 .light-site body {
@@ -250,7 +270,7 @@ body {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(254, 252, 249, 0.85) 100%) !important;
   backdrop-filter: blur(24px) saturate(140%) !important;
   border: 1px solid rgba(212, 175, 55, 0.26) !important;
-  box-shadow: 
+  box-shadow:
     0 12px 30px -10px rgba(139, 92, 26, 0.05),
     inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
   color: #1c1917 !important;
@@ -258,7 +278,7 @@ body {
 
 .light-site .royal-card:hover {
   border-color: rgba(212, 175, 55, 0.6) !important;
-  box-shadow: 
+  box-shadow:
     0 24px 50px -15px rgba(139, 92, 26, 0.16),
     0 0 25px -2px rgba(212, 175, 55, 0.15),
     0 0 12px -2px var(--primary) !important;
@@ -279,11 +299,13 @@ body {
 .light-site .text-slate-300,
 .light-site p,
 .light-site span:not(.text-glow):not(.font-mono) {
-  color: #44403c !important; /* Soft imperial charcoal body text */
+  color: #44403c !important;
+  /* Soft imperial charcoal body text */
 }
 
 .light-site .text-slate-400 {
-  color: #57534e !important; /* Muted contrast charcoal */
+  color: #57534e !important;
+  /* Muted contrast charcoal */
 }
 
 .light-site .text-slate-500 {
@@ -296,11 +318,12 @@ body {
 .light-site h4,
 .light-site h5,
 .light-site h6 {
-  color: #1c1917 !important; /* Pristine heading charcoal */
+  color: #1c1917 !important;
+  /* Pristine heading charcoal */
 }
 
 .light-site .cyber-grid {
-  background-image: 
+  background-image:
     linear-gradient(rgba(139, 92, 26, 0.02) 1px, transparent 1px),
     linear-gradient(90deg, rgba(139, 92, 26, 0.02) 1px, transparent 1px) !important;
 }
@@ -397,14 +420,14 @@ div.matte-gold-theme.light-site {
   color: #2E2A25 !important;
 }
 
-.matte-gold-theme .font-royal, 
+.matte-gold-theme .font-royal,
 .matte-gold-theme .royal-heading {
   font-family: var(--font-royal-serif), 'Cormorant Garamond', serif !important;
   color: #D4AF37 !important;
   text-shadow: 0 0 15px rgba(212, 175, 55, 0.2) !important;
 }
 
-.matte-gold-theme.light-site .font-royal, 
+.matte-gold-theme.light-site .font-royal,
 .matte-gold-theme.light-site .royal-heading {
   color: #B28E25 !important;
   text-shadow: 0 0 10px rgba(178, 142, 37, 0.1) !important;
@@ -412,7 +435,8 @@ div.matte-gold-theme.light-site {
 
 .matte-gold-theme .royal-card {
   background: linear-gradient(135deg, rgba(11, 11, 11, 0.85) 0%, rgba(42, 42, 42, 0.95) 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important; /* Soft White */
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  /* Soft White */
   box-shadow: 0 12px 32px 0 rgba(0, 0, 0, 0.6) !important;
   backdrop-filter: blur(16px) saturate(120%) !important;
 }
@@ -425,8 +449,9 @@ div.matte-gold-theme.light-site {
 }
 
 .matte-gold-theme .royal-card:hover {
-  border-color: #D4AF37 !important; /* Shimmering Gold */
-  box-shadow: 
+  border-color: #D4AF37 !important;
+  /* Shimmering Gold */
+  box-shadow:
     0 20px 48px rgba(0, 0, 0, 0.8),
     0 0 25px -5px rgba(212, 175, 55, 0.3) !important;
   transform: translateY(-6px) scale(1.005) !important;
@@ -434,7 +459,7 @@ div.matte-gold-theme.light-site {
 
 .matte-gold-theme.light-site .royal-card:hover {
   border-color: #B28E25 !important;
-  box-shadow: 
+  box-shadow:
     0 18px 40px rgba(139, 92, 26, 0.1),
     0 0 20px -2px rgba(212, 175, 55, 0.2) !important;
   transform: translateY(-6px) scale(1.005) !important;
@@ -442,7 +467,8 @@ div.matte-gold-theme.light-site {
 
 .matte-gold-theme .royal-frame {
   border: 4px double rgba(212, 175, 55, 0.35) !important;
-  background: rgba(42, 42, 42, 0.4) !important; /* Warm Gray translucent */
+  background: rgba(42, 42, 42, 0.4) !important;
+  /* Warm Gray translucent */
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7) !important;
 }
 
@@ -466,8 +492,10 @@ div.matte-gold-theme.light-site {
 .matte-gold-theme input,
 .matte-gold-theme textarea,
 .matte-gold-theme select {
-  background: #2A2A2A !important; /* Warm Gray */
-  border: 1px solid rgba(255, 255, 255, 0.1) !important; /* Soft White border */
+  background: #2A2A2A !important;
+  /* Warm Gray */
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  /* Soft White border */
   color: #FFFFFF !important;
 }
 
@@ -495,7 +523,8 @@ div.matte-gold-theme.light-site {
 
 .matte-gold-theme .glass-card {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important; /* Soft White */
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  /* Soft White */
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5) !important;
 }
 
@@ -508,7 +537,7 @@ div.matte-gold-theme.light-site {
 
 .matte-gold-theme .glass-card:hover {
   border-color: #D4AF37 !important;
-  box-shadow: 
+  box-shadow:
     0 24px 48px -15px rgba(0, 0, 0, 0.7),
     0 0 20px -5px rgba(212, 175, 55, 0.35) !important;
 }
@@ -519,8 +548,10 @@ div.matte-gold-theme.light-site {
 }
 
 .matte-gold-theme .glass-panel {
-  background: rgba(11, 11, 11, 0.8) !important; /* Matte Black translucent */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important; /* Soft White */
+  background: rgba(11, 11, 11, 0.8) !important;
+  /* Matte Black translucent */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  /* Soft White */
 }
 
 .matte-gold-theme.light-site .glass-panel {
@@ -531,18 +562,22 @@ div.matte-gold-theme.light-site {
 
 /* Dynamic button utility overrides */
 .matte-gold-theme .bg-indigo-600 {
-  background-color: #D4AF37 !important; /* Gold */
-  color: #0B0B0B !important; /* Matte Black text */
+  background-color: #D4AF37 !important;
+  /* Gold */
+  color: #0B0B0B !important;
+  /* Matte Black text */
   font-weight: 800 !important;
 }
 
 .matte-gold-theme.light-site .bg-indigo-600 {
-  background-color: #B28E25 !important; /* Elegant Gold */
+  background-color: #B28E25 !important;
+  /* Elegant Gold */
   color: #FFFFFF !important;
 }
 
 .matte-gold-theme .hover\:bg-indigo-700:hover {
-  background-color: #C5A028 !important; /* Slightly Darker Gold */
+  background-color: #C5A028 !important;
+  /* Slightly Darker Gold */
   opacity: 0.95 !important;
 }
 
@@ -615,7 +650,8 @@ div.matte-gold-theme.light-site {
 .matte-gold-theme .bg-slate-900\/20,
 .matte-gold-theme .bg-slate-900\/30,
 .matte-gold-theme .bg-slate-900\/40 {
-  background-color: rgba(42, 42, 42, 0.4) !important; /* Warm Gray translucent */
+  background-color: rgba(42, 42, 42, 0.4) !important;
+  /* Warm Gray translucent */
 }
 
 .matte-gold-theme.light-site .bg-slate-900\/20,
@@ -625,7 +661,8 @@ div.matte-gold-theme.light-site {
 }
 
 .matte-gold-theme .bg-slate-950 {
-  background-color: #2A2A2A !important; /* Warm Gray */
+  background-color: #2A2A2A !important;
+  /* Warm Gray */
   border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
@@ -662,21 +699,22 @@ div.matte-gold-theme.light-site {
 
 .matte-gold-theme.light-site p,
 .matte-gold-theme.light-site span:not(.royal-heading) {
-  color: #5A544A !important; /* Luxury readable warm slate/charcoal text */
+  color: #5A544A !important;
+  /* Luxury readable warm slate/charcoal text */
 }
 
 /* ========================================================
    MATTE GOLD EXQUISITE CYBER GRID & BUBBLE OVERLAYS
    ======================================================== */
 .matte-gold-theme .cyber-grid {
-  background-image: 
+  background-image:
     linear-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(212, 175, 55, 0.05) 1px, transparent 1px) !important;
   background-size: 50px 50px;
 }
 
 .matte-gold-theme.light-site .cyber-grid {
-  background-image: 
+  background-image:
     linear-gradient(rgba(212, 175, 55, 0.07) 1px, transparent 1px),
     linear-gradient(90deg, rgba(212, 175, 55, 0.07) 1px, transparent 1px) !important;
   background-size: 50px 50px;
@@ -688,7 +726,7 @@ div.matte-gold-theme.light-site {
   border-radius: 50%;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 40%, rgba(212, 175, 55, 0.08) 100%);
   border: 1px solid rgba(212, 175, 55, 0.28);
-  box-shadow: 
+  box-shadow:
     inset 0 6px 12px rgba(255, 255, 255, 0.12),
     inset 0 -6px 12px rgba(0, 0, 0, 0.4),
     0 15px 35px rgba(0, 0, 0, 0.35),
@@ -714,7 +752,7 @@ div.matte-gold-theme.light-site {
 .matte-gold-theme.light-site .glass-bubble-gold {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.2) 40%, rgba(212, 175, 55, 0.12) 100%) !important;
   border: 1.5px solid rgba(212, 175, 55, 0.4) !important;
-  box-shadow: 
+  box-shadow:
     inset 0 6px 10px rgba(255, 255, 255, 0.8),
     inset 0 -6px 10px rgba(212, 175, 55, 0.06),
     0 12px 28px rgba(139, 92, 26, 0.08),
@@ -741,29 +779,67 @@ div.matte-gold-theme.light-site {
    DYNAMIC FLOATING GLASS & GLOW BUBBLES ANIMATIONS
    ======================================================== */
 @keyframes blob-slow {
-  0%, 100% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(40px, -60px) scale(1.15); }
-  66% { transform: translate(-30px, 30px) scale(0.92); }
+
+  0%,
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  33% {
+    transform: translate(40px, -60px) scale(1.15);
+  }
+
+  66% {
+    transform: translate(-30px, 30px) scale(0.92);
+  }
 }
 
 @keyframes blob-medium {
-  0%, 100% { transform: translate(0px, 0px) scale(1); }
-  50% { transform: translate(-50px, 50px) scale(1.08); }
+
+  0%,
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  50% {
+    transform: translate(-50px, 50px) scale(1.08);
+  }
 }
 
 @keyframes float-slow {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-30px) rotate(180deg); }
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-30px) rotate(180deg);
+  }
 }
 
 @keyframes float-medium {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(-180deg); }
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-20px) rotate(-180deg);
+  }
 }
 
 @keyframes float-slowest {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-40px) rotate(90deg); }
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-40px) rotate(90deg);
+  }
 }
 
 .animate-blob-slow {
@@ -809,9 +885,17 @@ div.matte-gold-theme.light-site {
 }
 
 @keyframes orb-movement {
-  0% { transform: translate(0px, 0px) scale(1); }
-  50% { transform: translate(120px, -80px) scale(1.3); }
-  100% { transform: translate(-80px, 100px) scale(0.9); }
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  50% {
+    transform: translate(120px, -80px) scale(1.3);
+  }
+
+  100% {
+    transform: translate(-80px, 100px) scale(0.9);
+  }
 }
 
 /* Vercel-like Premium Glassmorphic Cards */
@@ -819,7 +903,7 @@ div.matte-gold-theme.light-site {
   background: rgba(10, 8, 28, 0.45);
   backdrop-filter: blur(20px) saturate(160%);
   border: 1px solid rgba(99, 102, 241, 0.12);
-  box-shadow: 
+  box-shadow:
     0 8px 32px -4px rgba(0, 0, 0, 0.7),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -828,7 +912,7 @@ div.matte-gold-theme.light-site {
 .saas-card:hover {
   background: rgba(14, 11, 38, 0.55);
   border-color: rgba(0, 245, 255, 0.4);
-  box-shadow: 
+  box-shadow:
     0 24px 50px -12px rgba(0, 0, 0, 0.8),
     0 0 30px -10px rgba(99, 102, 241, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -848,21 +932,21 @@ div.matte-gold-theme.light-site {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: conic-gradient(
-    from 0deg,
-    transparent 20%,
-    var(--primary) 40%,
-    var(--accent) 50%,
-    var(--secondary) 60%,
-    transparent 80%
-  );
+  background: conic-gradient(from 0deg,
+      transparent 20%,
+      var(--primary) 40%,
+      var(--accent) 50%,
+      var(--secondary) 60%,
+      transparent 80%);
   animation: rotate-conic 8s linear infinite;
   opacity: 0.15;
   pointer-events: none;
 }
 
 @keyframes rotate-conic {
-  100% { transform: rotate(360deg); }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Cinematic Pulse Text Animation */
@@ -871,9 +955,12 @@ div.matte-gold-theme.light-site {
 }
 
 @keyframes pulse-glow-text-kf {
-  0%, 100% {
+
+  0%,
+  100% {
     text-shadow: 0 0 20px rgba(99, 102, 241, 0.4), 0 0 4px rgba(99, 102, 241, 0.2);
   }
+
   50% {
     text-shadow: 0 0 35px rgba(0, 245, 255, 0.6), 0 0 8px rgba(0, 245, 255, 0.3);
   }
@@ -886,12 +973,14 @@ div.matte-gold-theme.light-site {
 }
 
 @keyframes caret-blink {
-  to { visibility: hidden; }
+  to {
+    visibility: hidden;
+  }
 }
 
 /* Grid Matrix */
 .matrix-mesh {
-  background-image: 
+  background-image:
     linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
   background-size: 50px 50px;
@@ -1031,7 +1120,7 @@ div.matte-gold-theme.light-site {
   --card-radius: var(--radius-custom);
   --card-border-width: 1px;
   --card-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5);
-  
+
   --button-bg: var(--primary);
   --button-radius: 12px;
   --button-border: none;
@@ -1090,7 +1179,3 @@ div.matte-gold-theme.light-site {
   margin-left: var(--layout-margin-left, auto) !important;
   margin-right: var(--layout-margin-right, auto) !important;
 }
-
-
-
-
